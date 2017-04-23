@@ -4,6 +4,7 @@ characters/**/*.char
 
 # Data files
 lsts/monsterdeaths.lst
+zones/adventure.zone
 
 
 #################
