@@ -1,0 +1,8 @@
+activates the Confodere glyph, summoning a rapier and then proceeds to slash %enemy twice with it
+activates the Secare glyph, summoning a large sword and proceeds to swing the sword down upon %enemy
+activates the Hasta glyph, summoning a large spear and proceeds to thrust the spear into %enemy
+activates the Arcus glyph, summoning a magical bow and proceeds to shoot %enemy with an energy arrow
+activates the Culter glyph, summoning a magical knife and proceeds to throw the knife at %enemy
+activates the Macir glyph, summoning a magical hammer and proceeds to hit %enemy over the head with it
+activates the Ascia glyph, summoning a magical axe and proceeds to slash %enemy twice with it
+activates the Falcis glyph, summoning a magical scythe and proceeds to slash %enemy twice with it
