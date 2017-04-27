@@ -30,6 +30,7 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 ## WHAT'S NEW?
 
 * APRIL 27, 2017
+
 As of right now only basic commands and systems have been added.  Players can create new characters (!new char human) to join the game, set new passwords (the bot will tell you how), start an adventure (!start adventure test), join other people's parties (!enter) and do basic adventure commands (!go, !look, !warp, !push/!pull/!read/!open).  The battle system is incredibly basic and players will only do 1 damage to monsters but it can be done with (/me attacks monstername or !attack monstername)
 
 ## TO-DO
