@@ -1,0 +1,15 @@
+!look
+Shows current room description and exits.  Does not count towards the dungeon action limit
+
+!go [north, south, east, west, up, down]
+Moves the party to the direction. Counts as a dungeon action.
+
+!rest
+The party recovers 50% of their HP and MP.  Has a chance of causing an event to occur afterwards.  Counts as a dungeon action
+
+!warp
+Ends the dungeon. Will happen automatically if all 30 dungeon actions have been used. 
+
+!pull/!push/!open/!close/!read
+All cost 1 adventure action and will interact with an object in the room (including chests)
+

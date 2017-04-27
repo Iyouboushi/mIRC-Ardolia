@@ -1,0 +1,352 @@
+; Weapons.db is used to store the weapon lists, weapon information, shield lists and shield information.
+
+
+; Weapon Display Titles are for the shop so that it doesn't show stuff like "Katanas2"
+[WeaponDisplayTitles]
+HandToHand=Hand to Hand
+Swords=Swords
+Swords2=Swords
+Whips=Whips
+Guns=Guns
+Rifles=Rifles
+Bows=Bows
+Katanas=Katanas
+Katanas2=Katanas
+Wands=Wands
+Staves=Staves
+Glyphs=Glyphs
+Spears=Spears
+Scythes=Scythes
+GreatSwords=Great Swords
+Axes=Axes
+GreatAxes=Great Axes
+Daggers=Daggers
+Hammers=Hammers
+Misc=Misc
+
+
+; Below are the weapon lists
+
+[Weapons]
+
+
+============================================
+WEAPON TEMPLATE
+
+[ExampleWeapon]
+; Type of weapon (axe, sword, etc)
+Type=
+
+; Info about the weapon (seen in !view-info)
+Info=
+
+; CostCategory is to let the bot know which data to use to calculate the cost of hte weapon
+; It can be A, B, C, D, E or R with R being unable to be purchased in the shop.
+CostCategory=
+
+; Damage in terms of dice such as 1d12
+Damage=
+
+; Jobs is which job codes can use the weapon (such as WAR, MNK etc)  If this is missing or 'all' then any job can use it
+Jobs=
+
+; Element is the elemental property of the weapon. Set to none if you don't want the weapon to have any.
+Element=
+
+; Hits is the # of times the weapon hits for. You can set it to be static, 1-6, or you can make it random.
+; To make it random, use $rand(1,#) where # is the max # of hits you want it to have.
+Hits=
+
+; IgnoreDefense is a special value that allows the weapon to ignore some of a target's defense. This can be
+; 0 to 100.  It's a percent value, so 100% will ignore the target's defense completely.
+IgnoreDefense=
+
+; HurtEthereal is a special flag that allows the weapon to hurt Ethereal monsters. Set this to true or false.
+; If set false (or the value is missing), the weapon will go through an Ethereal monster doing 0 damage.
+HurtEthereal=
+
+; 2Handed is a flag that tells the bot if the weapon requires both hands to use. Set this to true or false.
+2Handed=
+
+; Level is the minimum level that is needed to equip the weapon
+Level=
+
+; stats = bonus to stats if 
+
+============================================
+Special Notes
+============================================
+* The cost of the weapon is determined in the bot by its cost category. Basically it breaks down to this:
+ A = 30 * level
+ B = 40 * level
+ C = 50 * level
+ D = 60 * level
+ E = 100 * level
+ R = can't purchase 
+  This is subject to change.
+
+
+=============================================
+HAND TO HAND
+=============================================
+[Fists]
+Type=HandToHand
+Info=It's your fists.  They are not detachable.
+CostCategory=R
+Damage=$iif($current.job($1) != MNK, 1d2, 1d8)
+Jobs=all
+Element=none
+Hits=2
+2Handed=true
+Level=1
+hp=0
+mp=0
+str=0
+agi=0
+vit=0
+mag=0
+chr=0
+spd=0
+ranged=false
+Multiplier=1
+
+[Cesti]
+Type=HandToHand
+Info=An ancient battle glove that are made withl eather strips and have iron plates in them
+CostCategory=A
+Damage=$iif($current.job($1) != MNK, 1d8, 1d12)
+Jobs=WAR.MNK.RDM.THF.PLD.DARK.BST.RNG.DNC
+Element=none
+Hits=2
+2Handed=true
+Level=1
+hp=0
+mp=0
+str=0
+agi=0
+vit=0
+mag=0
+chr=0
+spd=0
+ranged=false
+Multiplier=1
+
+
+=============================================
+SWORDS
+=============================================
+[BronzeSword]
+Type=Sword
+CostCategory=A
+Info=A small sword made of bronze
+Damage=1d9
+Jobs=WAR.RDM
+Element=none
+Hits=1
+2Handed=false
+Level=1
+hp=0
+mp=0
+str=0
+agi=0
+vit=0
+mag=0
+chr=0
+spd=0
+ranged=false
+Multiplier=1
+
+
+
+=============================================
+GREAT SWORDS
+=============================================
+
+
+=============================================
+WHIPS
+=============================================
+
+
+=============================================
+GUNS & RIFLES
+=============================================
+
+
+=============================================
+AXES
+=============================================
+[HandAxe]
+Type=Axe
+CostCategory=A
+Info=
+Damage=1d10
+Jobs=WAR.BST
+Element=none
+Hits=1
+2Handed=false
+Level=1
+hp=0
+mp=0
+str=0
+agi=0
+vit=0
+mag=0
+chr=0
+spd=0
+ranged=false
+Multiplier=1
+
+[IronAxe]
+Type=Axe
+CostCategory=B
+Info=
+Damage=1d12
+Jobs=WAR
+Element=none
+Hits=1
+2Handed=false
+Level=2
+hp=0
+mp=0
+str=0
+agi=0
+vit=0
+mag=0
+chr=0
+spd=0
+ranged=false
+Multiplier=1
+
+[BattleAxe]
+Type=Axe
+CostCategory=B
+Info=
+Damage=1d10+1
+Jobs=WAR
+Element=none
+Hits=1
+2Handed=false
+Level=25
+hp=0
+mp=0
+str=0
+agi=0
+vit=0
+mag=0
+chr=0
+spd=0
+ranged=false
+Multiplier=1
+
+=============================================
+HAMMERS
+=============================================
+
+
+=============================================
+DAGGERS
+=============================================
+
+
+=============================================
+Bows
+=============================================
+
+
+=============================================
+KATANAS
+=============================================
+
+
+=============================================
+WANDS & STAVES
+=============================================
+
+
+=============================================
+SPEARS
+=============================================
+
+
+=============================================
+SCYTHES
+=============================================
+
+
+
+=============================================
+MISC WEAPONS
+=============================================
+
+
+
+
+=============================================
+MONSTER WEAPONS
+=============================================
+These are weapons that Monsters use.  They shouldn't be available for players.
+
+
+==============================
+SHIELDS
+==============================
+
+; Small shields.. block more often, absorb less damage
+
+[WoodShield]
+Cost=5
+Type=shield
+Info=A small wooden shield.
+Hits=0
+BasePower=100
+Upgrade=0
+BlockChance=20
+AbsorbAmount=10
+hp=0
+mp=0
+str=0
+vit=0
+mag=0
+chr=0
+spd=0
+
+
+; Medium shields.. block middle of the road, absorb middle of the road
+
+[MetalShield]
+Cost=15
+Type=shield
+Info=A medium sized metal shield.
+Hits=0
+BasePower=200
+Upgrade=0
+BlockChance=15
+AbsorbAmount=20
+hp=0
+mp=0
+str=0
+vit=0
+mag=0
+chr=0
+spd=0
+
+
+; Large shields.. block least, absorb most.
+
+[TowerShield]
+Cost=20
+Type=shield
+Info=A large sized shield.
+Hits=0
+BasePower=300
+Upgrade=0
+BlockChance=10
+AbsorbAmount=30
+hp=0
+mp=0
+str=0
+vit=0
+mag=0
+chr=0
+spd=0

@@ -1,0 +1,11 @@
+[AdventureStats]
+TotalAdventures=0
+TotalAdventuresCleared=0
+TotalAdventuresFailed=0
+FirstAdventure=
+
+[BattleStats]
+TotalBattles=0
+BattlesWon=0
+BattlesLost=0
+

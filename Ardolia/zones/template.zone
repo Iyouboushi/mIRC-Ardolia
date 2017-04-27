@@ -1,0 +1,85 @@
+; [Info] stores information about the adventure
+; Name = The name of the dungeon
+; LevelRange= A general level range of the dungeon necessary to successfully win
+; MinimumPlayers= How many players must be in the party to go into this dungeon?
+; PreReq=If the dungeon requires the clear of another dungeon first, list it here. The name here has to match the .zone file
+; AdventureActions= How many actions does a party get before they're kicked out of the dungeon?
+; ClearRoom= The room number that says the dungeon is beat when the players clear it. The dungeon will end when this room is clear
+; ClearReward.Items=An item from this list will be chosen at random and rewarded to each player in the party after the dungeon is clear
+;                   Put the items between periods if there's more than one. Like Item1.Item2.Item3.Item4
+; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. 
+; FameRewarded= How much fame will the players receive if this dungeon is cleared?
+
+[Info]
+Name=
+LevelRange=
+MinimumPlayers=
+PreReq=
+AdventureActions=#
+ClearRoom=
+ClearReward.Items=
+ClearReward.XP=#
+FameRewarded=
+
+
+; [0] Is the starting room for every adventure.   The [0] has to be in the zone file or the game won't work.
+; Every other room can have whatever [name] you want. Examples [1], [FloorA-1], [LongHallway1] etc as long as it matches an <ExitName>
+; Name=The name of the room
+; Clear=true - This flag is written when players enter the room and beat the monsters (if there are any) Room 0 is always clear
+;            Cleared rooms no longer have monsters or combat in them.
+; EnterDesc= This is the description that appears when the room is first loaded
+; LookDesc= This is the description that shows when players use !look
+; Trees= the # of trees in the room. The party leader will be able to chop down trees at the cost of an adventure action 
+;       if there are trees here and the party leader has a hatchet. Trees that are chopped down will add a log item 
+;       into the item pool
+; LogList= the types of logs that can be obtained by chopping trees.
+;
+; Combat= true/false, if set to true then a battle will begin when players enter this room if the room is not clear
+; Monsters= A list of monsters that can spawn in this room for players to fight
+; Monsters.Needed= A direct # of monsters to spawn, or you can use $iif to adjust based on how many players are in the party
+; CombatDesc= A message displayed when combat begins 
+; CombatEndDesc= A message shown when the party wins the battle
+;
+; ExitList= A list of exits, for example: north.east.south.west.up.down.passage.stairs
+; <ExitName>= where the exit goes, room number.  For example: North=03   or East=06
+;
+; Objects
+; ObjectsList= A list of objects that players can interact with inside the room at the cost of an adventure action
+; <ObjectName>.<Action>=  What happens when the party interacts with this? $iif statements and other commands go here.
+;                         Valid Actions: push, pull, open, close, read
+;  An example might be something like  
+;   ObjectsList=Lever
+;   Lever.Pull=$display.message(The party pulls the lever and a trap door opens beneath them, global) | $adventure.go(005)
+;
+; Chest= Is there a treasure chest in this room? true/false
+; Chest.Open= Is the chest open? true/false  Chests that are open won't show up in the description for players
+; Chest.List= The .lst file that contains what the chest may have inside.
+
+
+[0]
+Name=
+Clear=true
+EnterDesc=
+LookDesc=
+Trees=
+LogList=
+
+; Combat Info
+Combat=false
+Monsters=
+Monsters.Needed=
+CombatDesc= 
+CombatEndDesc=
+
+; Exits
+ExitList=
+<ExitName>=
+
+; Objects/Chests
+ObjectList=
+<ObjectName>.<Action>=
+
+; Treasure Chest Info
+Chest=
+Chest.Open=
+Chest.List=
