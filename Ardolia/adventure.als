@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -44,35 +44,6 @@ dungeon.start {
 
   ; Open the party so that others may join
   $adventure.open($1, $2)
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Returns the # of adventure actions
-; still available
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventure.actions { return $readini($zonefile(adventure), Info, AdventureActions) }
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Decrease the # of adventure actions
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventure.actions.decrease {
-  ; $1 = the amount we want to decrease
-  var %adventure.actions $adventure.actions
-  dec %adventure.actions $1
-  writeini $zonefile(adventure) Info AdventureActions %adventure.actions
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Checks to see if the party has run
-; out of adventure actions and ends
-; the adventure if so
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventure.actions.checkforzero {
-  if ($adventure.actions <= 0) { 
-    $display.message(The party has run out of adventure actions and is booted out, global)
-    $adventure.end(failure) 
-    halt
-  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -147,10 +118,10 @@ adventure.begin {
   ; if ($adventure.party.count < $readini($zonefile(adventure), Info, MinimumPlayers)) { $display.message($translate(NotEnoughPlayersInAdventure), global) | $adventure.clearfiles | halt }
 
   ; Write the start time to the party leader. 
-  writeini $char($adventure.party.leader) info LastAdventure $ctime
+  writeini $char($adventure.party.leader) info LastAdventure $fulldate
 
   ; Write when the adventure started
-  writeini $txtfile(adventure.txt) info AdventureStarted $ctime
+  writeini $txtfile(adventure.txt) info AdventureStarted $fulldate
 
   ; Is this the first adventure ever done? If so, let's write it to adventure.dat
   if ($readini(adventure.dat, AdventureStats, FirstAdventure) = $null) { writeini adventure.dat AdventureStats FirstAdventure $ctime }
@@ -166,16 +137,9 @@ adventure.begin {
   ; Display the number of adventure actions the party has to complete this
   $display.message($translate(AdventureActionsMessage), global)
 
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Clears files used for the adventure
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventure.clearfiles {
-  ; Remove the battle text files
-  .remove $txtfile(battle.txt) | .remove $txtfile(battle2.txt) | .remove MonsterTable.file
-  .remove $txtfile(battlespoils.txt) | .remove $txtfile(adventure.txt) | .remove $txtfile(battlespoils.txt)
-  .remove $zonefile(adventure)
+  ; Display the first room's look info.
+  set %show.room true
+  /.timerShowFirstRoom 1 1 /adventure.look
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -184,14 +148,13 @@ adventure.clearfiles {
 adventure.end {
   ; $1 = victory, defeat
 
-
   $display.message($translate(AdventureIsOver), global)
 
   ; calculate total battle duration
-  var %total.battle.duration $duration($calc($ctime - $readini($txtfile(adventure.txt), BattleInfo, AdventureStarted)))
+  var %total.adventure.duration $adventure.calculateduration
 
   if ($1 = victory) { echo -a we win! }
-  if ($1 = defeat) { echo -a we lost! }
+  if (($1 = defeat) || ($1 = failure)) { $display.message($translate(AdventureFailMessage),global) }
 
   ; Kill any related timers..
   $clear_timers
@@ -228,6 +191,32 @@ adventure.end {
 ; Clears timers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 clear_timers {
+  /.timerAdventureBegin off
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Clears files used for the adventure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.clearfiles {
+  ; Remove the battle text files
+  .remove $txtfile(battle.txt) | .remove $txtfile(battle2.txt) | .remove MonsterTable.file
+  .remove $txtfile(battlespoils.txt) | .remove $txtfile(adventure.txt) | .remove $txtfile(battlespoils.txt)
+  .remove $zonefile(adventure)
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Calculates how long the
+; adventure took
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.calculateduration {
+  var %total.time $readini($txtfile(adventure.txt), Info, AdventureStarted)
+  if (%total.time != $null) {
+    var %total.adventure.time $ctime(%total.time)
+    var %total.adventure.duration $duration($calc($ctime - %total.adventure.time))
+  }
+  if (%total.time = $null) { var %total.adventure.duration unknown time }
+
+  return %total.adventure.duration
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -264,7 +253,36 @@ adventure.clearfiles {
     }
 
     ; If the person is a player, let's refill their hp/mp/stats to max.
-    if ((%clear.flag = $null) && ($readini($char(%name), basestats, hp) != $null)) { $oldchar.check(%name) }
+    if ((%clear.flag = $null) && ($readini($char(%name), basestats, str) != $null)) { $oldchar.check(%name) }
+  }
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns the # of adventure actions
+; still available
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.actions { return $readini($zonefile(adventure), Info, AdventureActions) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Decrease the # of adventure actions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.actions.decrease {
+  ; $1 = the amount we want to decrease
+  var %adventure.actions $adventure.actions
+  dec %adventure.actions $1
+  writeini $zonefile(adventure) Info AdventureActions %adventure.actions
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Checks to see if the party has run
+; out of adventure actions and ends
+; the adventure if so
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.actions.checkforzero {
+  if ($adventure.actions <= 0) { 
+    $display.message(The party has run out of adventure actions and is booted out, global)
+    $adventure.end(failure) 
+    halt
   }
 }
 
@@ -282,21 +300,16 @@ adventure.look {
   ; Is there a battle currently ongoing? If so we can't do this yet.
   if (%battleis = on) { $display.message($translate(AdventureActionCannotBeUsedInBattle), global) | halt }
 
+  set %show.room true
+
   if ($readini($zonefile(adventure), %current.room, objectlist) != $null) { var %object.list $readini($zonefile(adventure), %current.room, ObjectList) }
   if ($readini($zonefile(adventure), %current.room, chest) != $null) { %object.list = $addtok(%object.list, chest, 46) }
-
 
   ; [Name of Room]
   $display.message(12[ $+ $readini($zonefile(adventure), %current.room, name) $+  ] , global)
 
   ; Look Desc
   $display.message(3 $+ $readini($zonefile(adventure), %current.room, LookDesc) , global)
-
-  ; Exit LIst
-  var %look.exits $readini($zonefile(adventure), %current.room, ExitList)
-  if (%look.exits != $null) {  %look.exits = $clean.list(%look.exits) }
-  if (%look.exits = $null) { var %look.exits none that you can see }
-  $display.message(10Exits:12 %look.exits)
 
   ; Objects
   if (%object.list != $null) { var %object.list $clean.list(%object.list) | $display.message(10Objects:12 %object.list) }
@@ -307,12 +320,29 @@ adventure.look {
     $display.message(3You see5 %room.tree.count $iif(%room.tree.count > 1, trees, tree) 3here, global) 
   }
 
+  ; Exit LIst
+  var %look.exits $readini($zonefile(adventure), %current.room, ExitList)
+  if (%look.exits != $null) {  %look.exits = $clean.list(%look.exits) }
+  if (%look.exits = $null) { var %look.exits none that you can see }
+  $display.message(10Exits:12 %look.exits)
+
+  ; Tell the game we're done showing this room's info
+  /.timerEndShowRoom 1 1 /unset %show.room
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Reads a room desc if there is one
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventure.room.desc { return $readini($zonefile(adventure), %currentroom, LookDesc) }
+adventure.room.desc { return $readini($zonefile(adventure), %current.room, LookDesc) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns the # of trees in the room
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.tree.count { 
+  var %trees.in.room $readini($zonefile(adventure), %current.room, trees)
+  if (%trees.in.room = $null) { return 0 }
+  else { return %trees.in.room } 
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; The !lgo command
@@ -329,6 +359,10 @@ adventure.move {
 
   ; Is $1 the party leader?
   if ($1 != $adventure.party.leader) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
+
+
+  ; Are we still showing a room? If so, we can't go anywhere (this is to throttle it to keep people from spamming go actions)
+  if (%show.room = true) { halt }
 
   ; Does the exit exist?
   if ($readini($zonefile(adventure), %current.room, $2) = $null) { $display.message($translate(CannotGoInThisDirection), global) | halt }
@@ -406,7 +440,9 @@ adventure.warp {
   ; Display a message showing that the dungeon is ending and then end the adventure.
   $display.message($translate(AdventureWarpOut), global)
 
-  $adventure.end(defeat)
+  set %adventureis off
+
+  /.timerWarpOut 1 2 /adventure.end defeat
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -547,4 +583,7 @@ adventure.party.addmember {
   var %highest.level $readini($txtfile(adventure.txt), BattleInfo, HighestLevel)
   if (%highest.level = $null) { var %highest.level 0 }
   if (%player.level > %highest.level) { writeini $txtfile(adventure.txt) BattleInfo HighestLevel %player.level } 
+
+  ; Restore player's HP, MP and TP
+  $fulls($1, yes)
 }
