@@ -32,7 +32,6 @@ dungeon.start {
   ; Does the adventure file exist?
   if ($isfile($zonefile($2)) = $false) { $display.message($translate(NoAdventureByThatName), global) | halt }
 
-
   ; Is there a pre-req that needs to be done before this one may be started?
   ; to be added
 
@@ -67,8 +66,6 @@ adventure.open {
   ; Start the timer for players to enter
   /.timerAdventureBegin 1 %time.to.enter /adventure.begin
 
-  var %minimum.players $readini($zonefile(adventure), Info, MinimumPlayers)
-
   ; Display the message that the adventure is open
   $display.message($translate(AdventureOpen, $1), global) 
 
@@ -97,9 +94,6 @@ adventure.join {
 
   $display.message($translate(EnteredTheAdventure), global)
 
-  ; Full the person entering the battle.
-  if ($readini($char($1), info, levelsync) = $null) { $fulls($1, yes) }
-
   remini $char($1) info levelsync 
   writeini $char($1) info NeedsFulls yes
   $miscstats($1, add, TotalAdventures, 1)
@@ -110,12 +104,8 @@ adventure.join {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.begin {
 
-  ; Is there enough players in the party for this dungeon?
-
-  ; Get # of players
-
-  ; Look at min # of players
-  ; if ($adventure.party.count < $readini($zonefile(adventure), Info, MinimumPlayers)) { $display.message($translate(NotEnoughPlayersInAdventure), global) | $adventure.clearfiles | halt }
+  ; Are there enough players in the party for this dungeon?
+  if ($adventure.party.count < $adventure.minimumplayers) { $display.message($translate(NotEnoughPlayersInAdventure), global) | $adventure.clearfiles | halt }
 
   ; Write the start time to the party leader. 
   writeini $char($adventure.party.leader) info LastAdventure $fulldate
@@ -153,7 +143,10 @@ adventure.end {
   ; calculate total battle duration
   var %total.adventure.duration $adventure.calculateduration
 
-  if ($1 = victory) { echo -a we win! }
+  if ($1 = victory) {  
+    echo -a we win! 
+    $adventure.givefame
+  }
   if (($1 = defeat) || ($1 = failure)) { $display.message($translate(AdventureFailMessage),global) }
 
   ; Kill any related timers..
@@ -163,8 +156,6 @@ adventure.end {
   ; to be coded later
   $adventure.giveitems
   $adventure.givexp($1)
-
-  if ($1 = victory) { $adventure.givefame }
 
 
   set %ignore.clearfiles no
@@ -179,12 +170,11 @@ adventure.end {
   set %adventureis off | set %adventure.open false 
   unset %clear.flag | unset %chest.time
   if ($lines($txtfile(temp_status.txt)) != $null) { .remove $txtfile(temp_status.txt) }
-  .remove $zonefile(adventure)
 
   ; Clear variables
   $clear_variables
 
-  $adventure.clearfiles
+  $adventure.cleardatafiles
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,9 +185,9 @@ clear_timers {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Clears files used for the adventure
+; Clears data files used for the adventure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-adventure.clearfiles {
+adventure.cleardatafiles {
   ; Remove the battle text files
   .remove $txtfile(battle.txt) | .remove $txtfile(battle2.txt) | .remove MonsterTable.file
   .remove $txtfile(battlespoils.txt) | .remove $txtfile(adventure.txt) | .remove $txtfile(battlespoils.txt)
@@ -542,6 +532,12 @@ adventure.chest {
 ; counts party members
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.party.count { return $numtok($readini($txtfile(adventure.txt), info, partymembersList), 46) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; returns minimum # of players
+; for this adventure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.minimumplayers { return $readini($zonefile(adventure), Info, MinimumPlayers) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; returns the party leader

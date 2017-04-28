@@ -349,7 +349,7 @@ Battle and Adventure Related Messages
 =======================
 StartAdventure=$chr(3) $+ 2 $+ * An Adventure will begin in12 $duration(%newbattle.time) $+ 2.
 
-AdventureOpen=$chr(3) $+ 12 $+ $2 4is leading a party to12 $readini($zonefile(adventure), Info, Name) $+ 4! $iif(%minimum.players > 1, This adventure requires %minimum.players adventurers to embark.) 4If you wish to join $2 $+ 's party type !enter now. The adventure begins in12 $duration(%time.to.enter)
+AdventureOpen=$chr(3) $+ 12 $+ $2 4is leading a party to12 $readini($zonefile(adventure), Info, Name) $+ 4! $iif($adventure.minimumplayers > 1, This adventure requires adventure.minimumplayers adventurers to embark.) 4If you wish to join $2 $+ 's party type !enter now. The adventure begins in12 $duration(%time.to.enter)
 
 AdventureIsOver=$chr(3) $+ 2* 7The Adventure comes to a close after $adventure.calculateduration $+ .
 AdventureFailMessage=$chr(3) $+ 4 $+ Unfortunately the party was forced to retreat from this adventure and return to town.
