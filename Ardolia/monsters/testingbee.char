@@ -26,6 +26,8 @@ Det=20
 Spd=7
 Status=alive
 inbattle=false
+Defense=1
+MagicDefense=1
 
 
 [Info]
