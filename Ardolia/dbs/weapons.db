@@ -34,9 +34,26 @@ Misc=Misc
 WEAPON TEMPLATE
 
 [ExampleWeapon]
+Type= What type of weapon is it?
+Info= What you see when you use !view-info
+Jobs= What job codes can use it? All is everyone, else WAR.PLD, etc
+Stat= What primary stat is used to calculate damage done with this weapon?
+Element= What element is this weapon?
+WeaponLevel= What level is the weapon considered?
+PlayerLevel= What level does the player need to be to use it?
+Damage= Base damage with the weapon
+Speed= Weapon speed (used to help determine init)
 
-; stats = bonus to stats if 
+str=
+dex=
+vit=
+int=
+mnd=
+pie=
+det=
 
+The above block of stats is used for if the weapon gives a bonus to any stat
+upon equipping.
 
 =============================================
 HAND TO HAND
@@ -45,8 +62,10 @@ HAND TO HAND
 Type=HandToHand
 Info=It's your fists.  They are not detachable.
 Jobs=all
+Stat=str
 Element=none
-Level=1
+WeaponLevel=1
+PlayerLevel=1
 Damage=5
 Speed=5
 str=0
