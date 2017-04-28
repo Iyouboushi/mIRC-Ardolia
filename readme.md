@@ -29,6 +29,20 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
    
 ## WHAT'S NEW?
 
+* APRIL 28, 2017
+
+!new char <race> can now have human, elf, or galka
+
+Basic stats added. Starting Stats are based on the race you pick and will be used for every level 1 job.
+
+Lots of work done on viewing current and resting stats.
+
+Started copying the FFXIV damage formula over to this game. It might not be 100% but it's close enough for what I need it for.
+
+Battle system improved slightly.
+
+Still a lot to do but it's chugging along.
+
 * APRIL 27, 2017
 
 As of right now only basic commands and systems have been added.  Players can create new characters (!new char human) to join the game, set new passwords (the bot will tell you how), start an adventure (!start adventure test), join other people's parties (!enter) and do basic adventure commands (!go, !look, !warp, !push/!pull/!read/!open).  The battle system is incredibly basic and players will only do 1 damage to monsters but it can be done with (/me attacks monstername or !attack monstername)
