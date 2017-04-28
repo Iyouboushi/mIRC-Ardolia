@@ -1,0 +1,12 @@
+[BasicInfo]
+Name=Elf
+Description=Known as the Elvaan in their own language, these tough humanoids are an old and dying race. These arrogant creatures resemble humans but are taller and more robust with long neck's and oval faces. Their skins are darker than humans and have pointed ears. They are sleek and agile.
+
+[StartingStats]
+STR=20
+DEX=20
+VIT=19
+INT=23
+MND=20
+PIE=17
+DET=20

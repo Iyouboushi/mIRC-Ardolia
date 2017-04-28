@@ -1,0 +1,10 @@
+; This file contains the drop pools for monsters and bosses.  Feel free to edit them here.
+; If a monster isn't listed in this list, the bot will attempt to find the item in the .char file.
+
+[drops]
+
+; Bosses
+
+
+
+; Monsters

@@ -1,0 +1,12 @@
+[BasicInfo]
+Name=Galka
+Description=The heavyset Galka are consummate craftsmen; despite a brutish outward appearance, they are not stupid by any stretch of the imagination. They excell in mining, metalwork and their work in mines has made them strong and tough. They have smooth, greenish-gray skin, a rigid, medium length tail but a teddy-bear like face.
+
+[StartingStats]
+STR=20
+DEX=17
+VIT=21
+INT=20
+MND=22
+PIE=20
+DET=20

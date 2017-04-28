@@ -1,0 +1,59 @@
+===================================================================
+This file is just to store the stats and augments of the equipment. 
+The actual list of equipment is split up into .lst files. There's
+armor_head.lst, armor_body.lst, armor_legs.lst, armor_feet.lst
+and armor_hands.lst.  If you add new equipment make sure you put
+the name of the piece in the appropriate .lst file.
+
+Valid EquipLocations are: Head, Body, Legs, Feet, Hands
+====================================================================
+
+
+
+========
+HEAD
+========
+
+
+
+========
+BODY
+========
+
+[BasicTunic]
+Name=Basic Tunic
+Str=0
+Dex=0
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=6
+MDefense=13
+ItemLevel=1
+PlayerLevel=1
+Durability=-1
+EquipLocation=body
+cost=5
+SellPrice=0
+Jobs=all
+
+========
+LEGS
+========
+
+
+
+========
+FEET
+========
+
+
+
+
+========
+HANDS
+========
+
+
+

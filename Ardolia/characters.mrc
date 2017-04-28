@@ -29,19 +29,24 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
   if ((($nick = frost_monster) || ($nick = frost_monster1) || ($nick = frost_monster2))) { $display.private.message($translate(NameReserved)) | halt }
 
   ; If the player has not supplied a valid race then we need to give the beginning instructions
-  ;  if (($3 = $null) || ($readini($racefile($3), BasicInfo, Name) = $null)) { 
-  ;    $gamehelp(welcome, $nick)
-  ;    halt
-  ;  }
+  if (($3 = $null) || ($readini($racefile($3), BasicInfo, Name) = $null)) { 
+    $gamehelp(welcome, $nick)
+    halt
+  }
 
   ; Create the file
   .copy $char(new_chr) $char($nick)
   writeini $char($nick) Info Name $nick 
   writeini $char($nick) Info Created $fulldate
 
-  if ($3 = $null) {  writeini $char($nick) Info Race human }
-  else { writeini $char($nick) Info Race $3 }
-
+  ; Copy the starting stats over
+  writeini $char($nick) StartingStats Str $readini($racefile($3), StartingStats, Str)
+  writeini $char($nick) StartingStats Dex $readini($racefile($3), StartingStats, Dex)
+  writeini $char($nick) StartingStats Vit $readini($racefile($3), StartingStats, Vit)
+  writeini $char($nick) StartingStats Int $readini($racefile($3), StartingStats, Int)
+  writeini $char($nick) StartingStats Mnd $readini($racefile($3), StartingStats, Mnd)
+  writeini $char($nick) StartingStats Pie $readini($racefile($3), StartingStats, Pie)
+  writeini $char($nick) StartingStats Det $readini($racefile($3), StartingStats, Det)
 
   ; Generate a password
   set %password ardolia $+ $rand(1,100) $+ $rand(a,z) $+ $rand(1,1000)
@@ -70,6 +75,10 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
 
   ; Tell the world we've joined
   $display.message($translate(CharacterCreated))
+
+  ; Copy the starting stats to the current stats
+  $copyini($nick, StartingStats, BaseStats)
+  $fulls($nick)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -121,104 +130,29 @@ on 2:TEXT:!logout*:*:{ .auser 1 $nick | close -c $nick | mode %battlechan -v $ni
 on 2:TEXT:!log out*:*:{ .auser 1 $nick | close -c $nick | mode %battlechan -v $nick | .flush 1 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Allocate your stats
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!stat *:?: {
-  ; to be readded later
-  halt
-
-  ; !stat [add/remove] [stat] [amount]
-  if (($2 = point) || ($2 = points)) { $display.private.message($translate(ViewMyStatPoints)) | halt }
-  if (($2 != add) && ($2 != remove)) { $gamehelp(!stat, $nick) | halt }
-  if (($3 = $null) || ($4 !isnum)) { $gamehelp(!stat, $nick) | halt }
-  if ((. isin $4) || ($4 <= 0)) { $gamehelp(!stat, $nick) | halt }
-
-  var %valid.stats str.agi.vit.spd.chr.mag
-  if ($istok(%valid.stats, $3, 46) = $false) { $display.private.message($readini(translation.dat, errors, InvalidStatSelection)) | halt }
-
-  ; Are we in battle?  If so, we can't do this.
-  if ($in.battle($nick) = true) { $display.private.message($readini(translation.dat, errors, Can'tAllocateInBattle)) | halt }
-
-  if ($2 = add) {
-    ; Do we have enough stat points?
-    if ($4 > $statpoints($nick)) { $display.private.message($readini(translation.dat, errors, NotEnoughStatPoints)) | halt }
-
-    ; Will this put us over the max?
-    var %max.stat 0 | var %current.stat 0
-    if ($3 = str) { inc %max.stat $max.str($nick) | inc %current.stat $resting.str($nick) }
-    if ($3 = agi) { inc %max.stat $max.agi($nick) | inc %current.stat $resting.agi($nick) }
-    if ($3 = vit) { inc %max.stat $max.vit($nick) | inc %current.stat $resting.vit($nick) }
-    if ($3 = mag) { inc %max.stat $max.mag($nick) | inc %current.stat $resting.mag($nick) }
-    if ($3 = spd) { inc %max.stat $max.spd($nick) | inc %current.stat $resting.spd($nick) }
-    if ($3 = chr) { inc %max.stat $max.chr($nick) | inc %current.stat $resting.chr($nick) }
-
-    inc %current.stat $4
-
-    if (%current.stat > %max.stat) { $display.private.message($readini(translation.dat, errors, Can'tAllocateOverMaximum)) | halt }
-
-    writeini $char($nick) basestats $3 %current.stat 
-    writeini $char($nick) info StatPoints $calc($statpoints($nick) - $4)
-    $miscstats($nick, add, TotalStatPointsSpent, $4)
-
-    $display.private.message($translate(AllocatedStatPoints)) 
-    $display.private.message($translate(CurrentStats-Allocation))
-  }
-
-  if ($2 = remove) {
-    if ($creatingcharacter($nick) != true) { $display.private.message($readini(translation.dat, errors, Can'tRemoveStats)) | halt } 
-
-    var %min.stat 1 | var %current.stat 0
-    if ($3 = str) { inc %current.stat $resting.str($nick) }
-    if ($3 = agi) { inc %current.stat $resting.agi($nick) }
-    if ($3 = vit) { inc %current.stat $resting.vit($nick) }
-    if ($3 = mag) { inc %current.stat $resting.mag($nick) }
-    if ($3 = spd) { inc %current.stat $resting.spd($nick) }
-    if ($3 = chr) { inc %current.stat $resting.chr($nick) }
-
-    ; Will this take us below 1?
-    dec %current.stat $4
-
-    if (%current.stat < 1) { $display.private.message($readini(translation.dat, errors, Can'tLeaveLessThan1InStat)) | halt }
-
-    ; Okay it won't, so let's give back the status points and set the new stat amount
-    writeini $char($nick) basestats $3 %current.stat 
-    writeini $char($nick) info StatPoints $calc($statpoints($nick) + $4)
-    $miscstats($nick, remove, TotalStatPointsSpent, $4)
-
-    $display.private.message($translate(RemovedAllocatedStatPoints)) 
-    $display.private.message($translate(CurrentStats-Allocation))
-  }
-
-  if (($creatingcharacter($nick) = true)  && ($statpoints($nick) = 0)) { $display.private.message($translate(AllocationDone-Newchar)) } 
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Changing/Checking Jobs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!job change *:*: {
   ; !job change [job]
 
-  ; to be readded later
-  halt
-
-  ; Can't change job if you still have points left
-  if ($statpoints($nick) != 0) { $display.private.message($readini(translation.dat, errors, Can'tChangeJobsWithStatPointsLeft)) | halt }
-
   ; Can't change jobs if you're in battle
-  if ($in.battle($nick) = true) { $display.private.message($readini(translation.dat, errors, Can'tChangeJobsInBattle)) | halt }
+  if ($in.battle($nick) = true) { $display.private.message($translate(Can'tChangeJobsInBattle)) | halt }
+
+  ; Can't change jobs if you're in in the middle of an adventure
+  if ($in.adventure($nick) = true) { $display.private.message($readini(translation.dat, errors, Can'tChangeJobsInBattle)) | halt }
 
   ; Is this the same job you already are?
-  if ($3 = $current.job($nick)) { $display.private.message($readini(translation.dat, errors, SameJob)) | halt }
+  if ($3 = $current.job($nick)) { $display.private.message($translate(SameJob)) | halt }
 
   ; If this is a brand new char we need to finalize some things
   if ($creatingcharacter($nick) = true) { $finalize.newchar($nick) }
 
   ; Is this a valid job?
-  if ($isfile($jobfile($3)) != $true) { $display.private.message($readini(translation.dat, errors, JobDoesNotExist)) | halt }
+  if ($isfile($jobfile($3)) != $true) { $display.private.message($translate(JobDoesNotExist)) | halt }
 
   ; Does the player have this job available to change to?
   var %job.level $readini($char($nick), jobs, $3)
-  if ((%job.level = $null) || (%job.level = 0)) { $display.private.message($readini(translation.dat, errors, DoNotHaveJob)) | halt }
+  if ((%job.level = $null) || (%job.level = 0)) { $display.private.message($translate(DoNotHaveJob)) | halt }
 
   ; Make a current copy of the stats of the old job and clear the equipment
   if ($current.job($nick) != none) {  
@@ -280,7 +214,7 @@ on 3:TEXT:!setgender*:*: { $checkscript($2-)
   if ($2 = none) { writeini $char($nick) Info Gender its | writeini $char($nick) Info Gender2 its | $display.private.message($translate(SetGenderNeither))  | unset %check | halt }
   if ($2 = male) { writeini $char($nick) Info Gender his | writeini $char($nick) Info Gender2 him | $display.private.message($translate(SetGenderMale))  | unset %check | halt }
   if ($2 = female) { writeini $char($nick) Info Gender her | writeini $char($nick) Info Gender2 her | $display.private.message($translate(SetGenderFemale)) | unset %check | halt }
-  else { $display.private.message($readini(translation.dat, errors, NeedValidGender)) | unset %check | halt }
+  else { $display.private.message($translate(NeedValidGender)) | unset %check | halt }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -363,7 +297,7 @@ on 2:TEXT:!currencies:?: { $display.private.message($translate(ViewMyCurrencies)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!stats*:*: {
 
-  ; to be added later
+  ; to be re-added later
   halt
 
   if ($2 = $null) { 
@@ -374,7 +308,7 @@ on 2:TEXT:!stats*:*: {
   }
 
   else { $checkchar($2) 
-    if ($flag($2) != $null) { $display.private.message($readini(translation.dat, errors, CanOnlyViewPlayerStats)) | halt }
+    if ($flag($2) != $null) { $display.private.message($translate(CanOnlyViewPlayerStats)) | halt }
 
     $display.private.message.delay.custom([4 $+ $get_chr_name($2) 4the12 $race($2) $+ ] [4Job12 $current.job($2) $+ ]  [4Level12 $get.level($2) $+ ] [4Exp12 $current.xp($2) $chr(47) $xp.to.level($2) $chr(40) $+ $round($calc(($current.xp($2) / $xp.to.level($2)) * 100),0) $+ $chr(37) $+ $chr(41) $+ ]    ,2,$nick)
     $display.private.message.delay.custom([4HP12 $current.hp($2) $+ 1/ $+ 12 $+ $resting.hp($2) $+ ] [4MP12 $current.mp($2) $+ 1/ $+ 12 $+ $resting.mp($2) $+ ] [4TP12 $current.tp($2) $+ ], 2, $nick)
@@ -387,6 +321,9 @@ on 2:TEXT:!stats*:*: {
 ; View your abilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!abilities*:*: {
+
+  ; to be re-added later
+  halt
 
   if ($2 = $null) { 
     var %active.abilities $character.abilities($nick, active)
@@ -413,7 +350,7 @@ on 2:TEXT:!spells*:*: {
 
   if ($2 = $null) {
     $set_chr_name($nick)
-    if ($resting.mp($nick) = 0) { $display.message($readini(translation.dat, errors, Can'tCastSpells)) | unset %real.name | halt }
+    if ($resting.mp($nick) = 0) { $display.message($translate(Can'tCastSpells)) | unset %real.name | halt }
 
 
     ; to be readded later
@@ -428,7 +365,7 @@ on 2:TEXT:!spells*:*: {
 
   else { $checkchar($2)
     $set_chr_name($2)
-    if ($resting.mp($2) = 0) { $display.message($readini(translation.dat, errors, Can'tCastSpells)) | unset %real.name | halt }
+    if ($resting.mp($2) = 0) { $display.message($translate(Can'tCastSpells)) | unset %real.name | halt }
 
     var %spells.white $character.spells($2, white)
     var %spells.black $character.spells($2, black)
@@ -542,7 +479,7 @@ on 2:TEXT:!equip *:*: {
   if (($2 != right) && ($2 != left)) { 
     if ($readini($dbfile(weapons.db), $2, type) = shield) { 
       var %equiphand left | var %weapon.to.equip $2
-      if ($readini($dbfile(weapons.db), $return.equipped($1, RightHand), 2Handed) = true) { $display.private.message($readini(translation.dat, errors, Using2HWeapon)) | halt }
+      if ($readini($dbfile(weapons.db), $return.equipped($1, RightHand), 2Handed) = true) { $display.private.message($translate(Using2HWeapon)) | halt }
     }
     if ($readini($dbfile(weapons.db), $2, type) != shield) { 
       var %equiphand right | var %weapon.to.equip $2 
@@ -561,10 +498,10 @@ on 2:TEXT:!equip *:*: {
 
   if ($2 = left) {
     ; check for the dual-wield skill
-    if (($return.passive.on($nick, DualWield) = false) && ($readini($dbfile(weapons.db), $2, type) != shield)) { $set_chr_name($nick) | $display.message($readini(translation.dat, errors, Can'tDualWield), public) | unset %real.name | halt }
+    if (($return.passive.on($nick, DualWield) = false) && ($readini($dbfile(weapons.db), $2, type) != shield)) { $set_chr_name($nick) | $display.message($translate(Can'tDualWield), public) | unset %real.name | halt }
 
     ; Is the right-hand weapon a 2h weapon?
-    if ($readini($dbfile(weapons.db), $readini($char($nick), weapons, equipped), 2Handed) = true) { $display.private.message($readini(translation.dat, errors, Using2HWeapon)) | halt }
+    if ($readini($dbfile(weapons.db), $readini($char($nick), weapons, equipped), 2Handed) = true) { $display.private.message($translate(Using2HWeapon)) | halt }
 
     ; Set the variables.
     var %equiphand left | var %weapon.to.equip $3
@@ -574,19 +511,19 @@ on 2:TEXT:!equip *:*: {
   }
 
   ; Is the weapon already equipped?
-  if ((%weapon.to.equip = $return.equipped($1, RightHand)) || (%weapon.to.equip = $return.equipped($1, LeftHand))) { $set_chr_name($nick) | $display.message($readini(translation.dat, errors, WeaponAlreadyEquipped), public) | unset %real.name | halt }
+  if ((%weapon.to.equip = $return.equipped($1, RightHand)) || (%weapon.to.equip = $return.equipped($1, LeftHand))) { $set_chr_name($nick) | $display.message($translate(WeaponAlreadyEquipped), public) | unset %real.name | halt }
 
   ; Does the player own this weapon?
-  if ($inventory.amount($nick, %weapon.to.equip) < 1) { $set_chr_name($nick) | $display.message($readini(translation.dat, errors, DoNotHaveWeapon) , private) | unset %real.name | halt }
+  if ($inventory.amount($nick, %weapon.to.equip) < 1) { $set_chr_name($nick) | $display.message($translate(DoNotHaveWeapon) , private) | unset %real.name | halt }
 
   if ($readini($dbfile(weapons.db), %weapon.to.equip, 2Handed) = true) { var %equiphand both }
 
   ; Is the player the correct level and job to use this weapon?
   var %jobs.list $readini($dbfile(weapons.db), %weapon.to.equip, jobs)
-  if (($istok(%jobs.list, $current.job($nick), 46) = $false) && (%jobs.list != all))  { $display.message($readini(translation.dat, errors, WrongJobToEquip) , private) | halt }
+  if (($istok(%jobs.list, $current.job($nick), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToEquip) , private) | halt }
 
   ; Is the player's level too low to equip this?
-  if ($get.level($nick) < $readini($dbfile(weapons.db), %weapon.to.equip, level)) { $display.message($readini(translation.dat, errors, LevelTooLowToEquip) , private) | halt }
+  if ($get.level($nick) < $readini($dbfile(weapons.db), %weapon.to.equip, level)) { $display.message($translate(LevelTooLowToEquip) , private) | halt }
 
   $character.wieldweapon($nick, %equiphand, %weapon.to.equip)
 }
@@ -611,12 +548,12 @@ on 2:TEXT:!unequip *:*: {
   $weapon_equipped($nick) 
 
   if (($2 = %weapon.equipped.left) || ($2 = %weapon.equipped.right)) { 
-    if ($2 = fists) { $set_chr_name($nick) | $display.message($readini(translation.dat, errors, Can'tDetachHands),private) | halt }
+    if ($2 = fists) { $set_chr_name($nick) | $display.message($translate(Can'tDetachHands),private) | halt }
     else { $set_chr_name($nick) | writeini $char($nick) equipment RightHand Fists | writeini $char($nick) equipment LeftHand nothing | $display.message($translate(UnequipWeapon),private) | halt }
     writeini $char($nick) Battle TP 0
   }
 
-  else {  $display.private.message($readini(translation.dat, errors, WrongEquippedWeapon)) | halt }
+  else {  $display.private.message($translate(WrongEquippedWeapon)) | halt }
   unset %weapon.equipped.left | unset %weapon.equipped.right | unset %weapon.equipped
 }
 

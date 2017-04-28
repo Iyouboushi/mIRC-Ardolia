@@ -722,7 +722,17 @@ fulls {
 
   if ($flag($1) != monster) {  remini $char($1) info ai_type }
 
+  ; Restore the stats
   $copyini($1, BaseStats, Battle)
+
+  ; Restore full HP
+  writeini $char($1) Battle HP $resting.hp($1)
+
+  ; Restore full MP
+  writeini $char($1) Battle MP $resting.mp($1)
+
+  ; Restore full TP
+  writeini $char($1) Battle TP $max.tp
 
   ; Check for things that shouldn't be null
   if ($readini($char($1), battle, status) != inactive) {  writeini $char($1) Battle Status alive }
@@ -838,9 +848,7 @@ jobs.list {
 ; Returns the equipped weapon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 weapon_equipped { 
-  set %weapon.equipped.right $readini($char($1), Equipment, RightHand) 
-  set %weapon.equipped.left $readini($char($1), Equipment, LeftHand)
-  set %weapon.equipped $readini($char($1), equipment, RightHand)
+  set %weapon.equipped $readini($char($1), Equipment, Weapon)
   return 
 }
 
@@ -1346,7 +1354,7 @@ clear_status {
 ; injured, good, etc)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 hp_status { 
-  set %current.hp $readini($char($1), Battle, HP) | set %max.hp $readini($char($1), BaseStats, HP) | set %hp.percent $calc((%current.hp / %max.hp)*100) |  unset %current.hp | unset %max.hp 
+  set %current.hp $current.hp($1) | set %max.hp $resting.hp($1) | set %hp.percent $calc((%current.hp / %max.hp)*100) |  unset %current.hp | unset %max.hp 
   if (%hp.percent > 100) { set %hstats $translate(beyondperfect)  | return }
   if (%hp.percent = 100) { set %hstats $translate(perfect)  | return }
   if ((%hp.percent < 100) && (%hp.percent >= 90)) { set %hstats $translate(great) | return }
@@ -1362,7 +1370,7 @@ hp_status {
   if (%hp.percent <= 0) { set %whoturn $1 |  next | halt }
 }
 hp_status_hpcommand { 
-  set %current.hp $readini($char($1), Battle, HP) | set %max.hp $readini($char($1), BaseStats, HP) | set %hp.percent $calc((%current.hp / %max.hp)*100) |  unset %current.hp | unset %max.hp 
+  set %current.hp $current.hp($1) | set %max.hp $resting.hp($1) | set %hp.percent $calc((%current.hp / %max.hp)*100) |  unset %current.hp | unset %max.hp 
   if (%hp.percent > 100) { set %hstats $translate(beyondperfect)  | return }
   if (%hp.percent = 100) { set %hstats $translate(perfect)  | return }
   if ((%hp.percent < 100) && (%hp.percent >= 90)) { set %hstats $translate(great) | return }

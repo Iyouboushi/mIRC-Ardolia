@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -170,7 +170,6 @@ alias battle.rollinitiative {
 
     ; check for statuses and abilities that would lower that    
     if ($readini($char(%who.battle), status, slow) = yes) { %battle.speed = $calc(%battle.speed / 2) } 
-    if ($readini($char(%who.battle), skills, Retaliation.on) = on) { %battle.speed = -1000 }
 
     ; check for statuses and abilities that would increase that
 
@@ -279,9 +278,6 @@ alias battle.rollinitiative {
 
   unset %surpriseattack | unset %playersgofirst
 
-  if (%current.turn > 1) { 
-    if ($rand(1,10) <= 4) {  $random.weather.pick(inbattle) }
-  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -296,6 +292,7 @@ alias battle.end {
   ; if the players are all dead, the adventure is over
   if (($1 = defeat) || ($1 = draw)) { 
     ; display message saying the party is dead 
+    $display.message($translate(EvilhasWon), global)
     $adventure.end($1) 
     halt  
   }
@@ -304,7 +301,7 @@ alias battle.end {
   $battle.revivedeadplayers
 
   ; Display the endbattle message and set the room as cleared
-  $display.message(7*2 $+ $readini($zonefile(adventure), %current.room, CombatEndDesc), global)
+  $display.message(7*2 $readini($zonefile(adventure), %current.room, CombatEndDesc), global)
   writeini $zonefile(adventure) %current.room Clear true
   unset %battleis
 
@@ -326,13 +323,16 @@ alias battle.clear {
   .remove $txtfile(battle.txt) |  .remove $txtfile(battle2.txt) 
 
   ; Unset some variables
+  unset %battleis
   unset %name | unset %found.monster | unset %multiple.monster.counter
   unset %current.turn | unset %current.battle.number | unset %monsters.in.battle
-  unset %true.turn | unset %line | unset %next.person | unset %who | unset %status
+  unset %line | unset %next.person | unset %who | unset %status
   unset %wait.your.turn | unset %hp.percent | unset %hstats | unset %weapon.*
   unset %battletxt.* | unset %ai.* | unset %who.battle.ai 
   unset %status.message | unset %ai.type | unset %opponent.flag | unset %action.bar
   unset %techs | unset %damage.display.color
+  unset %total.targets | unset %random.target | unset %temp.battle.list
+  unset %whoturn | unset %file | unset %file.to.read.lines
 }
 
 ; ==========================
@@ -346,25 +346,14 @@ alias next {
   if (%nextTimer = $null) { var %nextTimer 180 }
   /.timerBattleNext 1 %nextTimer /next ForcedTurn
 
-  if ($1 = ForcedTurn) { 
-    var %forced.turns $readini($char(%who), info, SkippedTurns)
-    inc %forced.turns 1
-
-    var %max.idle.turns $return.systemsetting(MaxIdleTurns)
-    if (%max.idle.turns = null) { var %max.idle.turns 2 | writeini system.dat system MaxIdleTurns 2 }
-
-    if ((%forced.turns >= %max.idle.turns) && ($readini($char(%who), info, flag) = $null)) { $display.message($readini(translation.dat, battle, DroppedOutofBattle), battle) |  writeini $char(%who) battle status runaway }
-    writeini $char(%who) info SkippedTurns %forced.turns
-  }
-
-  if (%adventureis = off) { $clear_adventure | halt }
+  if (%battleis = off) { $clear_battle | halt }
 
   if ($readini($char(%who), info, ai_type) = PayToAttack) { writeini $char(%who) currencies gil 0 }
 
   inc %line 1
   set %next.person $read -l $+ %line $txtfile(battle.txt)
 
-  if (%next.person = $null) { set %line 1 | $battle.rollinitiative  } 
+  if (%next.person = $null) { set %line 1 } 
   set %who $read -l $+ %line $txtfile(battle.txt)
   $turn(%who)
 }
@@ -459,6 +448,8 @@ alias turn {
   unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone | unset %double.attack 
   unset %damage.display.color
 
+  echo -a checking turn for: $1
+
   set %status $readini($char($1), Battle, Status)
   if ((%status = dead) || (%status = runaway)) { unset %status | $next | halt }
 
@@ -468,8 +459,7 @@ alias turn {
     halt
   }
 
-  if ($readini($char($1), battle, status) = inactive) {  $next  |  halt  }
-
+  if ($readini($char($1), battle, status) = inactive) { $next | halt  }
   if ($readini($char($1), info, FirstTurn) = true) { writeini $char($1) info FirstTurn false | $next | halt }
 
   ; Is the battle over? Let's find out.
@@ -499,7 +489,6 @@ alias turn {
     inc %file.to.read.lines 2
   }
 
-
   ; Turn off certain status effects
   ; TO BE ADDED
 
@@ -519,8 +508,6 @@ alias turn {
     else { set %wait.your.turn off | $aicheck($1) | halt }
   }
 }
-
-
 
 ; ==========================
 ; Checks to see if anyone won yet

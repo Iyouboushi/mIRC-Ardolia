@@ -1,0 +1,23 @@
+[BasicInfo]
+Name=Warrior
+Description=Specializing in the arts of battle, Warriors (WAR) are masters of all aspects of melee combat. 
+
+[StatInfo]
+HPperVIT=6.5
+MPperPIE=0
+DamageStat=Str
+BaseSpeed=10
+
+[LevelUpInfo]
+STR=5
+DEX=3
+VIT=4
+INT=2
+MND=2
+PIE=2
+DET=5
+
+
+
+
+

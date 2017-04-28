@@ -16,6 +16,7 @@ on 2:TEXT:!adventure list:?: { $dungeon.list($nick)) }
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!dungeon start *:#: { $dungeon.start($nick, $3)) }
 on 2:TEXT:!adventure start *:#: { $dungeon.start($nick, $3)) }
+on 2:TEXT:!start adventure *:#: { $dungeon.start($nick, $3)) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Join the party to go on an adventure

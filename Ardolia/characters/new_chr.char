@@ -9,33 +9,33 @@
 
 [StartingStats]
 Str=
+Dex=
 Vit=
-Agi=
-Mag=
-Spd=
-Chr=
-
+Int=
+Mnd=
+Pie=
+Det=
 
 [BaseStats]
-Hp=100
-Mp=10
 Str=1
+Dex=1
 Vit=1
-Agi=1
-Mag=1
-Spd=1
-Chr=1
+Int=1
+Mnd=1
+Pie=1
+Det=1
 
 
 [Battle]
 Hp=100
 Mp=10
+TP=1000
 Str=1
+Dex=1
 Vit=1
-Agi=1
-Mag=1
-Spd=1
-Chr=1
+Int=1
+Mnd=1
+Det=1
 Status=alive
 inbattle=false
 
@@ -100,7 +100,7 @@ TotalCapacityPointsGained=0
 TotalStatPointsSpent=0
 
 [Jobs]
-CurrentJob=none
+CurrentJob=WAR
 WAR=1
 MNK=1
 WHM=1
@@ -125,18 +125,6 @@ COOK=0
 CRAFT=0
 CapacityPoints=0
 
-[EnhancementPoints]
-EnhancementPoints=0
-WAR=0
-MNK=0
-WHM=0
-BLM=0
-THF=0
-BLU=0
-PLD=0
-RDM=0
-
-
 [Inventory]
 potion=1
 
@@ -144,15 +132,18 @@ potion=1
 score=0
 
 [equipment]
-RightHand=fists
-LeftHand=nothing
-accessory1=nothing
-accessory2=nothing
+Weapon=fists
+Shield=nothing
 Head=nothing
 Body=nothing
 Legs=nothing
 Feet=nothing
 Hands=nothing
+Ears=nothing
+Neck=nothing
+Wrists=nothing
+RingRight=nothing
+RingLeft=nothing
 
 [StatusEffects]
 Poison=false

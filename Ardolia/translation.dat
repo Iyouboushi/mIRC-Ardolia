@@ -237,9 +237,9 @@ AllowBoldOff=$chr(3) $+ 4 $+ The Bot's Bold has been turned off.
 AiSystemOn=$chr(3) $+ 4 $+ The Ai System has been turned on.
 AiSystemOff=$chr(3) $+ 4 $+ The Ai System has been turned off.
 
-; Adventure end message
-EvilhasWon=$chr(3) $+ 12 $+ The forces of evil have defeated the adventure party after %true.turn $iif(%true.turn < 2, turn, turns) $+ .  The adventure lasted for: %total.battle.duration $+ !
-BattleIsDraw=$chr(3) $+ 12 $+ The party has been defeated due to a draw in battle after %true.turn $iif(%true.turn < 2, turn, turns) and %total.battle.duration $+ ! 
+; Battle end message
+EvilhasWon=$chr(3) $+ 12 $+ The forces of evil have defeated the adventure party! 
+BattleIsDraw=$chr(3) $+ 12 $+ The party has been defeated due to a draw in battle!
 
 
 ; Job/Class Titles
@@ -351,7 +351,9 @@ StartAdventure=$chr(3) $+ 2 $+ * An Adventure will begin in12 $duration(%newba
 
 AdventureOpen=$chr(3) $+ 12 $+ $2 4is leading a party to12 $readini($zonefile(adventure), Info, Name) $+ 4! $iif(%minimum.players > 1, This adventure requires %minimum.players adventurers to embark.) 4If you wish to join $2 $+ 's party type !enter now. The adventure begins in12 $duration(%time.to.enter)
 
-AdventureIsOver=$chr(3) $+ 4 $+ The Adventure comes to a close.
+AdventureIsOver=$chr(3) $+ 2* 7The Adventure comes to a close after $adventure.calculateduration $+ .
+AdventureFailMessage=$chr(3) $+ 4 $+ Unfortunately the party was forced to retreat from this adventure and return to town.
+
 
 EnteredTheAdventure=$chr(3) $+ 4 $+  $+ $get_chr_name($1) has joined the party and is ready for the adventure! 
 

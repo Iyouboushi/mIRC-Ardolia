@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 04/26/17
+;;;; Last updated: 04/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ON 3:ACTION:attacks *:#:{ 
@@ -37,7 +37,7 @@ alias attack_cmd {
   if ((%ai.type != berserker) && (%covering.someone != on)) {
     if (%mode.pvp != on) {
       if ($2 = $1) {
-        if (($is_confused($1) = false) && ($is_charmed($1) = false))  { $display.message($translate(Can'tAttackYourself), private) | unset %real.name | halt  }
+        if (($is_confused($1) = false) && ($is_charmed($1) = false))  { $display.message($translate(Can'tAttackYourself, $1), private) | unset %real.name | halt  }
       }
     }
   }
@@ -85,6 +85,9 @@ alias attack_cmd {
   ; Decrease the action point cost
   $action.points($1, remove, %action.points.to.decrease)
 
+  ; Stop the battlenext timer til this action is finished
+  /.timerBattleNext off
+
   ; If it's an AOE attack, perform that here.  Else, do a single hit.
 
   if ($readini($dbfile(weapons.db), %weapon.equipped, target) != aoe) {
@@ -92,46 +95,19 @@ alias attack_cmd {
     ; Calculate, deal, and display the damage..
     $calculate_damage_weapon($1, %weapon.equipped, $2)
 
-    set %wpn.element $readini($dbfile(weapons.db), %weapon.equipped, element)
-    if ((%wpn.element != none) && (%wpn.element != $null)) { 
-      var %target.element.heal $readini($char($2), modifiers, heal)
-      if ($istok(%target.element.heal,%wpn.element,46) = $true) { 
-        unset %wpn.element
-        unset %counterattack
-        $heal_damage($1, $2, %weapon.equipped)
-        $display_heal($1, $2, weapon, %weapon.equipped)
-        if (%battleis = on)  { $check_for_double_turn($1) | halt } 
-      }
-    }
-    unset %wpn.element
+    ; Deal the damage done
+    $deal_damage($1, $2, %weapon.equipped, melee)
 
-    if ((%counterattack != on) && (%counterattack != shield)) { 
-      $drain_samba_check($1) 
-      var %weapon.equipped.original %weapon.equipped
-      if ((%weapon.equipped.left != $null) && ($readini($dbfile(weapons.db), %weapon.equipped.left, type) != shield)) { set %weapon.equipped %weapon.equipped $+ . $+ %weapon.equipped.left }
-      $deal_damage($1, $2, %weapon.equipped, melee)
-      $display_damage($1, $2, weapon, %weapon.equipped.original)
-    }
-
-    if (%counterattack = on) { 
-      $deal_damage($2, $1, %weapon.equipped, melee)
-      $display_damage($1, $2, weapon, %weapon.equipped)
-    }
-
-    if (%counterattack = shield) { 
-      $deal_damage($2, $1, $readini($char($2), weapons, equippedLeft), shield)
-      $display_damage($1, $2, weapon, $readini($char($2), weapons, equippedLeft))
-    }
+    ; Display the damage done
+    $display_damage($1, $2, weapon, %weapon.equipped)
 
     unset %attack.damage |  unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage4 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %attack.damage.total
     unset %drainsamba.on | unset %absorb |  unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone
     unset %techincrease.check |  unset %double.attack | unset %triple.attack | unset %fourhit.attack | unset %fivehit.attack | unset %sixhit.attack | unset %sevenhit.attack | unset %eighthit.attack
     unset %multihit.message.on | unset %critical.hit.chance
 
-    $formless_strike_check($1)
-
     ; Time to go to the next turn
-    if (%adventureis = on)  { $check_for_double_turn($1) | halt }
+    if (%battleis = on)  { $check_for_double_turn($1) | halt }
   }
 
   if ($readini($dbfile(weapons.db), %weapon.equipped, target) = aoe) {
@@ -160,11 +136,11 @@ alias attack_cmd {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Calculates Melee Damage
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Although it's being worked on, this isn't finished
 alias calculate_damage_weapon {
   ; $1 = %user
   ; $2 = weapon equipped
   ; $3 = target / %enemy 
-  ; $4 = a special flag for mugger's belt.
 
   echo -a step 1: Determine if we hit or not
 
@@ -200,6 +176,7 @@ alias calculate_damage_weapon {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Performs a melee AOE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; This code is largely unchanged from BattleArena and needs to be worked
 alias melee.aoe {
   ; $1 = user
   ; $2 = weapon name

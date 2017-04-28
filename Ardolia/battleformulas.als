@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -158,9 +158,6 @@ calculate.evasion {
 
   inc %evasion $current.dex($2)
 
-  if ($flag($2) = $null) { inc %evasion $readini($jobfile($current.job($1)), BasicInfo, Evasion) }
-  else { inc %evasion $readini($char($2), BaseStats, Evasion) }
-
   return %evasion
 }
 
@@ -178,14 +175,10 @@ calculate.accuracy {
 
   if ($3 = melee) {
     inc %accuracy $round($calc($current.dex($1) /2),0)
-    if ($flag($2) = $null) { inc %accuracy $readini($jobfile($current.job($1)), BasicInfo, Accuracy) }
-    else { inc %accuracy $readini($char($2), BaseStats, accuracy) }
   }
 
   if ($3 = spell) { 
-    inc %accuracy $current.mag($1)
-    if ($flag($2) = $null) {  inc %accuracy $readini($jobfile($current.job($1)), BasicInfo, MAccuracy)  }
-    else { inc %accuracy $readini($char($2), BaseStats, MAccuracy) }
+    inc %accuracy $current.pie($1)
   }
 
   return %accuracy
@@ -197,33 +190,16 @@ calculate.accuracy {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 calculate.wpn.damage {
   ; $1 = the person we're checking
-  ; $2 = the weapon
 
-  var %weapon.power 0
+  var %weapon.damage $weapon.damage($1)
+  var %weapon.speed $weapon.speed($1)
+  var %current.str $current.str($1)
+  var %current.det $current.det($1)
 
-  ; Increase # of hits
-  inc %number.of.hits $readini($dbfile(weapons.db), $2, Hits)
+  var %base.melee.damage $abs($calc((%weapon.damage *.2714745 + %current.str *.1006032 + (%current.det -202)*.0241327 + %weapon.damage * %current.str *.0036167 + %weapon.damage * (%weapon.det - 202)*.0022597 - 1) * (%weapon.speed / 3)))
+  inc %base.melee.damage $rand(1,2)
 
-  ; Get the stat multiplier for the weapon  
-  var %stat.multiplier $readini($dbfile(weapons.db), $2, Multiplier)
-  if (%stat.multiplier = $null) { var %stat.multiplier 1 }
-
-  ; Get the base weapon damage done
-  var %weapon.power $roll($readini($dbfile(weapons.db), $2, Damage))
-
-  ; Add in the stat to the damage
-  if ($readini($dbfile(weapons.db), $2, Ranged) = true) { 
-    var %stat.power $current.agi($1) | inc %stat.power $bonus.stat($1, agi) 
-    inc %weapon.power $calc(%stat.power * %stat.multiplier)  
-  }
-  else { 
-    var %stat.power $current.str($1) | inc %stat.power $bonus.stat($1, str) 
-    inc %weapon.power $calc(%stat.power * %stat.multiplier)  
-  }
-
-  echo -a attack damage: %weapon.power
-
-  return %weapon.power
+  return $round(%base.melee.damage,0)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -231,50 +207,28 @@ calculate.wpn.damage {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 calculate.defense {
   ; $1 = the person
-  ; $2 = melee or spell
+  ; $2 = physical or magical
 
-  var %defense 0
-
-  if ($2 = melee) {
-
-    if ($flag($1) = monster) { inc %defense $readini($char($1), BaseStats, Defense) }
-    else {   
-      if ($return.equipped($1, head) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, head), Defense) }
-      if ($return.equipped($1, body) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, body), Defense) }
-      if ($return.equipped($1, legs) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, legs), Defense) }
-      if ($return.equipped($1, feet) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, feet), Defense) }
-      if ($return.equipped($1, hands) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, hands), Defense) }
-    }
+  var %defense.percent 100
 
 
-    var %stat.bonus $current.def($1)
-    inc %stat.bonus $bonus.stat($1, def)
+  if ($2 = physical) { var %defense $current.defense($1) }
 
-    var %stat.bonus $round($calc(%stat.bonus / 4),0)
+  if ($2 = spell) { var %defense $current.mdefense($1) }
 
-    inc %defense %stat.bonus
 
+  var %defense.percent $abs($calc(1 - (0.044 * %defense)))
+  echo -a defense: %defense
+  echo -a percent: %defense.percent
+
+  if (%defense.percent = 1) { return 1 }
+  else { 
+
+    var %defense.percent $calc((100-%defense.percent)/100)
+
+
+    return %defense.percent
   }
-
-  if ($2 = spell) {
-    if ($flag($1) = monster) { inc %defense $readini($char($1), BaseStats, MDefense) }
-    else {
-      if ($return.equipped($1, head) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, head), MDefense) }
-      if ($return.equipped($1, body) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, body), MDefense) }
-      if ($return.equipped($1, legs) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, legs), MDefense) }
-      if ($return.equipped($1, feet) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, feet), MDefense) }
-      if ($return.equipped($1, hands) != nothing) { inc %defense $readini($dbfile(equipment.db), $return.equipped($1, hands), MDefense) }
-    }
-
-    var %stat.bonus $current.mag($1)
-    inc %stat.bonus $bonus.stat($1, mag)
-
-    var %stat.bonus $round($calc(%stat.bonus / 4),0)
-
-    inc %defense %stat.bonus
-  }
-
-  return %defense
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -285,17 +239,16 @@ formula.melee.player {
   ; $2 = weapon equipped
   ; $3 = target / %enemy 
 
-  set %number.of.hits 0
+  set %attack.damage $calculate.wpn.damage($1)
+  var %damage.defense.percent $calculate.defense($3, physical)
 
-  ; None of this is correct right now.  This is just a block of dummy code just for testing the bot.
-  ; This file will not be done until a battle system has been decided upon.
-
-  set %attack.damage 1
+  set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+  if (%attack.damage <= 0) { set %attack.damage 1 }
 
   ; Check for modifiers
   set %starting.damage %attack.damage
-  ; $damage.modifiers.check($1, %weapon.equipped.right, $3, melee)
   $damage.color.check
+  ; to be added
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -306,43 +259,29 @@ formula.melee.monster {
   ; $2 = weapon equipped
   ; $3 = target / %enemy 
 
-  set %number.of.hits 0
+  set %attack.damage $calculate.wpn.damage($1)
+  var %damage.defense.percent $calculate.defense($3, physical)
 
-  ; STEP 1: Calculate weapon damage
-  set %attack.damage $calculate.wpn.damage($1, %weapon.equipped.right)
-
-  if ((%weapon.equipped.left != nothing) && ($readini($dbfile(weapons.db), %weapon.equipped.left, type) != shield)) { 
-    inc %attack.damage $round($calc($calculate.wpn.damage($1, %weapon.equipped.left) / 2),0)
-  }
-
-  ; Check for critical hit
-  var %critical.hit.roll $roll(1d100)
-  if (%critical.hit.roll <= 10) { inc %attack.damage %attack.damage | $display.message($readini(translation.dat, battle, LandsACriticalHit),battle) }
-
-  ; STEP 2: Calculate target's defense
-  var %target.defense $calculate.defense($3, melee)
-
-  ; STEP 3: Calculate actual damage
-  dec %attack.damage %target.defense
-  %attack.damage = $round($calc(%attack.damage * (1 + ($get.level($1) / 10))),0)
+  set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+  if (%attack.damage <= 0) { set %attack.damage 1 }
 
   ; Check for modifiers
   set %starting.damage %attack.damage
-  $damage.modifiers.check($1, %weapon.equipped.right, $3, melee)
   $damage.color.check
+  ; to be added
 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Tech Formula for Players
+; Attack Ability Formula for Players
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-formula.tech.player {
+formula.ability.player {
 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; WpnSkill Formula for Monsterss
+; Attack Ability Formula for Monsterss
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-formula.tech.monster {
+formula.ability.monster {
 
 }

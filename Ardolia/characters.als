@@ -7,48 +7,183 @@
 creatingcharacter { return $readini($char($1), info, CreatingCharacter) }
 
 ; Returns current stats [not final; this is placeholder]
-current.hp { return $readini($char($1), battle, hp) }
+current.hp { 
+  if ($flag($1) = $null) { return $readini($char($1), battle, hp) }
+  else { return $readini($char($1), Battle, HP) }
+}
 current.tp { return $round($readini($char($1), battle, tp),0) }
-current.mp { return $readini($char($1), battle, mp) }
-current.str { return $readini($char($1), battle, str) }
-current.vit { return $readini($char($1), battle, vit) }
-current.agi { return $readini($char($1), battle, agi) }
-current.mag { return $readini($char($1), battle, mag) }
-current.spd { return $readini($char($1), battle, spd) }
-current.chr { return $readini($char($1), battle, chr) }
+current.mp { 
+  if ($flag($1) = $null) { return $readini($char($1), battle, mp) }
+  else { return $readini($char($1), Battle, MP) }
+}
 
-current.dex {  
-  var %dex $calc($current.agi($1) + $current.spd($1)) 
-  inc %dex $bonus.stat($1, agi)
-  inc %dex $bonus.stat($1, spd)
-  return %dex
+current.str { 
+  var %stat.str $readini($char($1), battle, str)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.str $bonus.stats($1, str)
+
+  return %stat.str
+}
+
+current.dex { 
+  var %stat.dex $readini($char($1), battle, dex)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.dex $bonus.stats($1, dex)
+
+  return %stat.dex
+}
+
+current.vit { 
+  var %stat.vit $readini($char($1), battle, vit)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.vit $bonus.stats($1, vit)
+
+  return %stat.vit
+}
+
+current.int { 
+  var %stat.int $readini($char($1), battle, int)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.int $bonus.stats($1, int)
+
+  return %stat.int
+}
+
+current.mnd { 
+  var %stat.mnd $readini($char($1), battle, mnd)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.mnd $bonus.stats($1, mnd)
+
+  return %stat.mnd
+}
+
+current.pie { 
+  var %stat.pie $readini($char($1), battle, pie)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.pie $bonus.stats($1, pie)
+
+  return %stat.pie
+}
+
+current.det { 
+  var %stat.det $readini($char($1), battle, det)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.det $bonus.stats($1, det)
+
+  return %stat.det
+}
+
+current.defense {  return $armor.def($1) }
+current.mdefense { return $armor.mdef($1) }
+
+current.speed {
+  if ($flag($1) != $null) {
+    var %char.speed $readini($char($1), battle, spd)
+    inc %char.speed $weapon.speed($1)
+    return %char.speed
+  }
+  else {
+    var %char.speed $round($calc($readini($jobfile($current.job($1)), StatInfo, BaseSpeed) * ($get.level($1) / 10)),0)
+    inc %char.speed $weapon.speed($1)
+    return %char.speed
+  }
+}
+
+job.hp {
+  ; How much HP does 1 vit equal on this job?
+  return $readini($jobfile($current.job($1)), StatInfo, HPperVIT)
+}
+
+job.mp {
+  ; How much MP does 1 pie equal on this job?
+  return $readini($jobfile($current.job($1)), StatInfo, MPperPIE)
 }
 
 ; Returns the resting stats (basestats)
-resting.hp { return $readini($char($1), basestats, hp) }
-resting.mp { return $readini($char($1), basestats, mp) }
-resting.str { return $readini($char($1), basestats, str) }
-resting.vit { return $readini($char($1), basestats, vit) }
-resting.agi { return $readini($char($1), basestats, agi) }
-resting.mag { return $readini($char($1), basestats, mag) }
-resting.spd { return $readini($char($1), basestats, spd) }
-resting.chr { return $readini($char($1), basestats, chr) }
+resting.hp {
+  if ($flag($1) = $null) { return $round($calc($current.vit($1) * $job.hp($1)),0) }
+  else { return $readini($char($1), BaseStats, HP) }
+}
+resting.mp { 
+  if ($flag = $null) { return $round($calc($current.pie($1) * $job.mp($1)),0) }
+  else { return $readini($char($1), BaseStats, HP) }
+}
 
-; Returns the race maximum stats
-race.str { return $readini($racefile($1), StatMax, Str) }
-race.agi { return $readini($racefile($1), StatMax, Agi) }
-race.vit { return $readini($racefile($1), StatMax, Vit) }
-race.mag { return $readini($racefile($1), StatMax, Mag) }
-race.chr { return $readini($racefile($1), StatMax, Chr) }
-race.spd { return $readini($racefile($1), StatMax, Spd) }
+resting.str { 
+  var %stat.str $readini($char($1), BaseStats, str)
 
-; Returns the job max stat bonuses
-job.str { return $readini($jobfile($1), StatBonuses, Str) }
-job.agi { return $readini($jobfile($1), StatBonuses, Agi) }
-job.vit { return $readini($jobfile($1), StatBonuses, Vit) }
-job.mag { return $readini($jobfile($1), StatBonuses, Mag) }
-job.chr { return $readini($jobfile($1), StatBonuses, Chr) }
-job.spd { return $readini($jobfile($1), StatBonuses, Spd) }
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.str $bonus.stats($1, str)
+
+  return %stat.str
+}
+
+resting.dex { 
+  var %stat.dex $readini($char($1), BaseStats, dex)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.dex $bonus.stats($1, dex)
+
+  return %stat.dex
+}
+
+resting.vit { 
+  var %stat.vit $readini($char($1), BaseStats, vit)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.vit $bonus.stats($1, vit)
+
+  return %stat.vit
+}
+
+resting.int { 
+  var %stat.int $readini($char($1), BaseStats, int)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.int $bonus.stats($1, int)
+
+  return %stat.int
+}
+
+resting.mnd { 
+  var %stat.mnd $readini($char($1), BaseStats, mnd)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.mnd $bonus.stats($1, mnd)
+
+  return %stat.mnd
+}
+
+resting.pie { 
+  var %stat.pie $readini($char($1), BaseStats, pie)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.pie $bonus.stats($1, pie)
+
+  return %stat.pie
+}
+
+resting.det { 
+  var %stat.det $readini($char($1), BaseStats, det)
+
+  ; Increase this by the bonus given by armor and weapon
+  inc %stat.det $bonus.stats($1, det)
+
+  return %stat.det
+}
+
+armor.def { return 0 }
+armor.mdef { return 0 }
+
+weapon.speed { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), speed) }
+weapon.damage { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), damage) }
 
 ; Returns the level of a job a player has
 job.level {
@@ -58,10 +193,7 @@ job.level {
 }
 
 ; Returns the maximum amount of TP everyone is allowed to accumulate
-max.tp { return 300 }
-
-; Returns the number of stat points the player has to spend
-statpoints { return $readini($char($1), info, StatPoints) }
+max.tp { return 1000 }
 
 ; Returns current job and race
 current.job { return $readini($char($1), jobs, currentjob) }
@@ -79,6 +211,12 @@ isboss { var %isboss $readini($char($1), info, boss)
 ; Returns true if the person is in the battle
 in.battle { return $readini($char($1), battle, inbattle) }
 
+; Returns true if the person is in an adventure party
+in.adventure { 
+  var %party.list $readini($txtfile(adventure.txt), Info, PartyMembersList)
+  $if($istok(%party.list, $1, 46) = $true) { return true }
+}
+
 ; Returns the current level
 get.level { var %current.job.level $readini($char($1), jobs, $current.job($1)) 
   if (%current.job.level = $null) { return 1 }
@@ -87,40 +225,14 @@ get.level { var %current.job.level $readini($char($1), jobs, $current.job($1))
 
 ; Returns the current xp
 current.xp { 
-  if ($get.level($1) >= 75) { 
-    ; get capacity points instead of xp
-    var %capacity.points $readini($char($1), exp, capacitypoints)
-    if (%capacity.points = $null) { return 0 }
-    else { return %capacity.points }
-  }
+  if ($get.level($1) >= 60) { return 0 }
   else { return $readini($char($1), exp, $current.job($1))  }
 }
 
 ; Returns the amount of xp or capacity points needed to level
 xp.to.level {
-  if ($get.level($1) >= 75) { return 10000 }
+  if ($get.level($1) >= 60) { return 0 }
   else { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Returns the # of Enhancement Points
-; that a character has
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-current.enhancementpoints {
-  var %enhancement.points $readini($char($1), enhancementpoints, EnhancementPoints)
-  if (%enhancement.points = $null) { writeini $char($1) EnhancementPoints EnhancementPoints 0 | return 0 }
-  else { return %enhancement.points }
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Returns the # of Enhancement Points
-; that a character has spent on the
-; current job
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-current.enhancementpoints.spent {
-  var %enhancement.points $readini($char($1), enhancementpoints, $current.job($1))
-  if (%enhancement.points = $null) { writeini $char($1) EnhancementPoints $current.job($1) 0 | return 0 }
-  else { return %enhancement.points }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -143,7 +255,7 @@ gender3 {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 return.equipped {
   ; $1 = person
-  ; $2 = what we're checking (head, body, accessory1, accessory2, etc)
+  ; $2 = what we're checking (head, body, legs, etc)
 
   return $readini($char($1), equipment, $2)
 }
@@ -267,104 +379,24 @@ levelup {
   dec %current.xp %needed.xp
   if (%current.xp < 0) { var %current.xp 0 }
 
-  if ($get.level($1) >= 75) { 
-    ; Players that are level 75+ use capacity points and enhancement points upon leveling up
-    writeini $char($1) exp capacitypoints %current.xp 
-    writeini $char($1) enhancementpoints EnhancementPoints $calc($current.enhancementpoints($1) + 1)
-    $display.message($translate(leveledupEnhancementPoints))
-  }
-  else { 
-    ; players under 75 get normal xp and get hp/mp and a stat point upon leveling up
-    writeini $char($1) exp $current.job($1) %current.xp
+  ; Increase the level of the job
+  var %current.level $calc(1 + $get.level($1) )
+  writeini $char($1) jobs $current.job($1) %current.level
 
-    ; Increase the level of the job
-    var %current.level $calc(1 + $get.level($1) )
-    writeini $char($1) jobs $current.job($1) %current.level
+  ; Max HP and MP will automatically increase as the stats increase.
 
-    ; Increase the player's HP
-    var %job.bonus.hp.dice $readini($jobfile($current.job($1)), LevelUpInfo, HP)
-    var %new.hp $roll(%job.bonus.hp.dice)
-    var %vit.bonus $round($calc($resting.vit($1) / 2),0)
-    inc %new.hp %vit.bonus
-    var %bonus.hp %new.hp
-    inc %new.hp $resting.hp($1)
-    writeini $char($1) BaseStats HP %new.hp
 
-    ; Increase the player's MP
-    var %bonus.mp 0
-    var %job.bonus.mp.dice $readini($jobfile($current.job($1)), LevelUpInfo, MP)
-    var %new.mp $roll(%job.bonus.mp.dice)
-    inc %bonus.mp %new.mp
 
-    ; Only certain jobs can actually gain MP. 
-    if (%new.mp != 0) { 
-      var %mag.bonus $round($calc($resting.mag($1) / 2),0)
-      inc %new.mp %mag.bonus
-      inc %new.mp $resting.mp($1)
-      inc %bonus.mp %mag.bonus
-    }
-    writeini $char($1) BaseStats MP %new.mp
+  ; Tell the player all that he/she's won!
+  $display.private.message2($1, $translate(leveledupreward))
+  $display.message($translate(leveledup))
 
-    ; Add a bonus stat point to the player
-    writeini $char($1) info StatPoints $calc($statpoints($1) + 1)
-
-    ; Tell the player all that he/she's won!
-    $display.private.message2($1, $translate(leveledupreward))
-    $display.message($translate(leveledup))
-
-  }
 
   ; Restore the player's battle hp and mp to their resting hp/mp
   writeini $char($1) Battle HP $resting.hp($1)
   writeini $char($1) Battle MP $resting.mp($1)
 
-  ; Check to see if we've unlocked any advanced jobs
-  $advancedjobs.unlockcheck($1)
-}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Let's check for advanced job unlocks
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-advancedjobs.unlockcheck {
-  ; $1 = the player we're checking
-
-  ; If we meet the requirements, tell the world what we've unlocked and go to the next job
-
-  ; Get the list of advanced jobs and cycle through them, one by one
-  var %value 1 | var %ajobs.lines $lines($lstfile(jobs_advanced.lst))
-
-  while (%value <= %ajobs.lines) {
-    var %job.name $read -l $+ %value $lstfile(jobs_advanced.lst)
-
-    ; Does the player already have this job unlocked? If not, let's check
-    if ($job.level($1, %job.name) = 0) { 
-      echo -a for job: %job.name
-      ; Cycle through the job requirements and check against what the player has
-
-      set %requirements.unlocked 0
-      var %number.of.requirements $ini($jobfile(%job.name), Requirements, 0) | var %current.requirement.num 1
-      while (%current.requirement.num <= %number.of.requirements) { 
-
-        ; get the job requirement
-        var %current.requirement $ini($jobfile(%job.name), Requirements, %current.requirement.num)
-        var %requirement.level $readini($jobfile(%job.name), Requirements, %current.requirement)
-
-        ; Does the player match the requirement?
-        if ($job.level($1, %current.requirement) >= %requirement.level) {  inc %requirements.unlocked }
-
-        inc %current.requirement.num
-      }
-
-      if (%requirements.unlocked = %number.of.requirements) { 
-        writeini $char($1) jobs %job.name 1 | writeini $char($1) exp %job.name 0
-        $display.message($translate(UnlockedJob),private)
-      }
-    }
-
-    inc %value 1 
-  }
-
-  unset %requirements.unlocked
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -457,12 +489,11 @@ max.spd {
   return $calc(%race.max + %job.max)
 }
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Calculates the bonus stats
-; This is from armor/weapons/food
+; This is from armor/food
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-bonus.stat {
+bonus.stats {
   ; $1 = the person we're checking
   ; $2 = the stat we're checking
 
@@ -474,14 +505,15 @@ bonus.stat {
   if ($return.equipped($1, legs) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, legs), $2) }
   if ($return.equipped($1, feet) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, feet), $2) }
   if ($return.equipped($1, hands) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, hands), $2) }
+  if ($return.equipped($1, ears) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, ears), $2) } 
+  if ($return.equipped($1, neck) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, neck), $2) }
+  if ($return.equipped($1, wrists) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, wrists), $2) }
+  if ($return.equipped($1, RingRight) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, RingRight), $2) }
+  if ($return.equipped($1, RingLeft) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, RingLeft), $2) }
 
-  ; Now check for the two accessories
-  if ($return.equipped($1, accessory1) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, accessory1), $2) }
-  if ($return.equipped($1, accessory2) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, accessory2), $2) }
-
-  ; Let's also check the weapon slots and see if there's a bonus
-  if ($return.equipped($1, RightHand) != nothing) { inc %bonus.stat $readini($dbfile(weapons.db), $return.equipped($1, RightHand), $2) }
-  if ($return.equipped($1, LeftHand) != nothing) { inc %bonus.stat $readini($dbfile(weapons.db), $return.equipped($1, LeftHand), $2) }
+  ; Let's check shield and weapon
+  if ($return.equipped($1, shield) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, shield), $2) }
+  inc %bonus.stat $readini($dbfile(weapons.db), $return.equipped($1, weapon), $2)
 
   ; Finally let's check food
   if ($return.foodeffect($1) != none) { inc %bonus.stat $readini($dbfile(items.db), $return.foodeffect($1), $2) }
@@ -610,15 +642,8 @@ display_weapon_lists {  $set_chr_name($1)
 ; Wield a weapon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 character.wieldweapon {
-  if ($2 = right) { writeini $char($1) equipment RightHand $3 }
-  if ($2 = left) { writeini $char($1) equipment LeftHand $3 }
-  if ($2 = both) { writeini $char($1) equipment RightHand $3 | writeini $char($1) equipment LeftHand nothing }
-
-  $set_chr_name($1) | $display.message($translate(EquipWeaponPlayer),private)
-
-  writeini $char($1) battle TP 0
-
-  unset %weapon.equipped.right | unset %weapon.equipped.left | unset %weapon.equipped | unset %real.name
+  writeini $char($1) equipment weapon $3
+  $display.message($translate(EquipWeaponPlayer, $1),private)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

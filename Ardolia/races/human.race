@@ -1,0 +1,12 @@
+[BasicInfo]
+Name=Human
+Description=On any given world Humans will inevitably be the dominant race; widely diverse and infinitely tenacious, their ability to make a home in inhospitable environments has made them the standard against which all other races are measured.
+
+[StartingStats]
+STR=21
+DEX=19
+VIT=20
+INT=21
+MND=18
+PIE=21
+DET=21

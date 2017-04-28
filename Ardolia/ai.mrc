@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; AI COMMANDS
-;;;; Last updated: 04/26/17
+;;;; Last updated: 04/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file is seriously unfinished
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -26,9 +26,6 @@ alias aicheck {
     halt
   }
 
-
-  ; Is the person a shadow clone? If so, is the original user using doppelganger style? If not, continue onto the AI..but if so, stop it.
-
   ; Now we check for the AI system to see if it's turned on or not.
   var %ai.system $readini(system.dat, system, aisystem)
   if ((%ai.system = $null) || (%ai.system = on)) { var %ai.wait.time 6
@@ -52,7 +49,6 @@ alias ai_turn {
   unset %ai.action
 
   set %ai.type $readini($char($1), info, ai_type) 
-
 
   ; Get the type of opponent we need to search for
   if ($flag($1) = monster) { set %opponent.flag player }

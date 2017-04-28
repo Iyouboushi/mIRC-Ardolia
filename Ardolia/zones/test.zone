@@ -13,10 +13,10 @@ FameRewarded=1
 [0]
 Name=The Entrance
 Clear=true
-EnterDesc=The party has entered the Test Dungeon. There is a straight path leading north into the dungeon.
-LookDesc=The party stands in a large room with a path leading forward north into the dungeon.
-Trees=0
-LogList=
+EnterDesc=As the party approaches The Test Dungeon they hear the buzzing of insects and the feint screams of someone dying inside.
+LookDesc=The party is standing at the entrance to the Test Dungeon. There is a large stone archway leading into a hallway to the north. $iif($adventure.count.trees != 0, A lone tree stands in the middle of this area)
+Trees=1
+LogList=AshLog
 
 ; Exits
 ExitList=North
@@ -30,7 +30,7 @@ LookDesc=The party is in a large gray hallway. The path leads north and south.
 
 
 ; Combat Info
-Combat=True
+Combat=true
 Monsters=testingbee
 Monsters.Needed=1
 CombatDesc=A large bee flies at the party ready to fight

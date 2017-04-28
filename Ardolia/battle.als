@@ -177,8 +177,8 @@ person_in_battle {
 ; a turn.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 no.turn.check {
-  if ((%adventureis = off) && ($2 != return)) { halt }
-  if ($readini($char($1), basestats, hp) = $null) { halt }
+  if ((%battleis = off) && ($2 != return)) { halt }
+  if ($resting.hp($1) = $null) { halt }
   if ($flag($1) = monster) { return }
   if ($flag($1) = npc) { return }
 
@@ -283,7 +283,7 @@ deal_damage {
               }
             }
 
-            set %life.target $readini($char($1), Battle, HP) | set %life.max $readini($char($1), Basestats, HP)
+            set %life.target $readini($char($1), Battle, HP) | set %life.max $resting.hp($1)
             inc %life.target %absorb.amount
             if (%life.target >= %life.max) { set %life.target %life.max }
             writeini $char($1) battle hp %life.target
@@ -433,16 +433,13 @@ display_damage {
 
     if (%counterattack != shield) {
 
-      if (%counterattack != on ) {   set %attacker $1 | set %target $2 | var %weapon.type $readini($dbfile(weapons.db), $4, type) |  var %attack.file $txtfile(attack_ $+ %weapon.type $+ .txt)  }
+      set %attacker $1 | set %target $2 
+      var %weapon.type $readini($dbfile(weapons.db), $4, type) |  var %attack.file $txtfile(attack_ $+ %weapon.type $+ .txt) 
 
-      if (%counterattack = on) { 
-        set %weapon.equipped $readini($char($2), weapons, equipped)
-        set  %weapon.type $readini($dbfile(weapons.db), %weapon.equipped, type)
-        var %attack.file $txtfile(attack_ $+ %weapon.type $+ .txt)
-        unset %weapon.equipped | unset %weapon.type
-        $display.message($readini(translation.dat, battle, MeleeCountered), battle)
-        set %enemy $get_chr_name($1) | set %target $1 | set %attacker $2 | set %user $get_chr_name($2) 
-      }
+      echo -a attacker: $1
+      echo -a target: $2
+      echo -a weapn type; %weapon.type
+      echo -a attack file: %attack.file
 
     $display.message(3 $+ %user $+  $read %attack.file  $+ 3., battle)  }
   }
@@ -526,7 +523,7 @@ display_damage {
         }
 
         $display.message(3 $+ %user absorbs $bytes(%absorb.amount,b) HP back from the damage.,battle) 
-        set %life.target $readini($char($1), Battle, HP) | set %life.max $readini($char($1), Basestats, HP)
+        set %life.target $readini($char($1), Battle, HP) | set %life.max $resting.hp($1)
         inc %life.target %absorb.amount
         if (%life.target >= %life.max) { set %life.target %life.max }
         writeini $char($1) battle hp %life.target
@@ -561,7 +558,7 @@ display_damage {
 
     $increase_death_tally(%target)
 
-    if (%attack.damage > $readini($char(%target), basestats, hp)) { set %overkill 7<<OVERKILL>> }
+    if (%attack.damage > $resting.hp($1)) { set %overkill 7<<OVERKILL>> }
 
     $display.message($translate(EnemyDefeated), battle)
     unset %overkill
@@ -700,7 +697,7 @@ display_aoedamage {
     $check.clone.death(%target)
     $increase_death_tally(%target)
     $achievement_check(%target, SirDiesALot)
-    if (%attack.damage > $readini($char(%target), basestats, hp)) { set %overkill 7<<OVERKILL>> }
+    if (%attack.damage > $resting.hp(%target)) { set %overkill 7<<OVERKILL>> }
     $display.message($readini(translation.dat, battle, EnemyDefeated), battle)
 
     if ($readini($dbfile(techniques.db), $3, magic) = yes) {  $goldorb_check(%target, magic)  }

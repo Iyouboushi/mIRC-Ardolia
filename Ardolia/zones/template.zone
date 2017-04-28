@@ -20,6 +20,7 @@ ClearRoom=
 ClearReward.Items=
 ClearReward.XP=#
 FameRewarded=
+AdventureClearMessage=
 
 
 ; [0] Is the starting room for every adventure.   The [0] has to be in the zone file or the game won't work.
