@@ -9,7 +9,7 @@ Once set up the game is entirely automatic and does not need anyone to run it.
 
 A full in-depth guide with commands and more in-depth information will eventually be listed on this game's wiki.
 
-Note: As of April 27, 2017 the game is still in heavy development and is not fully playable.
+Note: As of April 28, 2017 the game is still in heavy development and is not fully playable.
 
 
 ## SETUP
@@ -21,7 +21,7 @@ Getting it set up is easy.
  3. The bot will attempt to help you get things set up.  Set the bot owner's nick and the IRC channel you wish to game in.  Be sure to set a password for the bot that you'll register to nickserv with.
  4. (as with all mIRC programs) change the nickname and add a server
  5. Connect.
- 6. Using another IRC connection as the bot owner's nick, join the game channel you set and use !new char (nick) without the () to get the character creation process started.
+ 6. Using another IRC connection as the bot owner's nick, join the game channel you set and use !new char (race)  without the () to get the character creation process started.
  7. Follow what the bot tells you to do. 
 
 Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to make life simple.
@@ -31,7 +31,7 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 * APRIL 28, 2017
 
-!new char <race> can now have human, elf, or galka
+!new char (race) can now have human, elf, or galka
 
 Basic stats added. Starting Stats are based on the race you pick and will be used for every level 1 job.
 
