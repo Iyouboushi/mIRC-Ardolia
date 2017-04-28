@@ -1,0 +1,24 @@
+Ardolia Bot Changelog
+=========================
+
+
+04-23-2017
+- Added basic file and folder structure
+- Added basic attack description files
+- Added topics.help
+
+04-27-2017
+- Added !new char
+- Added !newpass
+- Added !hp, !mp
+- Added a test adventure in \zones\ for testing the bot out
+- Added !adventure start test
+- Added a very basic combat system that will inflict 1 damage to monsters
+
+04-28-2017
+- Added a small delay between !go commands so that it cannot be spammed 
+- Added three races that can be chosen upon new char: human, elf and galka
+- Added basic stats. They are based on FFXIV: STR, DEX, VIT, INT, MND, PIE
+- Added a basic melee damage formula
+- Added defense/magic defense values into monster files
+- Added the ability for weapons to determine which stat is calculated for when that weapon is used in combat
