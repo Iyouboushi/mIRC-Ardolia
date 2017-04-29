@@ -13,6 +13,7 @@ Ardolia Bot Changelog
 - Added !hp, !mp
 - Added a test adventure in \zones\ for testing the bot out
 - Added !adventure start test
+- Added adventure commands: !go [direction], !look, !warp, !pull/!push/!read/!open [object name]
 - Added a very basic combat system that will inflict 1 damage to monsters
 
 04-28-2017
@@ -22,3 +23,9 @@ Ardolia Bot Changelog
 - Added a basic melee damage formula
 - Added defense/magic defense values into monster files
 - Added the ability for weapons to determine which stat is calculated for when that weapon is used in combat
+
+04-29-2017
+- Added weapon information into !view-info.  Use !view-info weaponnamehere to view information on the weapon
+- Added the code to return the proper armor defense/magic defense
+- Added code to calculate iLevel
+- Added the ability for adventures to have a minimum iLevel to enter/start

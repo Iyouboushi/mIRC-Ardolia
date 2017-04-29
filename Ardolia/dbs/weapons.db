@@ -51,6 +51,8 @@ int=
 mnd=
 pie=
 det=
+pdefense=
+mdefense=
 
 The above block of stats is used for if the weapon gives a bonus to any stat
 upon equipping.
@@ -64,7 +66,7 @@ Info=It's your fists.  They are not detachable.
 Jobs=all
 Stat=str
 Element=none
-WeaponLevel=1
+ItemLevel=1
 PlayerLevel=1
 Damage=5
 Speed=5
@@ -75,7 +77,8 @@ int=0
 mnd=0
 pie=0
 det=0
-
+pdefense=0
+mdefense=0
 
 
 

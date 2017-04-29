@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -186,8 +186,8 @@ resting.det {
   return %stat.det
 }
 
-armor.def { return 0 }
-armor.mdef { return 0 }
+armor.def { return $bonus.stats($1, PDefense) }
+armor.mdef { return $bonus.stats($1, MDefense) }
 
 weapon.speed { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), speed) }
 weapon.damage { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), damage) }
@@ -527,6 +527,37 @@ bonus.stats {
   if ($return.foodeffect($1) != none) { inc %bonus.stat $readini($dbfile(items.db), $return.foodeffect($1), $2) }
 
   return %bonus.stat
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Calculates the iLevel you have
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+character.ilevel {
+  ; $1 = the person we're checking
+
+  var %iLevel 0
+
+  ; First check for each armor part
+
+  if ($return.equipped($1, head) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, head), ItemLevel) }
+  if ($return.equipped($1, body) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, body), ItemLevel) }
+  if ($return.equipped($1, legs) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, legs), ItemLevel) }
+  if ($return.equipped($1, feet) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, feet), ItemLevel) }
+  if ($return.equipped($1, hands) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, hands), ItemLevel) }
+  if ($return.equipped($1, ears) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, ears), ItemLevel) } 
+  if ($return.equipped($1, neck) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, neck), ItemLevel) }
+  if ($return.equipped($1, wrists) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, wrists), ItemLevel) }
+  if ($return.equipped($1, RingRight) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, RingRight), ItemLevel) }
+  if ($return.equipped($1, RingLeft) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, RingLeft), ItemLevel) }
+
+  ; Let's check shield and weapon
+  if ($return.equipped($1, shield) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, shield), ItemLevel) }
+  inc %ilevel $readini($dbfile(weapons.db), $return.equipped($1, weapon), ItemLevel)
+
+  var %iLevel $round($calc(%ilevel / 12),0)
+
+  if (%iLevel <= 0) {  return 1 }
+  else { return %iLevel }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

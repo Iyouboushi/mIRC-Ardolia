@@ -8,7 +8,7 @@ ClearRoom=5
 ClearReward.Items=
 ClearReward.XP=10
 FameRewarded=1
-
+iLevel=1
 
 [0]
 Name=The Entrance

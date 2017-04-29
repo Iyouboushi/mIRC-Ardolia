@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 04/28/17
+;;;; Last updated: 04/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -37,6 +37,9 @@ dungeon.start {
 
   ; Is this dungeon only available on a certain month (i.e. holiday dungeons)?   If so, is it the right month?
   ; to be added
+
+  ; Is there a minimum item level to start this adventure?
+  if ($readini($zonefile($2), info, iLevel) > $character.iLevel) { $display.message($translate(NotHighEnoughiLevelToStart, $1), private) | halt }
 
   ; Let's add the party leader to the adventure
   $adventure.party.addmember($1)
@@ -87,6 +90,9 @@ adventure.join {
   ; Is this player already in the party?
   var %curbat $readini($txtfile(adventure.txt), Info, partymembersList)
   if ($istok(%curbat,$1,46) = $true) { $display.message($translate(AlreadyInAdventure, $1), private) | halt  }
+
+  ; Is there a minimum item level to enter this adventure?
+  if ($adventure.minimumiLevel > $character.iLevel) { $display.message($translate(NotHighEnoughiLevelToEnter, $1), private) | halt }
 
   $adventure.party.addmember($1)
 
@@ -538,6 +544,16 @@ adventure.party.count { return $numtok($readini($txtfile(adventure.txt), info, p
 ; for this adventure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.minimumplayers { return $readini($zonefile(adventure), Info, MinimumPlayers) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; returns minimum iLevel 
+; for this adventure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.minimumiLevel { 
+  var %iLevel $readini($zonefile(adventure), info, iLevel) 
+  if (%iLevel = $null) { return 0 }
+  else { return $readini($zonefile(adventure), Info, iLevel) }
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; returns the party leader

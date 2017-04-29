@@ -3,6 +3,7 @@
 ; LevelRange= A general level range of the dungeon necessary to successfully win
 ; MinimumPlayers= How many players must be in the party to go into this dungeon?
 ; PreReq=If the dungeon requires the clear of another dungeon first, list it here. The name here has to match the .zone file
+; ilevel= if you want the dungeon to have a certain minimum level of armor/weapon iLevel to be able to start/enter
 ; AdventureActions= How many actions does a party get before they're kicked out of the dungeon?
 ; ClearRoom= The room number that says the dungeon is beat when the players clear it. The dungeon will end when this room is clear
 ; ClearReward.Items=An item from this list will be chosen at random and rewarded to each player in the party after the dungeon is clear
@@ -15,6 +16,7 @@ Name=
 LevelRange=
 MinimumPlayers=
 PreReq=
+iLevel=
 AdventureActions=#
 ClearRoom=
 ClearReward.Items=

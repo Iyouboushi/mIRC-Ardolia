@@ -51,6 +51,9 @@ ViewMyCurrentJob=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get
 ; View Level
 ViewMyLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.level($nick) $current.job($nick) $+ .
 
+; View iLevel
+ViewMyiLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently ilevel $character.ilevel($nick) $+ .
+
 ; View My EnhancementPoints
 ViewOthersEnhancementPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has2 $bytes($current.enhancementpoints($2),b) 3enhancement $iif($current.enhancementpoints($2) = 1, point, points) $+ .  
 ViewMyEnhancementPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) has2 $bytes($current.enhancementpoints($nick),b) 3unassigned enhancement $iif($current.enhancementpoints($nick) = 1, point, points) with2 $bytes($current.enhancementpoints.spent($nick),b) 3 $+ $iif($current.enhancementpoints.spent($nick) = 1, point, points) spent total on $current.job($nick)
@@ -362,6 +365,9 @@ EnteredTheBattle=$chr(3) $+ 4 $+  $+ $get_chr_name(%current.monster.to.spawn.na
 AdventureClosed=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as either there is no adventure or the entry period is already closed.
 
 NotEnoughPlayersInAdventure=$chr(3) $+ 4 $+ There were not enough players to in the adventuring party to go on this adventure!  The adventure is over. 
+
+NotHighEnoughiLevelToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start this adventure party as $gender($2) ilevel is too low! | echo -a $2
+NotHighEnoughiLevelToEnter=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as $gender($2) ilevel is too low!
  
 Can'tStartAdventure=$chr(3) $+ 4 $+ Error: $2 cannot start an adventure party because there is already an adventure in progress!
 

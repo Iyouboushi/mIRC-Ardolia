@@ -242,6 +242,12 @@ on 2:TEXT:!level:#: { $display.message($translate(ViewMyLevel), private) }
 on 2:TEXT:!level:?: { $display.private.message($translate(ViewMyLevel)) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; View your iLevel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!ilevel:#: { $display.message($translate(ViewMyiLevel), private) }
+on 2:TEXT:!ilevel:?: { $display.private.message($translate(ViewMyiLevel)) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; View your xp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!xp:#: { $display.message($translate(ViewMyXP), private) }
