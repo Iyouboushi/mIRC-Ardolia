@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -25,6 +25,12 @@ on 2:TEXT:!enter:#: { $adventure.join($nick, $3)) }
 on 2:TEXT:!party join:#: { $adventure.join($nick, $3)) }
 ON 50:TEXT:*enters the adventure*:#:  { $adventure.join($1) }
 ON 50:TEXT:*joins the party:#:  { $adventure.join($1) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Shows who's in the party
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!party:#: { $adventure.party.show }
+on 2:TEXT:!party list:#: { $adventure.party.show }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Displays the room

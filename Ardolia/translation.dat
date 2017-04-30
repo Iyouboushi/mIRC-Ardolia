@@ -142,9 +142,8 @@ BossLevelSynced200=$chr(3) $+ 4 $+ The level cap for this boss battle has been
 GainedEnhancementPoint=$chr(3) $+ 7 $+ You have gained 1 enhancement point bringing your new total to %current.enhancementpoints $+ .
 
 ; Level up
-LeveledUpReward=$chr(3) $+ 2 $+ You have leveled up! You have gained + $+ %bonus.hp HP and + $+ %bonus.mp MP! You have also gained +1 Stat Point to spend
+LeveledUpReward=$chr(3) $+ 2 $+ You have leveled up! You have gained + $+ %bonus.hp HP and + $+ %bonus.mp MP! 
 LeveledUp=$chr(3) $+ 7*2 $get_chr_name($1) has reached level $get.level($1) $current.job($1) $+ !
-LeveledUpEnhancementPoints=$chr(3) $+ 7*2 $get_chr_name($1) has gained 1 Enhancement Point!
 
 
 ; Currencies
@@ -163,24 +162,13 @@ CurrentArmorBodyEquipped=Current Body Armor
 CurrentArmorLegsEquipped=Current Leg Armor
 CurrentArmorFeetEquipped=Current Feet Armor
 CurrentArmorHandsEquipped=Current Hand Armor
-ViewArmorHead=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following head armor: %armor.head 
-ViewArmorBody=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following body armor: %armor.body
-ViewArmorLegs=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following leg armor: %armor.legs
-ViewArmorFeet=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following feet armor: %armor.feet
-ViewArmorHands=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following hand armor: %armor.hands
-ViewAccessories=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following accessories: %accessories.list
-ViewEquippedAccessory=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following accessory equipped $equipment.color(%equipped.accessory) $+  $+ %equipped.accessory
-ViewEquippedAccessories=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following accessories equipped [Slot 1: $equipment.color(%equipped.accessory) $+  $+ %equipped.accessory $+ 3 $+ ] [Slot 2: $equipment.color(%equipped.accessory2) $+  $+ %equipped.accessory2 $+ 3 $+ ]
-HasNoAccessories=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no accessories. 
-HasNoEquippedAccessory=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no accessory equipped. 
-EquippedAccessory=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has equipped the accessory $equipment.color($2) $+  $+ $2 $chr(3) $+ 3 $+ in the first accessory slot.
-EquippedAccessory2=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has equipped the accessory $equipment.color($2) $+  $+ $2 $chr(3) $+ 3 $+ in the second accessory slot.
-RemovedAccessory=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has removed the accessory $equipment.color($2) $+  $+ $2 $chr(3) $+ 3 $+ from the first accessory slot.
-RemovedAccessory2=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has removed the accessory $equipment.color($2) $+  $+ $2 $chr(3) $+ 3 $+ from the second accessory slot.
-EquippedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($1) is now wearing the $equipment.color($2) $+ $readini($dbfile(equipment.db), $2, name)
-RemovedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has removed the $equipment.color($2) $+ $readini($dbfile(equipment.db), $2, name)
-NotWearingThatAccessory=$chr(3) $+ 3 $+  $+ $get_chr_name($1) is not wearing the $equipment.color($2) $+ $2 3accessory.
-NotWearingThatArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($1) is not wearing the $equipment.color($2) $+ $2 $+ 3.
+
+ViewArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following $3 armor: %armor.list
+
+EquippedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) is now wearing the $rarity.color.check($3, armor) $+ $readini($dbfile(equipment.db), $3, name)
+RemovedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has removed the $rarity.color.check($3, armor) $+ $readini($dbfile(equipment.db), $3, name)
+
+NotWearingThatArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) is not wearing the $rarity.color.check($3, armor) $+ $3 $+ 3.
 
 ;weapons and shields
 ViewWeaponList=$chr(3) $+ 3 $+  $+ %real.name has the following weapons: %weapon.list1
@@ -215,8 +203,11 @@ HasNoMiscItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no misc ite
 HasNoTradingCards=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no trading cards.
 HasNoGems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no gems.
 HasNoSeals=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no seals.
-HasNoAmmo=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no ammo.
-HasNoArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no armor. 
+HasNoAmmo=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no ammo.
+
+NeedToSayWhichArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which armor to search for: Shield, Head, Body, Legs, Feet, Hands, Ears, Neck, Wrists, Ring
+HasNoArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no $3 armor.
+ 
 HasNoInstruments=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no instruments.
 HasNoIngredients=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no potion ingredients.
 HasNoSongs=$chr(3) $+ 3 $+  $+ $get_chr_name($1) does not currently know any songs. 
@@ -229,8 +220,6 @@ SellMessageAccessory=$chr(3) $+ 3 $+ A shop keeper wearing a green and white buc
 SellWeaponMessage=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat performs a powerful ritual to unbind the weapon $3 $+  from your body and restores $bytes(%orb.amount,b) black orbs!
 
 ; Bot Admin Toggle Messages
-AutomatedAdventureOn=$chr(3) $+ 4 $+ The Automated Adventure System has been turned on.
-AutomatedAdventureOff=$chr(3) $+ 4 $+ The Automated Adventure System has been turned off.
 AllowPlayerAccessCmdsOn=$chr(3) $+ 4 $+ Player Access Commands has been turned on.
 AllowPlayerAccessCmdsOff=$chr(3) $+ 4 $+ Player Access Commands has been turned off.
 AllowColorsOn=$chr(3) $+ 4 $+ The Bot's Colors have been turned on.
@@ -294,7 +283,7 @@ DoNotHaveAccessToThatChar=$chr(3) $+ 4 $+ Error: $1 is not on $2 $+ 's access 
 MaxAccessEnteredBattle=$chr(3) $+ 4 $+ Error: $1 has already entered two other access controlled players and cannot enter any more.
 CanOnlyViewPlayerStats=$chr(3) $+ 4 $+ Error: You can only view player's stats with this command.
 Can'tCastSpells=$chr(3) $+ 4 $+ Error: %real.name $+ 's current class cannot cast spells.
-DoesNotHaveThatItem=$chr(3) $+ 4 $+ Error: %real.name does not have that item.
+DoesNotHaveThatItem=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not have that item.
 AlreadyInAdventure=$chr(3) $+ 4 $+ Error: $get_chr_name($1) is already in the adventuring party!
 NoMonsAvailable=$chr(3) $+ 4 $+ Error: There are no monsters defined for this zone.. Have the bot admin check to make sure there are monsters for players to battle! 
 NoAdventureCurrently=$chr(3) $+ 4 $+ Error: There is no battle currently going on during this adventure.
@@ -306,12 +295,13 @@ DoNotHaveWeapon=$chr(3) $+ 4 $+ Error: %real.name does not own that weapon!
 LevelTooLowToEquip=$chr(3) $+ 4 $+ Error: $get_chr_name($nick) $+ 's level is too low to use that weapon!
 WrongJobToEquip=$chr(3) $+ 4 $+ Error: $get_chr_name($nick) $+ 's job is unable to equip this weapon.
 WrongJobToWear=$chr(3) $+ 4 $+ Error: $get_chr_name($1) $+ 's job is unable to wear this.
-WrongEquippedWeapon=$chr(3) $+ 4 $+ Error: You are currently using %weapon.equipped.right $+  $iif(%weapon.equipped.left != nothing, and %weapon.equipped.left $+ ) and not $2 $+ ! 
+WrongEquippedWeapon=$chr(3) $+ 4 $+ Error: You are currently using $1 and not $2 $+ ! 
 Can'tDetachHands=$chr(3) $+ 4 $+ Error: $get_chr_name($nick) cannot detatch $gender($nick) hands!
-ItemIsNotAccessory=$chr(3) $+ 4 $+ Error: This item is not an accessory and cannot be equipped like this.
 ItemIsNotArmor=$chr(3) $+ 4 $+ Error: This item is not a piece of armor that can be worn.
-ArmorLevelHigher=$chr(3) $+ 4 $+ Error: $get_chr_name($1) cannot wear this armor yet as the armor level is $bytes(%armor.level.requirement,b) but $get_chr_name($1) is only level $get.level($1)
+ArmorLevelHigher=$chr(3) $+ 4 $+ Error: $get_chr_name($2) cannot wear this armor yet as the armor level is $bytes(%armor.level.requirement,b) but $get_chr_name($2) is only level $get.level($2)
 AccessoryLevelHigher=$chr(3) $+ 4 $+ Error: $get_chr_name($1) cannot wear this armor yet as the armor level is $bytes(%armor.level.requirement,b) but $get_chr_name($1) is only level $get.level($1)
+CanOnlySwitchOutsideAdventure=$chr(3) $+ 4 $+ Error: You can only switch weapons, shields and armor outside of battles.
+
 
 ; Stat point allocating errors
 Can'tRemoveStats=$chr(3) $+ 4 $+ Error: You can no longer remove stat points from your stats. 
@@ -351,6 +341,8 @@ NotInBattle=$chr(3) $+ 4 $+ Error: $2 is not currently in this battle!
 Battle and Adventure Related Messages
 =======================
 StartAdventure=$chr(3) $+ 2 $+ * An Adventure will begin in12 $duration(%newbattle.time) $+ 2.
+ThisAdventureIsSolo=$chr(3) $+ 7 $+ * This adventure is a solo adventure. Only $get_chr_name($2) will be able to participate. 
+
 
 AdventureOpen=$chr(3) $+ 12 $+ $2 4is leading a party to12 $readini($zonefile(adventure), Info, Name) $+ 4! $iif($adventure.minimumplayers > 1, This adventure requires adventure.minimumplayers adventurers to embark.) 4If you wish to join $2 $+ 's party type !enter now. The adventure begins in12 $duration(%time.to.enter)
 
@@ -362,11 +354,16 @@ EnteredTheAdventure=$chr(3) $+ 4 $+  $+ $get_chr_name($1) has joined the party
 
 EnteredTheBattle=$chr(3) $+ 4 $+  $+ $get_chr_name(%current.monster.to.spawn.name) has entered into battle! 
 
+NoAdventureCurrently=$chr(3) $+ 4 There is no adventure currently going.
+
 AdventureClosed=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as either there is no adventure or the entry period is already closed.
 
 NotEnoughPlayersInAdventure=$chr(3) $+ 4 $+ There were not enough players to in the adventuring party to go on this adventure!  The adventure is over. 
 
-NotHighEnoughiLevelToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start this adventure party as $gender($2) ilevel is too low! | echo -a $2
+PartyIsFull=$chr(3) $+ 4 $+ The adventure party is currently full! Please try again in the next adventure.
+
+NotHighEnoughiLevelToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start this adventure party as $gender($2) ilevel is too low! 
+
 NotHighEnoughiLevelToEnter=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as $gender($2) ilevel is too low!
  
 Can'tStartAdventure=$chr(3) $+ 4 $+ Error: $2 cannot start an adventure party because there is already an adventure in progress!
@@ -392,6 +389,9 @@ ThisActionHasNoEffect=$chr(3) $+ 7 $+ * 4This action seems to have no effect
 DoNotSeeThatObject=$chr(3) $+ 4 $+ $get_chr_name($2) does not see that object in this room.
 
 PartyRests=$chr(3) $+ 7* $+ 12 $adventure.party.leader 2decides that the party could use a break. Everyone feels refreshed after a brief rest.
+
+ShowParty=$chr(3) $+ 3The current adventure party is made up of: $2
+CurrentPartyLeader=$chr(3) $+ 3The current party leader is: $2
 
 
 BatListTitleMessage=$chr(3) $+ 10 $+ -=BATTLE INFORMATION=-

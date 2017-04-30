@@ -13,3 +13,6 @@ Ends the dungeon. Will happen automatically if all 30 dungeon actions have been 
 !pull/!push/!open/!close/!read
 All cost 1 adventure action and will interact with an object in the room (including chests)
 
+!party
+Shows who's in the current party and who the current party leader is
+

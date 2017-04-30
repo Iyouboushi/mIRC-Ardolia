@@ -39,10 +39,21 @@ dungeon.start {
   ; to be added
 
   ; Is there a minimum item level to start this adventure?
-  if ($readini($zonefile($2), info, iLevel) > $character.iLevel) { $display.message($translate(NotHighEnoughiLevelToStart, $1), private) | halt }
+  if ($readini($zonefile($2), info, iLevel) > $character.iLevel($1)) { $display.message($translate(NotHighEnoughiLevelToStart, $1), private) | halt }
 
   ; Let's add the party leader to the adventure
   $adventure.party.addmember($1)
+
+  ; Copy the dungeon file to adventure.zone so that it can be freely modified
+  .copy -o $zonefile($2) $zonefile(adventure)
+
+  ; Is the adventure a solo adventure?
+  if ($readini($zonefile(adventure), Info, MaximumPlayers) = 1) { 
+    $display.message($translate(ThisAdventureIsSolo, $1), global)   
+    /.timerAdventureBegin 1 3 /adventure.begin 
+    halt
+  }
+
 
   ; Open the party so that others may join
   $adventure.open($1, $2)
@@ -57,9 +68,6 @@ adventure.open {
 
   ; Set the variable
   set %adventure.open true
-
-  ; Copy the dungeon file to adventure.zone so that it can be freely modified
-  .copy -o $zonefile($2) $zonefile(adventure)
 
   ; Get the time we have before this adventure starts
   set %time.to.enter $readini(system.dat, system, TimeToEnter)
@@ -88,11 +96,15 @@ adventure.join {
   if ((%adventure.open != true) && ($return.systemsetting(AllowLateEntries) != true)) { $display.message($translate(AdventureClosed, $1), global)  | halt  }
 
   ; Is this player already in the party?
-  var %curbat $readini($txtfile(adventure.txt), Info, partymembersList)
-  if ($istok(%curbat,$1,46) = $true) { $display.message($translate(AlreadyInAdventure, $1), private) | halt  }
+  if ($adventure.alreadyinparty.check($1) = true) { $display.message($translate(AlreadyInAdventure, $1), private) | halt  } 
 
   ; Is there a minimum item level to enter this adventure?
-  if ($adventure.minimumiLevel > $character.iLevel) { $display.message($translate(NotHighEnoughiLevelToEnter, $1), private) | halt }
+  if ($adventure.minimumiLevel > $character.iLevel($1)) { $display.message($translate(NotHighEnoughiLevelToEnter, $1), private) | halt }
+
+  ; Is there a maximum amount of players allowed?  If so, are we at the limit?
+  if ($readini($zonefile(adventure), Info, MaximumPlayers) != $null) { 
+    if ($adventure.party.count = $readini($zonefile(adventure), info, MaximumPlayers) { $display.message($translate(PartyIsFull), global) | halt }
+  }
 
   $adventure.party.addmember($1)
 
@@ -540,6 +552,20 @@ adventure.chest {
 adventure.party.count { return $numtok($readini($txtfile(adventure.txt), info, partymembersList), 46) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; shows the current adventure party
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.party.show { 
+
+  var %curparty $readini($txtfile(adventure.txt), Info, partymembersList)
+  if (%curparty = $null) {  $display.message($translate(NoAdventureCurrently), private) | halt }
+
+  var %curparty $clean.list(%curparty) 
+
+  $display.message($translate(ShowParty, %curparty), global)
+  $display.message($translate(CurrentPartyLeader, $adventure.party.leader), global)
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; returns minimum # of players
 ; for this adventure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -566,6 +592,15 @@ adventure.party.leader {
   ; if the party leader is idle for too long and he/she is the only one in battle then just end the adventure in failure.
 
   return %party.leader
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; returns the party leader
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.alreadyinparty.check {
+  var %curbat $readini($txtfile(adventure.txt), Info, partymembersList)
+  if ($istok(%curbat,$1,46) = $true) { return true } 
+  else { return false } 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
