@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 04/29/17
+;;;; Last updated: 04/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -379,6 +379,37 @@ return.foodeffect {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns true if the character
+; has cleared a specific adventure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+character.adventure.clear.check {
+  var %adventure.clear.check $readini($char($1), AdventuresCleared, $2) 
+  if (%adventure.clear.check = $null) { return false }
+  else { return %adventure.clear.check }
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Check to see if we can level up
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+levelup.check {
+
+  if (($current.level = 50) && ($return.systemsetting(GenkaiQuest) = true)) {
+    ; Has the player cleared the genkai adventure?
+    if ($character.adventure.clear.check($1, Genkai) = false) { 
+
+      ; If not, message the player.
+      $display.private.message2($1, $translate(NeedToDoGenkaiQuest))
+      halt
+    }
+  }
+
+  if (%current.level = 60) { halt }
+
+  if ($current.xp($1) >= $xp.to.level($1)) { $levelup($1) }
+
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Let's level up!
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 levelup {
@@ -393,17 +424,34 @@ levelup {
 
   ; Max HP and MP will automatically increase as the stats increase.
 
+  ; Increase the player's stats
+  var %stat.str $resting.str($1)
+  inc %stat.str $readini($jobfile($current.job($1)), LevelUpInfo, Str)
+  writeini $char($1) BaseStats Str %stat.str
 
+  var %stat.dex $resting.dex($1)
+  inc %stat.dex $readini($jobfile($current.job($1)), LevelUpInfo, Dex)
+  writeini $char($1) BaseStats Dex %stat.dex
+
+  var %stat.vit $resting.vit($1)
+  inc %stat.vit $readini($jobfile($current.job($1)), LevelUpInfo, Vit)
+  writeini $char($1) BaseStats Vit %stat.str
+
+  var %stat.int $resting.int($1)
+  inc %stat.int $readini($jobfile($current.job($1)), LevelUpInfo, Int)
+  writeini $char($1) BaseStats Int %stat.int
+
+  var %stat.mnd $resting.mnd($1)
+  inc %stat.mnd $readini($jobfile($current.job($1)), LevelUpInfo, Mnd)
+  writeini $char($1) BaseStats mnd %stat.int
+
+  var %stat.pie $resting.pie($1)
+  inc %stat.pie $readini($jobfile($current.job($1)), LevelUpInfo, Pie)
+  writeini $char($1) BaseStats Pie %stat.pie
 
   ; Tell the player all that he/she's won!
-  $display.private.message2($1, $translate(leveledupreward))
+  $display.private.message2($1, $translate(leveledupreward, $1))
   $display.message($translate(leveledup))
-
-
-  ; Restore the player's battle hp and mp to their resting hp/mp
-  writeini $char($1) Battle HP $resting.hp($1)
-  writeini $char($1) Battle MP $resting.mp($1)
-
 
 }
 

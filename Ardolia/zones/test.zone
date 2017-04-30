@@ -1,5 +1,6 @@
 [Info]
 Name=The Test Dungeon
+OriginalFile=test
 LevelRange=1
 MinimumPlayers=1
 PreReq=
@@ -9,6 +10,7 @@ ClearReward.Items=
 ClearReward.XP=10
 FameRewarded=1
 iLevel=1
+
 
 [0]
 Name=The Entrance

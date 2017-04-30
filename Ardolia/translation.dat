@@ -343,6 +343,8 @@ WaitYourTurn=$chr(3) $+ 4 $+ Error: $get_chr_name($2) wait for your turn!
 Can'tDoThisInBattle=$chr(3) $+ 4 $+ Error: This command only works outside of battle.
 NotInBattle=$chr(3) $+ 4 $+ Error: $2 is not currently in this battle!
 
+NeedToDoGenkaiQuest=$chr(3) $+ 4 $+ Error: In order to level up any further you first need to complete the Genkai quest. This is a solo level 50 adventure.  To start it use !start adventure genkai
+
 
 =======================
 Battle and Adventure Related Messages

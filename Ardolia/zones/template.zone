@@ -1,5 +1,6 @@
 ; [Info] stores information about the adventure
 ; Name = The name of the dungeon
+; OriginalFile= the file name (minus the .zone) -- This is needed because this file is copied to adventure.zone when active
 ; LevelRange= A general level range of the dungeon necessary to successfully win
 ; MinimumPlayers= How many players must be in the party to go into this adventure?
 ; MaximumPlayers= Is there a max amount of players who can join this adventure?
@@ -14,6 +15,7 @@
 
 [Info]
 Name=
+OriginalFile=
 LevelRange=
 MinimumPlayers=
 PreReq=

@@ -16,7 +16,8 @@ TwitchDelayTime=2
 ShowDeleteEcho=false
 currency=Gil
 RPGMode=false
+GenakiQuest=true
 
 
 [version]
-SystemDatVersion=042617
+SystemDatVersion=043017

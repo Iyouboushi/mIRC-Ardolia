@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 04/29/17
+;;;; Last updated: 04/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -81,6 +81,7 @@ system_defaults_check {
     if ($readini(system.dat, system, ShowDeleteEcho) = $null) { writeini system.dat system ShowDeleteEcho false }
     if ($readini(system.dat, system, currency) = $null) { writeini system.dat system currency Gil }
     if ($readini(system.dat, system, RPGMode) = $null) { writeini system.dat system RPGMode false }
+    if ($readini(system.dat, system, GenkaiQuest) = $null) { writeini system.dat system GenkaiQuest true }
 
     ; Certain battle/adventure settings
     if ($readini(adventure.dat, AdventureStats, TotalAdventures) = $null) { writeini adventure.dat TotalAdventures 0 }

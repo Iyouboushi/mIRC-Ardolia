@@ -33,7 +33,15 @@ Ardolia Bot Changelog
 - Added !equip weaponname
 - Added !equip armor/shield name
 - Added !unequip weapnname
-- Added !unequip armor/shield name 
+- Added !unequip armor/shield name
+- Added !armor armortype  to show a list of the armor of that type you own
+- Added !weapons weapontype to show a list of weapons with that weapon type that you own
 - Added the adventure command: !party    This will show a list of who's in the adventure party
 - Added rarity to equipment and weapons.  1-5 with 5 being considered legendary
 - Fixed a bad bug that would cause player files to be erased at the end of adventures
+
+04-30-2017
+- Added code to check for level up
+- Added code to check for level 60 level cap and the soft cap of 50. It checks to see if the Genkai adventure is clear.
+- Added code for increasing the number of battles/adventures and wins/losses of each.
+- Fixed adventures to write the $fulldate when the very first adventure is started

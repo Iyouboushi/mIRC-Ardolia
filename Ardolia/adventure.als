@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 04/29/17
+;;;; Last updated: 04/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -132,7 +132,7 @@ adventure.begin {
   writeini $txtfile(adventure.txt) info AdventureStarted $fulldate
 
   ; Is this the first adventure ever done? If so, let's write it to adventure.dat
-  if ($readini(adventure.dat, AdventureStats, FirstAdventure) = $null) { writeini adventure.dat AdventureStats FirstAdventure $ctime }
+  if ($readini(adventure.dat, AdventureStats, FirstAdventure) = $null) { writeini adventure.dat AdventureStats FirstAdventure $fulldate }
 
   ; Set variables
   set %current.room 0
@@ -162,18 +162,29 @@ adventure.end {
   var %total.adventure.duration $adventure.calculateduration
 
   if ($1 = victory) {  
-    echo -a we win! 
-    $adventure.givefame
+    echo -a we win!
+
+    ; Increase the # of adventures we've cleared
+    var %total.adventures $readini(adventure.dat, AdventureStats, TotalAdventuresCleared)
+    inc %total.adventures 1
+    writeini adventure.dat AdventureStats TotalAdventuresCleared %total.adventures
   }
-  if (($1 = defeat) || ($1 = failure)) { $display.message($translate(AdventureFailMessage),global) }
+  if (($1 = defeat) || ($1 = failure)) { 
+    $display.message($translate(AdventureFailMessage),global) 
+
+    ; Increase the # of adventures we've failed
+    var %total.adventures $readini(adventure.dat, AdventureStats, TotalAdventuresFailed)
+    inc %total.adventures 1
+    writeini adventure.dat AdventureStats TotalAdventuresFailed %total.adventures
+
+  }
 
   ; Kill any related timers..
   $clear_timers
 
   ; Award the spoils and xp of battle
   ; to be coded later
-  $adventure.giveitems
-  $adventure.givexp($1)
+  $adventure.rewards($1)
 
   set %ignore.clearfiles no
 
@@ -259,10 +270,48 @@ adventure.clearfiles {
       $zap_char(%name) 
     }
 
-    ; If the person is a player, let's refill their hp/mp/stats to max.
+    ; Check to see if this personc an level up
+    $levelup.check(%name)
+
+    ; Let's refill their hp/mp/stats to max.
     $fulls(%name)
     if ((%clear.flag = $null) && ($resting.str(%name) != $null)) { $oldchar.check(%name) }
   }
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Rewards items, xp, fame
+; after the adventure is over
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.rewards {
+  ; This code block is not finished so return for now.
+
+  return
+
+  ; Cycle through
+
+
+  var %xp.to.reward 0
+
+  if ($1 = victory) { 
+
+    ; Write that we've cleared this adventure
+    writeini $char(%current.partymember) AdventuresCleared $readini($zonefile(adventure.zone), Info, OriginalFile) true 
+
+    ; Give some fame
+
+    ; Give a random clear reward
+
+    ; Add some bonus xp for clearing the adventure
+    inc %xp.to.reward $readini($zonefile(adventure.zone), Info, ClearReward.XP)
+
+  } 
+
+
+  ; Reward XP
+
+  ; Reward spoils (if there are any)
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; admin.mrc
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 on 2:TEXT:!bot admin*:*: {  $bot.admin(list) }
@@ -175,11 +175,16 @@ on 50:TEXT:@password reset *:*:{
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 50:TEXT:@add *:*:{  
   if (($3 = xp) || ($3 = exp)) { 
-    var %current.xp $current.xp($2) |  inc %current.xp $4
-    if ($get.level($2) >= 75) { writeini $char($2) exp CapacityPoints %current.xp | $display.message(7* 2 $+ $get_chr_name($2) has gained $4 capacity points)  } 
-    else {  writeini $char($2) exp $current.job($2) %current.xp | $display.message(7* 2 $+ $get_chr_name($2) has gained $4 experience points)  }
+    $checkchar($2)
 
-    if (%current.xp >= $xp.to.level($2)) { $levelup($2) }
+    var %current.xp $current.xp($2) |  inc %current.xp $4
+
+    if ($current.level($2) >= 60) { echo -a can't do this }
+
+    writeini $char($2) exp $current.job($2) %current.xp | $display.message(7* 2 $+ $get_chr_name($2) has gained $4 experience points) 
+
+    $levelup.check($2)
+
   }
 
   if ($3 = gil) {  $currency.add($2, gil, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 gil) }

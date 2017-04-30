@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 04/28/17
+;;;; Last updated: 04/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -46,6 +46,11 @@ alias battle.generate {
 
   ; Set the turns
   set %current.turn 0 | inc %current.battle.number 1
+
+  ; Increase the # of battles we've had in this game
+  var %total.battles $readini(adventure.dat, BattleStats, TotalBattles)
+  inc %total.battles 1
+  writeini adventure.dat BattleStats TotalBattles %total.battles
 
   ; The battle may now start
   $battle.start
@@ -293,6 +298,13 @@ alias battle.end {
   if (($1 = defeat) || ($1 = draw)) { 
     ; display message saying the party is dead 
     $display.message($translate(EvilhasWon), global)
+
+    ; Increase the # of battles we've lost
+    var %total.battles $readini(adventure.dat, BattleStats, BattlesLost)
+    inc %total.battles 1
+    writeini adventure.dat BattleStats BattlesLost  %total.battles
+
+    ; End the adventure
     $adventure.end($1) 
     halt  
   }
@@ -304,6 +316,11 @@ alias battle.end {
   $display.message(7*2 $readini($zonefile(adventure), %current.room, CombatEndDesc), global)
   writeini $zonefile(adventure) %current.room Clear true
   unset %battleis
+
+  ; Increase the # of battles we've won
+  var %total.battles $readini(adventure.dat, BattleStats, BattlesWon)
+  inc %total.battles 1
+  writeini adventure.dat BattleStats BattlesWon %total.battles
 
   ; Is this the final boss/combat room of the dungeon?  If so, we won! Let's end the adventure with victory
   if (($1 = victory) && (%current.room = $readini($zonefile(adventure), Info, ClearRoom))) { $adventure.end(victory)   }
