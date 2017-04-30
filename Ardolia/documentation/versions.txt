@@ -29,3 +29,11 @@ Ardolia Bot Changelog
 - Added the code to return the proper armor defense/magic defense
 - Added code to calculate iLevel
 - Added the ability for adventures to have a minimum iLevel to enter/start
+- Added the ability for adventures to have a maximum player limit (including 1 if you want to have solo adventures)
+- Added !equip weaponname
+- Added !equip armor/shield name
+- Added !unequip weapnname
+- Added !unequip armor/shield name 
+- Added the adventure command: !party    This will show a list of who's in the adventure party
+- Added rarity to equipment and weapons.  1-5 with 5 being considered legendary
+- Fixed a bad bug that would cause player files to be erased at the end of adventures
