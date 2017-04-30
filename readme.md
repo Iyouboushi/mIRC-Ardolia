@@ -29,27 +29,23 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
    
 ## WHAT'S NEW?
 
-* APRIL 28, 2017
+For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-!new char (race) can now have human, elf, or galka
+* APRIL 29, 2017
 
-Basic stats added. Starting Stats are based on the race you pick and will be used for every level 1 job.
+With this update it is now possible to equip and unequip weapons and armor.  Players will now start with a basic tunic already equipped and their fists weapon. 
 
-Lots of work done on viewing current and resting stats.
+Also with this update comes more player commands.  !party will display a list of who's in the adventure party (if an adventure is currently going) and !view-info weapon weaponname will display information on a weapon. !weapons weapontype will show you what weapons of that type you own. !armor armortype will show you the armor you own of that type (for example use !armor body)
 
-Started copying the FFXIV damage formula over to this game. It might not be 100% but it's close enough for what I need it for.
+Rarity has been added weapons and armor. It can go from 1 to 5 with 1 being super common and 5 being legendary.
 
-Battle system improved slightly.
+Armor will now return the proper defense/magic defense values.
 
-Still a lot to do but it's chugging along.
-
-* APRIL 27, 2017
-
-As of right now only basic commands and systems have been added.  Players can create new characters (!new char human) to join the game, set new passwords (the bot will tell you how), start an adventure (!start adventure test), join other people's parties (!enter) and do basic adventure commands (!go, !look, !warp, !push/!pull/!read/!open).  The battle system is incredibly basic and players will only do 1 damage to monsters but it can be done with (/me attacks monstername or !attack monstername)
+And last, but not least, a bad bug that was erasing player files at the end of adventures should be fixed.
 
 ## TO-DO
 
-In order to make this game fully playable there are still a huge amount of things to be done.  Before I can do any of those I first need to decide what system the game will be based on.  Deciding the system will determine what stats the characters use, how the battle system will be coded, what items/armor/weapons will be added, among many other things. Until the system is chosen this is about as far as the game will get except for maybe some minor code adjustments and finishing up a few of the commands (chests and tree chopping). 
+In order to make this game fully playable there are still a huge amount of things to be done.  Up next will be fixing !look and adding help information to help players learn more about the game,  
 
 ## THANKS
 
