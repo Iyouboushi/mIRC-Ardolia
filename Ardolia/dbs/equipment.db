@@ -5,7 +5,8 @@ armor_head.lst, armor_body.lst, armor_legs.lst, armor_feet.lst
 and armor_hands.lst.  If you add new equipment make sure you put
 the name of the piece in the appropriate .lst file.
 
-Valid EquipLocations are: Head, Body, Legs, Feet, Hands
+Valid EquipLocations are: Shield, Head, Body, Legs, Feet, Hands
+                          Ears, Neck, Wrists, Ring
 ====================================================================
 
 
@@ -55,5 +56,14 @@ FEET
 HANDS
 ========
 
+========
+EARS
+========
 
+========
+WRISTS
+========
 
+========
+RINGS
+========

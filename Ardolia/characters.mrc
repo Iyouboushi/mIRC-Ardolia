@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,6 +79,8 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
   ; Copy the starting stats to the current stats
   $copyini($nick, StartingStats, BaseStats)
   $fulls($nick)
+
+  unset %password
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -392,52 +394,49 @@ on 2:TEXT:!spells*:*: {
 ; View your weapons
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!weapons*:*: {
-  unset %*.wpn.list | unset %weapon.list
-  if ($2 = $null) { $weapon.list($nick) | set %wpn.lst.target $nick }
-  else { $checkchar($2) | $weapon.list($2) | set %wpn.lst.target $2 }
-  /.timerDisplayWeaponList $+ $nick -d 1 3 /display_weapon_lists %wpn.lst.target channel
+  unset %weapon.list
+  if ($2 = $null) { $display.message($translate(NeedToSayWhichWeaponType, $nick), global) | halt }
+  $weapons.list($nick, $2) | $readweapons($nick, channel, $2)  
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; View your armor
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!armor*:#:{ 
-  if ($2 != $null) { $checkchar($2) | $armor.list($2) | $readarmor($2, channel) }
-  else {  $armor.list($nick) | $readarmor($nick, channel) } 
+  if ($2 = $null) { $display.message($translate(NeedToSayWhichArmor, $nick), global) | halt }
+  $armor.list($nick, $2) | $readarmor($nick, channel, $2)  
 }
 on 2:TEXT:!armor*:?:{ 
-  if ($2 != $null) { $checkchar($2) | $armor.list($2) | $readarmor($2, private) }
-  else {  $armor.list($nick) | $set_chr_name($nick) | $readarmor($nick, private) } 
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; View your accessories
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!accessories*:#:{ 
-  if ($2 != $null) { $checkchar($2) | $accessories.list($2) | $readaccessories($2, channel) }
-  else { $accessories.list($nick) | $readaccessories($nick, channel) }
-}
-on 2:TEXT:!accessories*:?:{ 
-  if ($2 != $null) { $checkchar($2) | $accessories.list($2) | $readaccessories($2, private) }
-  else { $accessories.list($nick) | $readaccessories($nick, private) }
+  if ($2 = $null) { $display.private.message($translate(NeedToSayWhichArmor, $nick) | halt }
+  $armor.list($nick, $2) | $readarmor($nick, private, $2)  
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; View your inventory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!items*:#:{ 
+  ; To be re-added
+  halt
+
   if ($2 != $null) { $checkchar($2) | $items.list($2) | $readitems($2, channel) }
   else {  $items.list($nick) | $readitems($nick, channel) }
 }
 on 2:TEXT:!inventory*:#:{ 
+  ; to be re-added
+  halt
+
   if ($2 != $null) { $checkchar($2) | $items.list($2) | $readitems($2, channel) }
   else {  $items.list($nick) | $readitems($nick, channel) }
 }
-on 2:TEXT:!misc items*:#:{ 
+on 2:TEXT:!spoils*:#:{ 
+  ; to be re-added
+  halt
   if ($3 != $null) { $checkchar($3) | $miscitems.list($3) | $readmiscitems($3, channel) }
   else {  $miscitems.list($nick) | $readmiscitems($nick, channel) }
 }
-on 2:TEXT:!misc items*:?:{ 
+on 2:TEXT:!spoils*:?:{ 
+  ; to be re-added
+  half
   if ($3 != $null) { $checkchar($3) | $miscitems.list($3) | $readmiscitems($3, private) }
   else {  $miscitems.list($nick) | $readmiscitems($nick, private) }
 }
@@ -465,102 +464,54 @@ on 2:TEXT:!desc*:#: {  $checkscript($2-)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Equip command
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; !equip [right/left] weaponname
-; !equip accessory [1 or 2] accessoryname
+; !equip weaponname
 ; !equip armor armorname
+; !equip shield shieldname
 
 on 2:TEXT:!equip *:*: { 
-  if ($2 = accessory) { 
-    if ($3 isnum) { $wear.armor($nick, $4, $3) }
-    else {  $wear.armor($nick, $3, 1) }
-    halt
-  }
   if ($2 = armor) { $wear.armor($nick, $3) | halt }
+  if ($2 = shield) { $wear.armor($nick, $3) | halt }
 
-  if ($is_charmed($nick) = true) { $display.message($readini(translation.dat, status, CurrentlyCharmed),private) | halt }
-  if ($is_confused($nick) = true) { $set_chr_name($nick) | $display.message($readini(translation.dat, status, CurrentlyConfused),private) | halt }
-  if ($readini($char($nick), statusEffect, weapon.lock) != $null) { $set_chr_name($nick) | $display.message($readini(translation.dat, status, CurrentlyWeaponLocked),private) | halt  }
-
-  ; If we're trying to equip a shield, check for a 2h weapon and set the weapon we're equipping to to the left slot (LeftHand)
-  if (($2 != right) && ($2 != left)) { 
-    if ($readini($dbfile(weapons.db), $2, type) = shield) { 
-      var %equiphand left | var %weapon.to.equip $2
-      if ($readini($dbfile(weapons.db), $return.equipped($1, RightHand), 2Handed) = true) { $display.private.message($translate(Using2HWeapon)) | halt }
-    }
-    if ($readini($dbfile(weapons.db), $2, type) != shield) { 
-      var %equiphand right | var %weapon.to.equip $2 
-    }
-  }
-
-  ; If we're equipping a right
-  if ($2 = right) {
-    if ($readini($dbfile(weapons.db), $3, type) = shield) { 
-      var %equiphand left | var %weapon.to.equip $3
-    }
-    if ($readini($dbfile(weapons.db), $3, type) != shield) { 
-      var %equiphand right | var %weapon.to.equip $3 
-    }
-  }
-
-  if ($2 = left) {
-    ; check for the dual-wield skill
-    if (($return.passive.on($nick, DualWield) = false) && ($readini($dbfile(weapons.db), $2, type) != shield)) { $set_chr_name($nick) | $display.message($translate(Can'tDualWield), public) | unset %real.name | halt }
-
-    ; Is the right-hand weapon a 2h weapon?
-    if ($readini($dbfile(weapons.db), $readini($char($nick), weapons, equipped), 2Handed) = true) { $display.private.message($translate(Using2HWeapon)) | halt }
-
-    ; Set the variables.
-    var %equiphand left | var %weapon.to.equip $3
-
-    ; Is the left-hand weapon a 2h weapon?
-    if ($readini($dbfile(weapons.db), %weapon.to.equip, 2Handed) = true) { var %equiphand both }
-  }
+  if ((%adventureis = on) && ($adventure.alreadyinparty.check($nick) = true)) { $display.message($translate(CanOnlySwitchOutsideAdventure, $nick), private) | halt }
 
   ; Is the weapon already equipped?
-  if ((%weapon.to.equip = $return.equipped($1, RightHand)) || (%weapon.to.equip = $return.equipped($1, LeftHand))) { $set_chr_name($nick) | $display.message($translate(WeaponAlreadyEquipped), public) | unset %real.name | halt }
+  if ($2 = $return.equipped($nick, Weapon)) { $set_chr_name($nick) | $display.message($translate(WeaponAlreadyEquipped, $nick, $2), private) | unset %real.name | halt }
 
   ; Does the player own this weapon?
-  if ($inventory.amount($nick, %weapon.to.equip) < 1) { $set_chr_name($nick) | $display.message($translate(DoNotHaveWeapon) , private) | unset %real.name | halt }
-
-  if ($readini($dbfile(weapons.db), %weapon.to.equip, 2Handed) = true) { var %equiphand both }
+  if ($inventory.amount($nick, $2) < 1) { $set_chr_name($nick) | $display.message($translate(DoNotHaveWeapon, $nick) , private) | unset %real.name | halt }
 
   ; Is the player the correct level and job to use this weapon?
-  var %jobs.list $readini($dbfile(weapons.db), %weapon.to.equip, jobs)
-  if (($istok(%jobs.list, $current.job($nick), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToEquip) , private) | halt }
+  var %jobs.list $readini($dbfile(weapons.db), $2, jobs)
+  if (($istok(%jobs.list, $current.job($nick), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToEquip, $nick) , private) | halt }
 
   ; Is the player's level too low to equip this?
-  if ($get.level($nick) < $readini($dbfile(weapons.db), %weapon.to.equip, level)) { $display.message($translate(LevelTooLowToEquip) , private) | halt }
+  if ($get.level($nick) < $readini($dbfile(weapons.db), $2, PlayerLevel)) { $display.message($translate(LevelTooLowToEquip, $nick) , private) | halt }
 
-  $character.wieldweapon($nick, %equiphand, %weapon.to.equip)
+  $character.wieldweapon($nick, $2)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Unequip command
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; !unequip [accessory/armor] [# for accessory slot] nametounequip
+; !unequip armor armorname
+; !unequip shield shieldname
+; !unequip weaponname
+
 on 2:TEXT:!unequip *:*: { 
 
-  if ($2 = accessory) { 
-    if ($3 isnum) {  $remove.armor($nick, $4, $3) }
-    else {  $remove.armor($nick, $3, 1) }
-    halt
-  }
   if ($2 = armor) { $remove.armor($nick, $3) | halt }
+  if ($2 = shield) { $remove.armor($nick, $3) | halt }
 
-  if ($is_charmed($nick) = true) { $display.message($readini(translation.dat, status, CurrentlyCharmed),private) | halt }
-  if ($is_confused($nick) = true) { $set_chr_name($nick) | $display.message($readini(translation.dat, status, CurrentlyConfused),private) | halt }
-  if ($readini($char($nick), statusEffect, weapon.lock) != $null) { $set_chr_name($nick) | $display.message($readini(translation.dat, status, CurrentlyWeaponLocked),private) | halt  }
+  ; Can only swap equipment outside of adventures
+  if ((%adventureis = on) && ($adventure.alreadyinparty.check($nick) = true)) { $display.message($translate(CanOnlySwitchOutsideAdventure), private) | halt }
 
-  $weapon_equipped($nick) 
+  ; We can hardly unequip our fists
+  if ($2 = fists) { $set_chr_name($nick) | $display.message($translate(Can'tDetachHands),private) | halt }
 
-  if (($2 = %weapon.equipped.left) || ($2 = %weapon.equipped.right)) { 
-    if ($2 = fists) { $set_chr_name($nick) | $display.message($translate(Can'tDetachHands),private) | halt }
-    else { $set_chr_name($nick) | writeini $char($nick) equipment RightHand Fists | writeini $char($nick) equipment LeftHand nothing | $display.message($translate(UnequipWeapon),private) | halt }
-    writeini $char($nick) Battle TP 0
-  }
+  if ($return.equipped($nick, weapon) != $2) { $display.private.message($translate(WrongEquippedWeapon, $nick, $2)) | halt } 
 
-  else {  $display.private.message($translate(WrongEquippedWeapon)) | halt }
-  unset %weapon.equipped.left | unset %weapon.equipped.right | unset %weapon.equipped
+  writeini $char($nick) equipment Weapon Fists 
+  $display.message($translate(UnequipWeapon, $nick, $2),private) 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -175,7 +175,6 @@ adventure.end {
   $adventure.giveitems
   $adventure.givexp($1)
 
-
   set %ignore.clearfiles no
 
   if (%ignore.clearfiles != yes) {
@@ -243,7 +242,7 @@ adventure.clearfiles {
   else { 
     var %clear.flag $flag(%name)
 
-    if ((%clear.flag = $null) && ($readini($char(%name), basestats, hp) = $null)) {
+    if ((%clear.flag = $null) && ($resting.hp(%name) = $null)) {
       if ($return.systemsetting(ShowDeleteEcho) = true) { echo -a -=- DELETING %name :: Reason: NULL HP }
       .remove $char(%name) 
     }
@@ -261,7 +260,8 @@ adventure.clearfiles {
     }
 
     ; If the person is a player, let's refill their hp/mp/stats to max.
-    if ((%clear.flag = $null) && ($readini($char(%name), basestats, str) != $null)) { $oldchar.check(%name) }
+    $fulls(%name)
+    if ((%clear.flag = $null) && ($resting.str(%name) != $null)) { $oldchar.check(%name) }
   }
 }
 
@@ -293,7 +293,6 @@ adventure.actions.checkforzero {
     halt
   }
 }
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; The !look command

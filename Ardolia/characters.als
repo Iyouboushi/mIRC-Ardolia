@@ -516,8 +516,7 @@ bonus.stats {
   if ($return.equipped($1, ears) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, ears), $2) } 
   if ($return.equipped($1, neck) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, neck), $2) }
   if ($return.equipped($1, wrists) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, wrists), $2) }
-  if ($return.equipped($1, RingRight) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, RingRight), $2) }
-  if ($return.equipped($1, RingLeft) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, RingLeft), $2) }
+  if ($return.equipped($1, Ring) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, Ring), $2) }
 
   ; Let's check shield and weapon
   if ($return.equipped($1, shield) != nothing) { inc %bonus.stat $readini($dbfile(equipment.db), $return.equipped($1, shield), $2) }
@@ -547,14 +546,16 @@ character.ilevel {
   if ($return.equipped($1, ears) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, ears), ItemLevel) } 
   if ($return.equipped($1, neck) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, neck), ItemLevel) }
   if ($return.equipped($1, wrists) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, wrists), ItemLevel) }
-  if ($return.equipped($1, RingRight) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, RingRight), ItemLevel) }
-  if ($return.equipped($1, RingLeft) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, RingLeft), ItemLevel) }
+  if ($return.equipped($1, Ring) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, RingRight), ItemLevel) }
 
-  ; Let's check shield and weapon
-  if ($return.equipped($1, shield) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, shield), ItemLevel) }
-  inc %ilevel $readini($dbfile(weapons.db), $return.equipped($1, weapon), ItemLevel)
+  ;Paladins check shields, otherwise it multiplies the weapon twice.
+  if ($current.job($1) = PLD) { 
+    if ($return.equipped($1, shield) != nothing) { inc %ilevel $readini($dbfile(equipment.db), $return.equipped($1, shield), ItemLevel) }
+    inc %ilevel $readini($dbfile(weapons.db), $return.equipped($1, weapon), ItemLevel)
+  }
+  else { inc %ilevel $calc($readini($dbfile(weapons.db), $return.equipped($1, weapon), ItemLevel) *2) }
 
-  var %iLevel $round($calc(%ilevel / 12),0)
+  var %iLevel $round($calc(%ilevel / 11),0)
 
   if (%iLevel <= 0) {  return 1 }
   else { return %iLevel }
@@ -637,52 +638,11 @@ character.spells {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Displays a char's weapon list
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-display_weapon_lists {  $set_chr_name($1) 
-
-  set %replacechar $chr(044) $chr(032) 
-  %weapon.list1 = $replace(%weapon.list1, $chr(046), %replacechar)
-
-  if ($2 = channel) { 
-    $display.message($translate(ViewWeaponList),private)
-
-    var %weapon.counter 2
-    while ($weapons.returnlist(%weapon.counter) != $null) {
-      set %display.weaponlist $weapons.returnlist(%weapon.counter)
-      %display.weaponlist = $replace(%display.weaponlist, $chr(046), %replacechar)
-
-      $display.message(3 $+ %display.weaponlist)
-      $weapons.unsetlist(%weapon.counter) | unset %display.weaponlist
-      inc %weapon.counter
-      if (%weapon.counter > 100) { echo -a breaking to prevent a flood | break }
-    }
-  }
-  if ($2 = private) {
-    $display.private.message2($3,$translate(ViewWeaponList))
-
-    var %weapon.counter 2
-    while ($weapons.returnlist(%weapon.counter) != $null) {
-      set %display.weaponlist $weapons.returnlist(%weapon.counter)
-      %display.weaponlist = $replace(%display.weaponlist, $chr(046), %replacechar)
-
-      $display.private.message2($3,3 $+ %display.weaponlist)
-      $weapons.unsetlist(%weapon.counter) | unset %display.weaponlist
-      inc %weapon.counter
-      if (%weapon.counter > 100) { echo -a breaking to prevent a flood | break }
-    }
-  }
-  unset %wpn.lst.target | unset %base.weapon.list | unset %weapons
-  unset %weapon.list1 | unset %weapon.counter | unset %replacechar
-  unset %weaponlist.counter | unset %*.wpn.list | unset %weapon.list
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Wield a weapon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 character.wieldweapon {
-  writeini $char($1) equipment weapon $3
-  $display.message($translate(EquipWeaponPlayer, $1),private)
+  writeini $char($1) equipment weapon $2
+  $display.message($translate(EquipWeaponPlayer, $1, $2),private)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -691,53 +651,27 @@ character.wieldweapon {
 wear.armor {
   ; $1 = the person
   ; $2 = the armor we're going to equip
-  ; $3 = accessory slot for accessories (1 by default)
 
-  if ((%adventureis = on) && ($in.battle($1) = true)) { $display.message($readini(translation.dat, errors, CanOnlySwitchArmorOutsideBattle), private) | halt }
+  if (%adventureis = on) { $display.message($translate(CanOnlySwitchOutsideAdventure), private) | halt }
 
+  ; Does the player own that the armor?
+  if ($inventory.amount($1, $2) <= 0) { $display.message($translate(DoesNotHaveThatItem, $1), private) | halt }
 
-  ; Does the player own that the armor or accessory?
-  if ($inventory.amount($1, $2) <= 0) { $display.message($readini(translation.dat, errors, DoesNotHaveThatItem), private) | halt }
+  ; Armor equip
+  var %item.location $readini($dbfile(equipment.db), $2, EquipLocation)
+  if (%item.location = $null) { $display.message($translate(ItemIsNotArmor), private) | halt }
 
-  if ($3 != $null) { 
-    ; Accessory equip
+  ; Can the job wear the armor?
+  var %jobs.list $readini($dbfile(equipment.db), $2, jobs)
+  if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToWear) , private) | halt }
 
-    if ($readini($dbfile(equipment.db), $2, type) = $null) { $display.message($readini(translation.dat, errors, ItemIsNotAccessory), private) | halt }
+  ; Are we high enough level?
+  var %armor.level.requirement $readini($dbfile(equipment.db), $2, level)
+  if ($get.level($1) < %armor.level.requirement) { $display.message($readini($translate(ArmorLevelHigher, $1), private) | halt }
 
-    var %item.location accessory $+ $3
-
-    ; Can the job wear the armor?
-    var %jobs.list $readini($dbfile(equipment.db), $2, jobs)
-    if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($readini(translation.dat, errors, WrongJobToWear) , private) | halt }
-
-    ; Are we high enough level?
-    var %armor.level.requirement $readini($dbfile(equipment.db), $2, level)
-    if ($get.level($1) < %armor.level.requirement) { $display.message($readini(translation.dat, errors, AccessoryLevelHigher), private) | halt }
-
-    ; Equip the armor and tell the world
-    writeini $char($1) equipment %item.location $2
-    if ($3 = 1) { $display.message($readini(translation.dat, system,EquippedAccessory), global) }
-    if ($3 = 2) { $display.message($readini(translation.dat, system,EquippedAccessory2), global) }
-  }
-
-  else {
-    ; Armor equip
-    var %item.location $readini($dbfile(equipment.db), $2, EquipLocation)
-    if (%item.location = $null) { $display.message($readini(translation.dat, errors, ItemIsNotArmor), private) | halt }
-
-    ; Can the job wear the armor?
-    var %jobs.list $readini($dbfile(equipment.db), $2, jobs)
-    if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($readini(translation.dat, errors, WrongJobToWear) , private) | halt }
-
-    ; Are we high enough level?
-    var %armor.level.requirement $readini($dbfile(equipment.db), $2, level)
-    if ($get.level($1) < %armor.level.requirement) { $display.message($readini(translation.dat, errors, ArmorLevelHigher), private) | halt }
-
-    ; Equip the armor and tell the world
-    writeini $char($1) equipment %item.location $2
-    $display.message($translate(EquippedArmor), global)
-  }
-
+  ; Equip the armor and tell the world
+  writeini $char($1) equipment %item.location $2
+  $display.message($translate(EquippedArmor), global)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -745,37 +679,21 @@ wear.armor {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 remove.armor {
   ; $1 = the person
-  ; $2 = the armor/accessory being removed
-  ; $3 = the accessory slot (1 by default)
+  ; $2 = the armor being removed
 
-  if ((%adventureis = on) && ($in.battle($1) = true)) { $display.message($readini(translation.dat, errors, CanOnlySwitchArmorOutsideBattle), private) | halt }
+  if ((%adventureis = on) && ($adventure.alreadyinparty.check($1) = true)) { $display.message($translate(CanOnlySwitchOutsideAdventure), private) | halt }
 
   ; Does the player own that the armor or accessory?
-  if ($inventory.amount($1, $2) <= 0) { $display.message($readini(translation.dat, errors, DoesNotHaveThatItem), private) | halt }
+  if ($inventory.amount($1, $2) <= 0) { $display.message($translate(DoesNotHaveThatItem, $1), private) | halt }
 
-  if ($3 != $null) { 
-    ; Accessory unequip
+  ; Armor unequip
+  var %item.location $readini($dbfile(equipment.db), $2, EquipLocation)
+  var %worn.item $return.equipped($1, %item.location)
 
-    if ($3 = 1) {  var %equipped.accessory $return.equipped($1, accessory1) }
-    else { var %equipped.accessory $return.equipped($1, accessory2) }
+  if (%worn.item != $2) { $display.message($translate(NotWearingThatArmor), private) | halt }
 
-    if ($2 != %equipped.accessory) { $display.message($translate(NotWearingThatAccessory), private)  | halt }
-
-    writeini $char($1) equipment accessory $+ $3 nothing
-    if ($3 = 1) { $display.message($translate(RemovedAccessory), global) }
-    if ($3 = 2) { $display.message($translate(RemovedAccessory2), global) }
-  }
-
-  else {
-    ; Armor unequip
-    var %item.location $readini($dbfile(equipment.db), $2, EquipLocation)
-    var %worn.item $return.equipped($1, %item.location)
-
-    if (%worn.item != $2) {  $display.message($translate(NotWearingThatArmor), private) | halt }
-
-    writeini $char($1) equipment %item.location nothing
-    $display.message($translate(RemovedArmor), global)
-  }
+  writeini $char($1) equipment %item.location nothing
+  $display.message($translate(RemovedArmor, $1, $2), global)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -850,125 +768,60 @@ readaccessories {
   unset %accessories.* | unset %accessory*
 }
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Displays a char's armor
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 readarmor {
-  if (%armor.head != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewArmorHead),private) }
-    if ($2 = private) { $display.private.message($translate(ViewArmorHead)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmorHead)) }
-  }
-  if (%armor.head2 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.head2,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.head2) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.head2) }
-  }
-  if (%armor.head3 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.head3,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.head3) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.head3) }
-  }
-  if (%armor.head4 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.head4,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.head4) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.head4) }
+  ; $1 = the person who's checking
+  ; $2 = channel, private, dcc
+  ; $3 = the armor type we're searching for (head, body, legs, feet, hands, ears, neck, wrists, ring, shield)
+
+  if (%armor.list = $null) { 
+    if ($2 = channel) { $display.message($translate(HasNoArmor, $1, $3),private) | halt }
+    if ($2 = private) { $display.private.message($translate(HasNoArmor, $1, $3)) | halt }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoArmor, $1, $3)) | halt }
   }
 
-  if (%armor.body != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewArmorBody),private) }
-    if ($2 = private) { $display.private.message($translate(ViewArmorBody)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmorBody)) }
-  }
-  if (%armor.body2 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.body2,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.body2) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.body2) }
-  }
-  if (%armor.body3 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.body3,private) }
-    if ($2 = private) {  $display.private.message(3 $+ %armor.body3) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.body3) }
-  }
-  if (%armor.body4 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.body4,private) }
-    if ($2 = private) {  $display.private.message(3 $+ %armor.body4) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.body4) }
-  }
+  if ($2 = channel) { $display.message($translate(ViewArmor, $1, $3), private) }
+  if ($2 = private) { $display.private.message($translate(ViewArmor, $1, $3)) }
+  if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmor, $1, $3)) } 
 
-  if (%armor.legs != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewArmorLegs),private) }
-    if ($2 = private) {  $display.private.message($translate(ViewArmorLegs)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmorLegs)) }
-  }
-  if (%armor.legs2 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.legs2,private) }
-    if ($2 = private) {  $display.private.message(3 $+ %armor.legs2) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.legs2) }
-  }
-  if (%armor.legs3 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.legs3,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.legs3) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.legs3) }
-  }
-  if (%armor.legs4 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.legs4,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.legs4) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.legs4) }
-  }
+  if (%armor.list2 != $null) { $display.message(%armor.list2), global) }
+  if (%armor.list3 != $null) { $display.message(%armor.list3), global) }
+  if (%armor.list4 != $null) { $display.message(%armor.list4), global) }
+  if (%armor.list5 != $null) { $display.message(%armor.list5), global) }
+  if (%armor.list6 != $null) { $display.message(%armor.list6), global) }
 
-  if (%armor.feet != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewArmorFeet),private) }
-    if ($2 = private) {  $display.private.message($translate(ViewArmorFeet)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmorFeet)) }
-  }
-  if (%armor.feet2 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.feet2,private) }
-    if ($2 = private) {  $display.private.message(3 $+ %armor.feet2) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.feet2) }
-  }
-  if (%armor.feet3 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.feet3,private) }
-    if ($2 = private) {  $display.private.message(3 $+ %armor.feet3) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.feet3) }
-  }
-  if (%armor.feet4 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.feet4,private) }
-    if ($2 = private) {  $display.private.message(3 $+ %armor.feet4) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.feet4) }
-  }
-
-  if (%armor.hands != $null) {
-    if ($2 = channel) {  $display.message($translate(ViewArmorHands),private) }
-    if ($2 = private) { $display.private.message($translate(ViewArmorHands)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmorHands)) }
-  }
-  if (%armor.hands2 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.hands2,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.hands2) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.hands2) }
-  }
-  if (%armor.hands3 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.hands3,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.hands3) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.hands3) }
-  }
-  if (%armor.hands4 != $null) { 
-    if ($2 = channel) { $display.message(3 $+ %armor.hands4,private) }
-    if ($2 = private) { $display.private.message(3 $+ %armor.hands4) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %armor.hands4) }
-  }
-
-  if (((((%armor.head = $null) && (%armor.body = $null) && (%armor.legs = $null) && (%armor.feet = $null) && (%armor.hands = $null))))) { 
-    if ($2 = channel) { $display.message($translate(HasNoArmor),private) }
-    if ($2 = private) { $display.private.message($translate(HasNoArmor)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoArmor)) }
-  }    
-
-  unset %armor.head | unset %armor.body | unset %armor.legs | unset %armor.feet | unset %armor.hands | unset %armor.head2 | unset %armor.body2 | unset %armor.legs2 | unset %armor.feet2 | unset %armor.hands2
-  unset %armor.head3 | unset %armor.body3 | unset %armor.legs3 | unset %armor.feet3 | unset %armor.hands3
+  unset %armor.list*
 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Displays a char's weapons
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+readweapons {
+  ; $1 = the person who's checking
+  ; $2 = channel, private, dcc
+  ; $3 = the wepaon type we're searching for (HandToHand, Sword, etc)
+
+  if (%weapons.list = $null) { 
+    if ($2 = channel) { $display.message($translate(HasNoweapons, $1, $3),private) | halt }
+    if ($2 = private) { $display.private.message($translate(HasNoweapons, $1, $3)) | halt }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoweapons, $1, $3)) | halt }
+  }
+
+  if ($2 = channel) { $display.message($translate(Viewweapons, $1, $3), private) }
+  if ($2 = private) { $display.private.message($translate(Viewweapons, $1, $3)) }
+  if ($2 = dcc) { $dcc.private.message($nick, $translate(Viewweapons, $1, $3)) } 
+
+  if (%weapons.list2 != $null) { $display.message(%weapons.list2), global) }
+  if (%weapons.list3 != $null) { $display.message(%weapons.list3), global) }
+  if (%weapons.list4 != $null) { $display.message(%weapons.list4), global) }
+  if (%weapons.list5 != $null) { $display.message(%weapons.list5), global) }
+  if (%weapons.list6 != $null) { $display.message(%weapons.list6), global) }
+
+  unset %weapons.list*
+}
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Displays a char's items

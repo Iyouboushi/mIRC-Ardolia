@@ -347,7 +347,6 @@ clr_passhurt { writeini $char($1) Info Passhurt 0 | unset %passhurt | return }
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 clean.list {
   ; replace . with ,
-
   return $replace($1, $chr(046), $chr(044) $chr(032))
 }
 
@@ -843,7 +842,6 @@ jobs.list {
   return %jobs.temp.list
 }
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Returns the equipped weapon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -853,154 +851,80 @@ weapon_equipped {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Checks for a linked weapon
-; returns true or false
+; Builds the weapons list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-weapon.linkcheck {
-  ; $1 = person 
-  ; $2 = weapon to check for
+weapons.list {
+  unset %weapons.list* | unset %token.count.weapons
 
-  if (($readini($char($1), Weapons,Equipped) = $2) || ($readini($char($1), Weapons, EquippedLeft) = $2)) { return true }
-  else { return false }
-}
+  var %number.of.ini.items $ini($char($1), inventory, 0)
+  var %current.ini.item.num 1 | var %replacechar $chr(044) $chr(032)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Builds the  weapon list
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-weapon.list { 
-  $weapons.get.list($1)
+  while (%current.ini.item.num <= %number.of.ini.items) { 
 
-  unset %total.weapons.owned
-  return
-}
+    ; get item name
+    var %current.ini.item $ini($char($1), inventory, %current.ini.item.num)
+    var %current.ini.value $readini($char($1), np, inventory, %current.ini.item)
+    var %item.type $readini($dbfile(weapons.db), %current.ini.item, Type)
 
-weapons.get.list { 
-  unset %weapon.list1 | unset %weapons | unset %number.of.weapons | unset %base.weapon.list | unset %weapon.list2 | unset %weapon.list3 | unset %weapon.list4
-  set %total.weapons.owned 0 | unset %weapon.list
+    if (%item.type = $2) {
+      inc %token.count.weapons 1
 
-  var %weapon.list.place 1 |  set %weaponlist.counter 1 | var %number.of.inventory.items $ini($char($1), Inventory, 0)
-  var %weaponlist.totalweapons.counter 0
+      var %weapons.name %current.ini.item
+      var %player.amount $inventory.amount($1, %current.ini.item)
+      var %weapons.color $rarity.color.check(%weapons.name, weapon)
 
-  while (%weapon.list.place <= %number.of.inventory.items) {
-    var %current.inv.item $ini($char($1), inventory, %weapon.list.place)
-    var %current.inv.amount $inventory.amount($1, %current.inv.item)
-    var %current.inv.type $readini($dbfile(weapons.db), %current.inv.item, type)
+      ; If the player's level is too low for this accessory, the color is maroon
+      if ($get.level($1) < $readini($dbfile(weapons.db), %current.ini.item, PlayerLevel)) { var %weapons.color 5 }
 
-    ; Is it a weapon and do we have 1+ of it?
-    if ((%current.inv.amount > 0) && (%current.inv.type != $null)) { 
+      ; If the player's job can't use this accessory, the color is bright red
+      var %jobs.list $readini($dbfile(weapons.db), %current.ini.item, jobs)
+      if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { var %weapons.color 4 }
 
-      var %jobs.list $readini($dbfile(weapons.db), %current.inv.item, jobs)
+      ; Is the player wearing this weapons? If so we'll add a (w) to the name.
+      if ($readini($char($1), equipment, Weapon) = %current.ini.item) { var %wearing.weapons (w) }
 
-      var %weapon.color 3
-      if (+1 isin %weapon.name) { var %weapon.color 12 }
-      if ($readini($dbfile(weapons.db), %current.inv.item, Legendary) = true) { var %weapon.color 7 }
+      ; Build the name
+      var %weapons.name  $+ %weapons.color $+ %weapons.name %wearing.weapons $iif(%current.ini.item != fists, 3x $+ %player.amount) $+ 
 
-      ; If the player's level is too low for this weapon, the color is maroon
-      if ($get.level($1) < $readini($dbfile(weapons.db), %current.inv.item, level)) { var %weapon.color 5 }
-
-      ; If the player's job can't use this weapon, the color is bright red
-      if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { var %weapon.color 4 }
-
-      ; Build the weapon we're going to add to the list
-      ;    var %weapon_to_add  $+ %weapon.color $+ %current.inv.item $+ 3 $+ $chr(040) $+ %current.inv.amount $+ $chr(041) $+ 
-      var %weapon_to_add  $+ %weapon.color $+ %current.inv.item 3x $+ %current.inv.amount $+ 
-
-      inc %weaponlist.totalweapons.counter 1
-
-      if ($calc($weaponlist.length(%weaponlist.counter) + $len(%weapon_to_add)) > 900) { inc %weaponlist.counter 1 | var %weaponlist.totalweapons.counter 0 } 
-
-      if (%weaponlist.totalweapons.counter >= 18) { inc %weaponlist.counter 1 | var %weaponlist.totalweapons.counter 0 }
-      $weapons.addlist(%weaponlist.counter, %weapon_to_add) 
-
-      if ($readini($char($1), info, flag) != $null) { 
-        if ($calc($len(%base.weapon.list) + $len(%weapon_to_add)) < 920) { %base.weapon.list = $addtok(%base.weapon.list, %weapon.name, 46)  }
+      if (%token.count.weapons <= 20) { 
+        %weapons.list = $addtok(%weapons.list, %weapons.name,46) 
+        %weapons.list = $replace(%weapons.list , $chr(046), %replacechar)
       }
-      inc %total.weapons.owned 1
 
-    } 
-
-    inc %weapon.list.place
-  }
-  return
-}
-
-weaponlist.length {
-  return $len($weapons.returnlist($1))
-}
-weapons.addlist {
-  % [ $+ weapon.list $+ [ $1 ] ] = $addtok(% [ $+ weapon.list $+ [ $1 ] ] ,$2,46)
-}
-weapons.returnlist {
-  return % [ $+ weapon.list $+ [ $1 ] ] 
-}
-weapons.unsetlist {
-  unset % [ $+ weapon.list $+ [ $1 ] ] 
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Builds the Shield list
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-shield.list { 
-  $shields.get.list($1)
-  unset %total.shields.owned
-  return
-}
-
-shields.get.list { 
-  unset %shield.list1 | unset %shields | unset %number.of.shields | unset %base.shield.list | unset %shield.list2 | unset %shield.list3 | unset %shield.list4
-  set %total.shields.owned 0 | unset %shield.list
-
-  var %shield.list.place 1 | var %total.shield.lists $lines($lstfile(shieldlists.lst)) | set %shieldlist.counter 1
-  var %shieldlist.totalshields.counter 0
-
-  while (%shield.list.place <= %total.shield.lists) {
-    var %shields.line $read -l $+ %shield.list.place $lstfile(shieldlists.lst)
-    set %shields $readini($dbfile(weapons.db), shields, %shields.line)
-    var %number.of.shields $numtok(%shields, 46)
-    var %value 1
-
-    while (%value <= %number.of.shields) {
-      set %shield.name $gettok(%shields, %value, 46)
-      set %shield_level $readini($char($1), weapons, %shield.name)
-
-      if ((%shield_level != $null) && (%shield_level >= 1)) { 
-        ; add the shield level to the shield list
-        var %shield.name $equipment.color(%shield.name) $+ %shield.name $+ 3
-        var %shield_to_add  $+ %shield.name $+ 
-
-        inc %shieldlist.totalshields.counter 1
-
-        if ($calc($shieldlist.length(%shieldlist.counter) + $len(%shield_to_add)) > 900) { echo -a line too long, increasing | inc %shieldlist.counter 1 | var %shieldlist.totalshields.counter 0 } 
-
-        if (%shieldlist.totalshields.counter >= 20) { inc %shieldlist.counter 1 | var %shieldlist.totalshields.counter 0 }
-        $shields.addlist(%shieldlist.counter, %shield_to_add) 
-
-        if ($readini($char($1), info, flag) != $null) { 
-          if ($calc($len(%base.shield.list) + $len(%shield_to_add)) < 920) { %base.shield.list = $addtok(%base.shield.list, %shield.name, 46)  }
-        }
-        inc %total.shields.owned 1
+      if ((%token.count.weapons > 20) && ( %token.count.weapons <= 40)) { 
+        %weapons.list2 = $addtok(%weapons.list2, %weapons.name,46) 
+        %weapons.list2 = $replace(%weapons.list2 , $chr(046), %replacechar)
       }
-      inc %value 1 
+
+      if ((%token.count.weapons > 40) && ( %token.count.weapons <= 60)) { 
+        %weapons.list3 = $addtok(%weapons.list3, %weapons.name,46) 
+        %weapons.list3 = $replace(%weapons.list3 , $chr(046), %replacechar)
+      }
+
+      if ((%token.count.weapons > 60) && ( %token.count.weapons <= 80)) { 
+        %weapons.list4 = $addtok(%weapons.list4, %weapons.name,46) 
+        %weapons.list4 = $replace(%weapons.list4 , $chr(046), %replacechar)
+      }
+
+      if ((%token.count.weapons > 80) && ( %token.count.weapons <= 100)) { 
+        %weapons.list5 = $addtok(%weapons.list5, %weapons.name,46) 
+        %weapons.list5 = $replace(%weapons.list5 , $chr(046), %replacechar)
+      }
+
+      if ((%token.count.weapons > 100) && ( %token.count.weapons <= 120)) { 
+        %weapons.list6 = $addtok(%weapons.list6, %weapons.name,46) 
+        %weapons.list6 = $replace(%weapons.list6 , $chr(046), %replacechar)
+      }
+
+
     }
-
-    inc %shield.list.place |  unset %value | unset %shield.name | unset %shield_level | unset %number.of.shields
+    inc %current.ini.item.num 1
   }
 
-  return
+  unset %token.count.weapons
 }
 
-shieldlist.length {
-  return $len($shields.returnlist($1))
-}
-shields.addlist {
-  % [ $+ shield.list $+ [ $1 ] ] = $addtok(% [ $+ shield.list $+ [ $1 ] ] ,$2,46)
-}
-shields.returnlist {
-  return % [ $+ shield.list $+ [ $1 ] ] 
-}
-shields.unsetlist {
-  unset % [ $+ shield.list $+ [ $1 ] ] 
-}
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Builds the NPC Trusts list
@@ -1188,119 +1112,92 @@ instruments.list {
 ; Builds the Armor list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 armor.list {
-  unset %armor.*
-  var %number.of.ini.items $ini($char($1), inventory, 0)
+  unset %armor.list* | unset %token.count.armor
 
+  var %number.of.ini.items $ini($char($1), inventory, 0)
   var %current.ini.item.num 1 | var %replacechar $chr(044) $chr(032)
+
   while (%current.ini.item.num <= %number.of.ini.items) { 
 
     ; get item name
     var %current.ini.item $ini($char($1), inventory, %current.ini.item.num)
-    var %current.ini.value $readini($char($1), np, item_amount, %current.ini.item)
+    var %current.ini.value $readini($char($1), np, inventory, %current.ini.item)
     var %item.type $readini($dbfile(equipment.db), %current.ini.item, EquipLocation)
 
-    if (%item.type != $null) { 
-
-      inc % [ $+ token.count. $+ [ %item.type ] ] 1
+    if (%item.type = $2) {
+      inc %token.count.armor 1
 
       var %armor.name %current.ini.item
       var %player.amount $inventory.amount($1, %current.ini.item)
-
-      if (+1 isin %armor.name) { var %armor.color 12  }
-      if (+2 isin %armor.name) { var %armor.color 6 }
-      if ($readini($dbfile(equipment.db), %armor.name, Legendary) = true) { var %armor.color 7 }
+      var %armor.color $rarity.color.check(%armor.name, armor)
 
       ; If the player's level is too low for this accessory, the color is maroon
-      if ($get.level($1) < $readini($dbfile(equipment.db), %current.ini.item, level)) { var %armor.color 5 }
+      if ($get.level($1) < $readini($dbfile(equipment.db), %current.ini.item, PlayerLevel)) { var %armor.color 5 }
 
       ; If the player's job can't use this accessory, the color is bright red
       var %jobs.list $readini($dbfile(equipment.db), %current.ini.item, jobs)
       if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { var %armor.color 4 }
 
+      ; Is the player wearing this armor? If so we'll add a (w) to the name.
+      if ($readini($char($1), equipment, $2) = %current.ini.item) { var %wearing.armor (w) }
+
       ; Build the name
-      var %armor.name  $+ %armor.color $+ %armor.name 3x $+ %player.amount $+ 
+      var %armor.name  $+ %armor.color $+ %armor.name %wearing.armor 3x $+ %player.amount $+ 
 
-      if (% [ $+ token.count. $+ [ %item.type ] ] <= 20) { 
-        % [ $+ armor. $+ [ %item.type ] ] = $addtok(% [ $+ armor. $+ [ %item.type ] ] , %armor.name,46) 
-        % [ $+ armor. $+ [ %item.type ] ] = $replace(% [ $+ armor. $+ [ %item.type ] ] , $chr(046), %replacechar)
+      if (%token.count.armor <= 20) { 
+        %armor.list = $addtok(%armor.list, %armor.name,46) 
+        %armor.list = $replace(%armor.list , $chr(046), %replacechar)
       }
 
-      if ((% [ $+ token.count. $+ [ %item.type ] ] > 20) && (% [ $+ token.count. $+ [ %item.type ] ] <= 40)) { 
-        % [ $+ armor. $+ [ %item.type ]  $+ 2 ] = $addtok(% [ $+ armor. $+ [ %item.type ]  $+ 2 ], %armor.name,46) 
-        % [ $+ armor. $+ [ %item.type ]  $+ 2 ] = $replace(% [ $+ armor. $+ [ %item.type ]  $+ 2 ] , $chr(046), %replacechar)
+      if ((%token.count.armor > 20) && ( %token.count.armor <= 40)) { 
+        %armor.list2 = $addtok(%armor.list2, %armor.name,46) 
+        %armor.list2 = $replace(%armor.list2 , $chr(046), %replacechar)
       }
 
-      if ((% [ $+ token.count. $+ [ %item.type ] ] > 40) && (% [ $+ token.count. $+ [ %item.type ] ] <= 60)) {
-        % [ $+ armor. $+ [ %item.type ]  $+ 3 ] = $addtok(% [ $+ armor. $+ [ %item.type ]  $+ 3 ], %armor.name,46) 
-        % [ $+ armor. $+ [ %item.type ]  $+ 3 ] = $replace(% [ $+ armor. $+ [ %item.type ]  $+ 3 ] , $chr(046), %replacechar)
+      if ((%token.count.armor > 40) && ( %token.count.armor <= 60)) { 
+        %armor.list3 = $addtok(%armor.list3, %armor.name,46) 
+        %armor.list3 = $replace(%armor.list3 , $chr(046), %replacechar)
       }
 
-      if ((% [ $+ token.count. $+ [ %item.type ] ] > 60) && (% [ $+ token.count. $+ [ %item.type ] ] <= 80)) { 
-        % [ $+ armor. $+ [ %item.type ]  $+ 4 ] = $addtok(% [ $+ armor. $+ [ %item.type ]  $+ 4 ], %armor.name,46) 
-        % [ $+ armor. $+ [ %item.type ]  $+ 4 ] = $replace(% [ $+ armor. $+ [ %item.type ]  $+ 4 ] , $chr(046), %replacechar)
+      if ((%token.count.armor > 60) && ( %token.count.armor <= 80)) { 
+        %armor.list4 = $addtok(%armor.list4, %armor.name,46) 
+        %armor.list4 = $replace(%armor.list4 , $chr(046), %replacechar)
       }
 
-      if ((% [ $+ token.count. $+ [ %item.type ] ] > 80) && (% [ $+ token.count. $+ [ %item.type ] ] <= 100)) { 
-        % [ $+ armor. $+ [ %item.type ]  $+ 5 ] = $addtok(% [ $+ armor. $+ [ %item.type ]  $+ 5 ], %armor.name,46) 
-        % [ $+ armor. $+ [ %item.type ]  $+ 5 ] = $replace(% [ $+ armor. $+ [ %item.type ]  $+ 5 ] , $chr(046), %replacechar)
+      if ((%token.count.armor > 80) && ( %token.count.armor <= 100)) { 
+        %armor.list5 = $addtok(%armor.list5, %armor.name,46) 
+        %armor.list5 = $replace(%armor.list5 , $chr(046), %replacechar)
       }
 
-      if ((% [ $+ token.count. $+ [ %item.type ] ] > 100) && (% [ $+ token.count. $+ [ %item.type ] ] <= 120)) { 
-        % [ $+ armor. $+ [ %item.type ]  $+ 6 ] = $addtok(% [ $+ armor. $+ [ %item.type ]  $+ 6 ], %armor.name,46) 
-        % [ $+ armor. $+ [ %item.type ]  $+ 6 ] = $replace(% [ $+ armor. $+ [ %item.type ]  $+ 6 ] , $chr(046), %replacechar)
+      if ((%token.count.armor > 100) && ( %token.count.armor <= 120)) { 
+        %armor.list6 = $addtok(%armor.list6, %armor.name,46) 
+        %armor.list6 = $replace(%armor.list6 , $chr(046), %replacechar)
       }
+
 
     }
     inc %current.ini.item.num 1
   }
 
-  unset %token.count*
+  unset %token.count.armor
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Builds the Accessory list
+; Returns a color based on
+; how rare an item is.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-accessories.list {
-  ; CHECKING ACCESSORIES
-  unset %accessories.list | unset %accessories.list2 | unset %accessories.list3 | unset %accessories.have
+rarity.color.check {
+  if ($2 = armor) { var %dbfile equipment.db } 
+  if ($2 = weapon) { var %dbfile weapons.db }
+  if ($2 = item) { var %dbfile items.db }
 
-  var %value 1 | var %items.lines $lines($lstfile(armor_accessories.lst)) | var %accessories.have 0
+  var %rarity $readini($dbfile(%dbfile), $1, rarity)
+  if (%rarity = 2) { var %rarity.color 10 }
+  if (%rarity = 3) { var %rarity.color 12 } 
+  if (%rarity = 4) { var %rarity.color 6 }
+  if (%rarity = 5) { var %rarity.color 7 }
 
-  while (%value <= %items.lines) {
-    var %accessory.name $read -l $+ %value $lstfile(armor_accessories.lst)
-    var %player.amount $inventory.amount($1, %accessory.name)
-
-    if ((%player.amount != $null) && (%player.amount >= 1)) { 
-      inc %accessories.have 1
-
-      var %accessory.color $equipment.color(%item.name)
-
-      ; If the player's level is too low for this accessory, the color is maroon
-      if ($get.level($1) < $readini($dbfile(equipment.db), %current.inv.item, level)) { var %accessory.color 5 }
-
-      ; If the player's job can't use this accessory, the color is bright red
-      var %jobs.list $readini($dbfile(equipment.db), %accessory.name, jobs)
-      if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { var %accessory.color 4 }
-
-      ; Build the weapon we're going to add to the list
-      var %accessory_to_add  $+ %accessory.color $+ %accessory.name 3x $+ %player.amount $+ 
-
-      if (%accessories.have <= 16) {  %accessories.list = $addtok(%accessories.list, %accessory_to_add $+ , 46) }
-      if ((%accessories.have > 16) && (%accessories.have <= 32)) { %accessories.list2 = $addtok(%accessories.list2, %accessory_to_add $+ , 46) }
-      if (%accessories.have > 32) {  %accessories.list3 = $addtok(%accessories.list3, %accessory_to_add $+ , 46) }
-    }
-    unset %item.name | unset %item_amount
-    inc %value 1 
-  }
-
-  ; CLEAN UP THE LIST
-  var  %replacechar $chr(044) $chr(032)
-  %accessories.list = $replace(%accessories.list, $chr(046), %replacechar)
-  %accessories.list2 = $replace(%accessories.list2, $chr(046), %replacechar)
-  %accessories.list3 = $replace(%accessories.list3, $chr(046), %replacechar)
-
-  unset %item.name | unset %item_amount | unset %number.of.items | unset %value
-  return
+  return %rarity.color
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

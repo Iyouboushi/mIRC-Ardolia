@@ -37,6 +37,7 @@ WEAPON TEMPLATE
 Type= What type of weapon is it?
 Info= What you see when you use !view-info
 Jobs= What job codes can use it? All is everyone, else WAR.PLD, etc
+Rarity= 1-5, how rare is this item? 5 is considered Legendary
 Stat= What primary stat is used to calculate damage done with this weapon?
 Element= What element is this weapon?
 WeaponLevel= What level is the weapon considered?

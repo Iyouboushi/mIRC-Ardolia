@@ -155,7 +155,7 @@ ViewMyLoginPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) has $bytes($loginp
 
 
 ; armor and accessories
-CurrentWeaponEquipped=Current $iif(%weapon.equipped.left != $null, Weapons, Weapon) Equipped
+CurrentWeaponEquipped=Current Weapon Equipped
 CurrentAccessoryEquipped=Current Accessory
 CurrentArmorHeadEquipped=Current Head Armor
 CurrentArmorBodyEquipped=Current Body Armor
@@ -164,6 +164,7 @@ CurrentArmorFeetEquipped=Current Feet Armor
 CurrentArmorHandsEquipped=Current Hand Armor
 
 ViewArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following $3 armor: %armor.list
+ViewWeapons=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following $3 weapons: %weapons.list
 
 EquippedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) is now wearing the $rarity.color.check($3, armor) $+ $readini($dbfile(equipment.db), $3, name)
 RemovedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has removed the $rarity.color.check($3, armor) $+ $readini($dbfile(equipment.db), $3, name)
@@ -171,12 +172,11 @@ RemovedArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has removed the $rarity.co
 NotWearingThatArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) is not wearing the $rarity.color.check($3, armor) $+ $3 $+ 3.
 
 ;weapons and shields
-ViewWeaponList=$chr(3) $+ 3 $+  $+ %real.name has the following weapons: %weapon.list1
-ViewShieldList=$chr(3) $+ 3 $+  $+ %real.name has $iif(%shield.list1 = $null, no shields, the following shields: %shield.list1 )
-EquipWeaponGM=$chr(3) $+ 3 $+  $+ %real.name has equipped $equipment.color($3) $+ $3 $+ 3 $+ $iif($2 != both,  in $gender($1) $2 hand) $+ .
-EquipWeaponPlayer=$chr(3) $+ 3 $+  $+ %real.name has equipped $equipment.color($3) $+ $3 $+ 3 $+ $iif($2 != both,  in $gender($1) $2 hand) $+ .
-EquipWeaponMonster=$chr(3) $+ 3 $+  $+ %real.name has equipped $equipment.color(%weapon.name) $+ %weapon.name
-UnequipWeapon=$chr(3) $+ 3 $+  $+ %real.name unequipped the $equipment.color(%weapon.equipped.right) $+ %weapon.equipped.right $+ 3 $iif(%weapon.equipped.left != nothing, and the $equipment.color(%weapon.equipped.left) $+ %weapon.equipped.left)
+
+EquipWeaponGM=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has equipped $rarity.color.check($3, weapon) $+ $3
+EquipWeaponPlayer=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has equipped $rarity.color.check($3, weapon) $+ $3
+EquipWeaponMonster=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has equipped $rarity.color.check($3, weapon) $+ $3 
+UnequipWeapon=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has unequipped $rarity.color.check($3, weapon) $+ $3 
 
 ; skills
 ViewPassiveSkills=$chr(3) $+ 3 $+  $+ %real.name knows the following 12passive3 skills: %passive.skills.list
@@ -206,8 +206,14 @@ HasNoSeals=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no seals.
 HasNoAmmo=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no ammo.
 
 NeedToSayWhichArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which armor to search for: Shield, Head, Body, Legs, Feet, Hands, Ears, Neck, Wrists, Ring
+
+
+NeedToSayWhichWeaponType=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which weapon type to search for: HandToHand, Sword, Gun, Bow, GreatAxe
+
 HasNoArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no $3 armor.
- 
+HasNoWeapons=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no $3 weapons. 
+
+
 HasNoInstruments=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no instruments.
 HasNoIngredients=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no potion ingredients.
 HasNoSongs=$chr(3) $+ 3 $+  $+ $get_chr_name($1) does not currently know any songs. 
@@ -291,16 +297,17 @@ NoOneJoinedAdventureYet=$chr(3) $+ 4 $+ No one has joined the adventure yet!
 NoMonstersInBattle=$chr(3) $+ 4 $+ No monsters are in this battle to meet the players. The adventure is over!
 
 ; Equip errors
-DoNotHaveWeapon=$chr(3) $+ 4 $+ Error: %real.name does not own that weapon! 
-LevelTooLowToEquip=$chr(3) $+ 4 $+ Error: $get_chr_name($nick) $+ 's level is too low to use that weapon!
-WrongJobToEquip=$chr(3) $+ 4 $+ Error: $get_chr_name($nick) $+ 's job is unable to equip this weapon.
-WrongJobToWear=$chr(3) $+ 4 $+ Error: $get_chr_name($1) $+ 's job is unable to wear this.
-WrongEquippedWeapon=$chr(3) $+ 4 $+ Error: You are currently using $1 and not $2 $+ ! 
+WeaponAlreadyEquipped=$chr(3) $+ 4 $+ Error: $get_chr_name($2) already has the $3 equipped!
+DoNotHaveWeapon=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not own that weapon! 
+LevelTooLowToEquip=$chr(3) $+ 4 $+ Error: $get_chr_name($2) $+ 's level is too low to use that weapon!
+WrongJobToEquip=$chr(3) $+ 4 $+ Error: $get_chr_name($2) $+ 's job is unable to equip this weapon.
+WrongJobToWear=$chr(3) $+ 4 $+ Error: $get_chr_name($2) $+ 's job is unable to wear this.
+WrongEquippedWeapon=$chr(3) $+ 4 $+ Error:You are currently using  $return.equipped($2, weapon) and not $3 $+ ! 
 Can'tDetachHands=$chr(3) $+ 4 $+ Error: $get_chr_name($nick) cannot detatch $gender($nick) hands!
 ItemIsNotArmor=$chr(3) $+ 4 $+ Error: This item is not a piece of armor that can be worn.
 ArmorLevelHigher=$chr(3) $+ 4 $+ Error: $get_chr_name($2) cannot wear this armor yet as the armor level is $bytes(%armor.level.requirement,b) but $get_chr_name($2) is only level $get.level($2)
 AccessoryLevelHigher=$chr(3) $+ 4 $+ Error: $get_chr_name($1) cannot wear this armor yet as the armor level is $bytes(%armor.level.requirement,b) but $get_chr_name($1) is only level $get.level($1)
-CanOnlySwitchOutsideAdventure=$chr(3) $+ 4 $+ Error: You can only switch weapons, shields and armor outside of battles.
+CanOnlySwitchOutsideAdventure=$chr(3) $+ 4 $+ Error: You can only switch weapons, shields and armor outside of adventures.
 
 
 ; Stat point allocating errors

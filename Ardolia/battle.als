@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 04/27/17
+;;;; Last updated: 04/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -435,11 +435,6 @@ display_damage {
 
       set %attacker $1 | set %target $2 
       var %weapon.type $readini($dbfile(weapons.db), $4, type) |  var %attack.file $txtfile(attack_ $+ %weapon.type $+ .txt) 
-
-      echo -a attacker: $1
-      echo -a target: $2
-      echo -a weapn type; %weapon.type
-      echo -a attack file: %attack.file
 
     $display.message(3 $+ %user $+  $read %attack.file  $+ 3., battle)  }
   }
