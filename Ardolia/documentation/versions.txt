@@ -44,4 +44,16 @@ Ardolia Bot Changelog
 - Added code to check for level up
 - Added code to check for level 60 level cap and the soft cap of 50. It checks to see if the Genkai adventure is clear.
 - Added code for increasing the number of battles/adventures and wins/losses of each.
+- Added the starting code for abilities and spells
 - Fixed adventures to write the $fulldate when the very first adventure is started
+
+05-01-2017
+- Added the rest of the !rest command. It now works properly.
+- Added the ability for adventures to properly give XP to players
+- Added the ability for adventures to properly give fame to players for clearing the adventure
+- Added the ability for adventures to properly mark that the player has cleared the adventure if it's a victory
+- Added the ability for players to level up properly
+- Added the ability for everyone to regain 10% TP per turn (currently 100)
+- Fixed a small issue with the melee damage formula not counting the stat properly
+
+

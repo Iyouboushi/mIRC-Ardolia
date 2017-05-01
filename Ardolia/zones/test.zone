@@ -7,7 +7,7 @@ PreReq=
 AdventureActions=30
 ClearRoom=5
 ClearReward.Items=
-ClearReward.XP=10
+ClearReward.XP=$return_percentofvalue($xp.to.level(%party.member.name), 2))
 FameRewarded=1
 iLevel=1
 

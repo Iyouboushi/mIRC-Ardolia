@@ -5,7 +5,7 @@ Shows current room description and exits.  Does not count towards the dungeon ac
 Moves the party to the direction. Counts as a dungeon action.
 
 !rest
-The party recovers 50% of their HP and MP.  Has a chance of causing an event to occur afterwards.  Counts as a dungeon action
+The party recovers 50% of their HP and MP and 30% of their TP.  This counts as a dungeon action
 
 !warp
 Ends the dungeon. Will happen automatically if all 30 dungeon actions have been used. 

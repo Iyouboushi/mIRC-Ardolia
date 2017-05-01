@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 04/30/17
+;;;; Last updated: 05/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -103,6 +103,12 @@ current.speed {
   }
 }
 
+current.fame {
+  var %current.fame $readini($char($1), Info, Fame)
+  if (%current.fame = $null) { return 0 }
+  else { return %current.fame }
+}
+
 job.hp {
   ; How much HP does 1 vit equal on this job?
   return $readini($jobfile($current.job($1)), StatInfo, HPperVIT)
@@ -115,11 +121,11 @@ job.mp {
 
 ; Returns the resting stats (basestats)
 resting.hp {
-  if ($flag($1) = $null) { return $round($calc($current.vit($1) * $job.hp($1)),0) }
+  if ($flag($1) = $null) { return $round($calc($resting.vit($1) * $job.hp($1)),0) }
   else { return $readini($char($1), BaseStats, HP) }
 }
 resting.mp { 
-  if ($flag = $null) { return $round($calc($current.pie($1) * $job.mp($1)),0) }
+  if ($flag = $null) { return $round($calc($resting.pie($1) * $job.mp($1)),0) }
   else { return $readini($char($1), BaseStats, HP) }
 }
 
@@ -191,7 +197,7 @@ armor.mdef { return $bonus.stats($1, MDefense) }
 
 weapon.speed { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), speed) }
 weapon.damage { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), damage) }
-weapon.stat { $return $readini($dbfile(weapons.db), $return.equipped($1, weapon), stat) }
+weapon.stat { return $readini($dbfile(weapons.db), $return.equipped($1, weapon), stat) }
 
 ; Returns the level of a job a player has
 job.level {
@@ -233,14 +239,26 @@ get.level { var %current.job.level $readini($char($1), jobs, $current.job($1))
 
 ; Returns the current xp
 current.xp { 
-  if ($get.level($1) >= 60) { return 0 }
+  var %level.cap $return.systemsetting(PlayerLevelCap)
+  if (%level.cap = null) { var %level.cap 60 }
+
+  if ($get.level($1) >= %level.cap) { return 0 }
   else { return $readini($char($1), exp, $current.job($1))  }
 }
 
-; Returns the amount of xp or capacity points needed to level
+; Returns the amount of xp needed to level
 xp.to.level {
-  if ($get.level($1) >= 60) { return 0 }
-  else { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
+
+  var %level.cap $return.systemsetting(PlayerLevelCap)
+  if (%level.cap = null) { var %level.cap 60 }
+
+  if ($get.level($1) >= %level.cap) { return 0 }
+  else {
+    if ($get.level($1) < 20) { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
+    if (($get.level($1) >= 20) && ($get.level($1) < 50)) { return $calc(1000 * ($get.level($1) - 1) + (1000 * $get.level($1))) }
+    if (($get.level($1) >= 50) && ($get.level($1) <= 60)) { return $calc(2000 * ($get.level($1) - 1) + (2000 * $get.level($1))) }
+    if ($get.level($1) > 60) { return $calc(5000 * ($get.level($1) - 1) + (5000 * $get.level($1))) }
+  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -403,7 +421,11 @@ levelup.check {
     }
   }
 
-  if (%current.level = 60) { halt }
+  ; check for the level cap
+  var %level.cap $return.systemsetting(PlayerLevelCap)
+  if (%level.cap = null) { var %level.cap 60 }
+
+  if (%current.level = %level.cap) { halt }
 
   if ($current.xp($1) >= $xp.to.level($1)) { $levelup($1) }
 
@@ -414,44 +436,60 @@ levelup.check {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 levelup {
   ; First things first, reduce the number of xp a person has by the amount needed to level
-  var %current.xp $current.xp($1) |  var %needed.xp $xp.to.level($1)
-  dec %current.xp %needed.xp
-  if (%current.xp < 0) { var %current.xp 0 }
+  var %current.xp $current.xp($1) |  var %needed.xp 
 
-  ; Increase the level of the job
-  var %current.level $calc(1 + $get.level($1) )
-  writeini $char($1) jobs $current.job($1) %current.level
+  var %level.cap $return.systemsetting(PlayerLevelCap)
+  if (%level.cap = null) { var %level.cap 60 }
 
-  ; Max HP and MP will automatically increase as the stats increase.
+  while ((%current.xp >= $xp.to.level($1)) && ($get.level($1) < %level.cap)) {
 
-  ; Increase the player's stats
-  var %stat.str $resting.str($1)
-  inc %stat.str $readini($jobfile($current.job($1)), LevelUpInfo, Str)
-  writeini $char($1) BaseStats Str %stat.str
+    dec %current.xp $xp.to.level($1)
+    if (%current.xp < 0) { var %current.xp 0 }
 
-  var %stat.dex $resting.dex($1)
-  inc %stat.dex $readini($jobfile($current.job($1)), LevelUpInfo, Dex)
-  writeini $char($1) BaseStats Dex %stat.dex
+    writeini $char($1) exp $current.job($1) %current.xp
 
-  var %stat.vit $resting.vit($1)
-  inc %stat.vit $readini($jobfile($current.job($1)), LevelUpInfo, Vit)
-  writeini $char($1) BaseStats Vit %stat.str
+    ; Increase the level of the job
+    var %current.level $calc(1 + $get.level($1) )
+    writeini $char($1) jobs $current.job($1) %current.level
 
-  var %stat.int $resting.int($1)
-  inc %stat.int $readini($jobfile($current.job($1)), LevelUpInfo, Int)
-  writeini $char($1) BaseStats Int %stat.int
+    ; Max HP and MP will automatically increase as the stats increase.
 
-  var %stat.mnd $resting.mnd($1)
-  inc %stat.mnd $readini($jobfile($current.job($1)), LevelUpInfo, Mnd)
-  writeini $char($1) BaseStats mnd %stat.int
+    ; Increase the player's stats
+    var %stat.str $resting.str($1)
+    inc %stat.str $readini($jobfile($current.job($1)), LevelUpInfo, Str)
+    writeini $char($1) BaseStats Str %stat.str
 
-  var %stat.pie $resting.pie($1)
-  inc %stat.pie $readini($jobfile($current.job($1)), LevelUpInfo, Pie)
-  writeini $char($1) BaseStats Pie %stat.pie
+    var %stat.dex $resting.dex($1)
+    inc %stat.dex $readini($jobfile($current.job($1)), LevelUpInfo, Dex)
+    writeini $char($1) BaseStats Dex %stat.dex
 
-  ; Tell the player all that he/she's won!
-  $display.private.message2($1, $translate(leveledupreward, $1))
-  $display.message($translate(leveledup))
+    var %stat.vit $resting.vit($1)
+    inc %stat.vit $readini($jobfile($current.job($1)), LevelUpInfo, Vit)
+    writeini $char($1) BaseStats Vit %stat.str
+
+    var %stat.int $resting.int($1)
+    inc %stat.int $readini($jobfile($current.job($1)), LevelUpInfo, Int)
+    writeini $char($1) BaseStats Int %stat.int
+
+    var %stat.mnd $resting.mnd($1)
+    inc %stat.mnd $readini($jobfile($current.job($1)), LevelUpInfo, Mnd)
+    writeini $char($1) BaseStats mnd %stat.int
+
+    var %stat.pie $resting.pie($1)
+    inc %stat.pie $readini($jobfile($current.job($1)), LevelUpInfo, Pie)
+    writeini $char($1) BaseStats Pie %stat.pie
+
+    var %stat.det $resting.det($1)
+    inc %stat.det $readini($jobfile($current.job($1)), LevelUpInfo, Det)
+    writeini $char($1) BaseStats Det %stat.det
+
+    ; Tell the player all that he/she's won!
+    $display.private.message2($1, $translate(leveledupreward, $1))
+    $display.message($translate(leveledup, $1))
+
+    writeini $char($1)  info NeedsFulls yes
+    $fulls($1)
+  }
 
 }
 

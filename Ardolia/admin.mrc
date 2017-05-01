@@ -179,12 +179,16 @@ on 50:TEXT:@add *:*:{
 
     var %current.xp $current.xp($2) |  inc %current.xp $4
 
-    if ($current.level($2) >= 60) { echo -a can't do this }
+    var %level.cap $return.systemsetting(PlayerLevelCap)
+    if (%level.cap = null) { var %level.cap 60 }
+
+    if ($current.level($2) >= %level.cap) { echo -a can't do this }
 
     writeini $char($2) exp $current.job($2) %current.xp | $display.message(7* 2 $+ $get_chr_name($2) has gained $4 experience points) 
 
     $levelup.check($2)
 
+    $fulls($2)
   }
 
   if ($3 = gil) {  $currency.add($2, gil, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 gil) }

@@ -201,10 +201,11 @@ check_for_double_turn {
 ; This function actually deals
 ; the damage to the target.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; This alias is a mess.  Needs to be cleaned badly.
 deal_damage {
   ; $1 = person dealing damage
   ; $2 = target
-  ; $3 = action that was done (tech name, item, etc)
+  ; $3 = action that was done (ability name, item, etc)
   ; $4 = absorb or none
 
   $set_chr_name($1) | set %user %real.name
@@ -346,11 +347,6 @@ deal_damage {
 
     writeini $char($2) battle status dead 
     writeini $char($2) battle hp 0
-
-    if ((%battle.type = assault) && ($readini($char($2), info, flag) = monster)) { 
-      if ($isfile($boss($2)) = $true) { $monster.outpost(remove, $rand(2,3)) }
-      if ($isfile($mon($2)) = $true) { $monster.outpost(remove, 1) }
-    }
 
     ; Add the XP and gil drops to the pool
 

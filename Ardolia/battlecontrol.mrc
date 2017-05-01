@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 04/30/17
+;;;; Last updated: 05/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -465,8 +465,6 @@ alias turn {
   unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone | unset %double.attack 
   unset %damage.display.color
 
-  echo -a checking turn for: $1
-
   set %status $readini($char($1), Battle, Status)
   if ((%status = dead) || (%status = runaway)) { unset %status | $next | halt }
 
@@ -515,6 +513,15 @@ alias turn {
   if (($return.systemsetting(TurnType) = action) && ($action.points($1, check) <= 0)) { /.timerThrottle $+ $rand(a,z) $+ $rand(1,100) $+ $rand(a,z) 1 %file.to.read.lines /next | halt }
 
   unset %real.name
+
+
+  ; Restore 10% of the person's TP
+  var %current.tp $current.tp($1)
+  var %tp.to.refill $return_percentofvalue($max.tp, 10)
+  inc %current.tp %tp.to.refill
+  if (%current.tp > $max.tp) { var %current.tp $max.tp }
+  writeini $char($1) Battle TP %current.tp
+
 
   if (%skip.ai != on) {
     ; Check for AI

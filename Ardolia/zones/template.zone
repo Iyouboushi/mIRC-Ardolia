@@ -10,7 +10,9 @@
 ; ClearRoom= The room number that says the dungeon is beat when the players clear it. The dungeon will end when this room is clear
 ; ClearReward.Items=An item from this list will be chosen at random and rewarded to each player in the party after the dungeon is clear
 ;                   Put the items between periods if there's more than one. Like Item1.Item2.Item3.Item4
-; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. 
+; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. Can be a static # or 
+                 $return_percentofvalue($xp.to.level(%party.member.name), percentnumberhere)) 
+                 ex: $return_percentofvalue($xp.to.level(%party.member.name), 5)) will return 5% of the player's TNL
 ; FameRewarded= How much fame will the players receive if this dungeon is cleared?
 
 [Info]

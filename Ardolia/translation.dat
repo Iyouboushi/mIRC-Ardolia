@@ -142,8 +142,10 @@ BossLevelSynced200=$chr(3) $+ 4 $+ The level cap for this boss battle has been
 GainedEnhancementPoint=$chr(3) $+ 7 $+ You have gained 1 enhancement point bringing your new total to %current.enhancementpoints $+ .
 
 ; Level up
-LeveledUpReward=$chr(3) $+ 2 $+ You have leveled up! You have gained + $+ %bonus.hp HP and + $+ %bonus.mp MP! 
-LeveledUp=$chr(3) $+ 7*2 $get_chr_name($1) has reached level $get.level($1) $current.job($1) $+ !
+LeveledUpReward=$chr(3) $+ 2 $+ You have leveled up! You have gained + $+ $round($calc($readini($jobfile($current.job($2)), LevelUpInfo, Vit)  * $job.hp($2)),0) HP $+ $chr(44) + $+ $round($calc($readini($jobfile($current.job($2)), LevelUpInfo, Pie)  * $job.mp($2)),0) MP $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Str) Str $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Dex) Dex $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Vit) Vit $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Int) Int $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Mnd) Mnd $+ $chr(44) and + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Pie) Pie  
+LeveledUp=$chr(3) $+ 7*2 $get_chr_name($2) has reached level $get.level($2) $current.job($2) $+ !
+
+
 
 
 ; Currencies
@@ -428,6 +430,14 @@ PerformsAMultiHitAttack=$chr(3) $+ 4 $+ %user performs a %number.of.hits $+ -h
 
 RewardLineCP=$chr(3) $+ 7* 2 $+ $get_chr_name(%who.battle) has gained %xp.reward capacity points and %gil.reward  $+ $readini(system.dat, system, currency)
 RewardLineXP=$chr(3) $+ 7* 2 $+ $get_chr_name(%who.battle) has gained %xp.reward experience points and %gil.reward  $+ $readini(system.dat, system, currency)
+
+
+=======================
+Show rewards
+=======================
+
+ShowXPRewards=$chr(3) $+ 3 $+ Players have been rewarded with experience points $+ : %winners.xp
+ShowSpoilRewards=$chr(3) $+ 3 $+ The following players have found spoils from this adventure $+ : %winners.spoils
 
 =======================
 Status Related Messages

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 04/28/17
+;;;; Last updated: 05/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,8 +193,7 @@ calculate.wpn.damage {
 
   var %weapon.damage $weapon.damage($1)
   var %weapon.speed $weapon.speed($1)
-
-  var %stat.needed $weapon.stat($1)
+  var %stat.needed $weapon.stat($1, $2)
 
   if (%stat.needed = str) { var %current.stat $current.str($1) } 
   if (%stat.needed = dex) { var %current.stat $current.dex($1) } 
@@ -207,6 +206,7 @@ calculate.wpn.damage {
 
   var %base.melee.damage $abs($calc((%weapon.damage *.2714745 + %current.stat *.1006032 + (%current.det -202)*.0241327 + %weapon.damage * %current.stat *.0036167 + %weapon.damage * (%weapon.det - 202)*.0022597 - 1) * (%weapon.speed / 3)))
   inc %base.melee.damage $rand(1,2)
+
   return $round(%base.melee.damage,0)
 }
 
@@ -247,7 +247,7 @@ formula.melee.player {
   ; $2 = weapon equipped
   ; $3 = target / %enemy 
 
-  set %attack.damage $calculate.wpn.damage($1)
+  set %attack.damage $calculate.wpn.damage($1, $2)
   var %damage.defense.percent $calculate.defense($3, physical)
 
   set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))

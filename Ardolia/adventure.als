@@ -184,7 +184,6 @@ adventure.end {
   $clear_timers
 
   ; Award the spoils and xp of battle
-  ; to be coded later
   $adventure.rewards($1)
 
   set %ignore.clearfiles no
@@ -285,33 +284,74 @@ adventure.clearfiles {
 ; after the adventure is over
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.rewards {
-  ; This code block is not finished so return for now.
+  ; This code block is not finished but it's close
 
-  return
+  unset %winners.xp
+  unset %winners.spoils
 
-  ; Cycle through
+  ; Cycle through the party
+  var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
+  while (%current.party.member <= $adventure.party.count) { 
+    var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
+
+    var %xp.to.reward $readini($txtfile(adventure.txt), Rewards, XP)
+    if (%xp.to.reward = $null) { var %xp.to.reward 0 }
+
+    if ($1 = victory) { 
+
+      ; Write that we've cleared this adventure
+      writeini $char(%party.member.name) AdventuresCleared $readini($zonefile(adventure), Info, OriginalFile) true 
+
+      ; Give some fame
+      var %fame.to.reward $readini($zonefile(adventure), Info, FameRewarded)
+      inc %fame.to.reward $current.fame(%party.member.name)
+      writeini $char(%party.member.name) Info Fame %fame.to.reward
+
+      ; Give a random clear reward
+      ; if (isfile($lstfile($readini($zonefile(adventure), Info, OriginalFile)  $+ _clear)) = true) { 
+
+      ; pull a random item from that list 
+
+      ; give it to the player
+
+      ; find out what kind of item it is so we can do a rarity color on it
+
+      ; add the spoil to the list of spoils
+      ;  %winners.spoils = $addtok(%winners.xp, $+ %party.member.name $+  $+ $chr(91) $+ $chr(43) $+ %spoil.reward $+ $chr(93),46)
+      ;  }
+
+      ; Add some bonus xp for clearing the adventure
+      inc %xp.to.reward $readini($zonefile(adventure), Info, ClearReward.XP)
+
+    } 
+
+    ; Reward XP
+    var %current.xp $current.xp(%party.member.name) 
+
+    var %level.cap $return.systemsetting(PlayerLevelCap)
+    if (%level.cap = null) { var %level.cap 60 }
+    if ($get.level >= %level.cap) { var %xp.to.reward 0 }
+
+    inc %current.xp %xp.to.reward
+    writeini $char(%party.member.name) exp $current.job(%party.member.name) %current.xp
+
+    ; Add the player and the xp amount to the list to be shown 
+    %winners.xp = $addtok(%winners.xp, $+ %party.member.name $+  $+ $chr(91) $+ $chr(43) $+ $bytes(%xp.to.reward,b) $+ $chr(93),46)
+
+    ; We're done with this party member. Move onto the next (if there are any more)
+    inc %current.party.member
+  }
 
 
-  var %xp.to.reward 0
+  ; Reward spoils (if there are any) -- This is given out randomly while there's rewards left to give. Some players may end up with more than one.
+  ; if isfile adventure_spoils.txt = true
 
-  if ($1 = victory) { 
+  ; Show the rewards.
+  $display.message($translate(ShowXPRewards), global)
 
-    ; Write that we've cleared this adventure
-    writeini $char(%current.partymember) AdventuresCleared $readini($zonefile(adventure.zone), Info, OriginalFile) true 
-
-    ; Give some fame
-
-    ; Give a random clear reward
-
-    ; Add some bonus xp for clearing the adventure
-    inc %xp.to.reward $readini($zonefile(adventure.zone), Info, ClearReward.XP)
-
-  } 
-
-
-  ; Reward XP
-
-  ; Reward spoils (if there are any)
+  ; Unset variables
+  unset %winners.xp
+  unset %winners.spoils
 
 }
 
@@ -472,8 +512,34 @@ adventure.rest {
   $adventure.actions.decrease(1)
   $adventure.actions.checkforzero
 
-  ; Cycle through all the party members and restore half their HP and MP.
-  ; to be added
+  ; Cycle through all the party members and restore half their HP and MP. Also refill 30% of the max TP
+  var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
+  while (%current.party.member <= $adventure.party.count) { 
+    var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
+
+    ; HP
+    var %current.hp $current.hp(%party.member.name)
+    var %hp.to.refill $return_percentofvalue($resting.hp(%party.member.name), 50)
+    inc %current.hp %hp.to.refill
+    if (%current.hp > $resting.hp(%party.member.name)) { var %current.hp $resting.hp(%party.member.name) }
+    writeini $char(%party.member.name) Battle HP %current.hp
+
+    ; MP
+    var %current.mp $current.mp(%party.member.name)
+    var %mp.to.refill $return_percentofvalue($resting.mp(%party.member.name), 50)
+    inc %current.mp %mp.to.refill
+    if (%current.mp > $resting.mp(%party.member.name)) { var %current.mp $resting.mp(%party.member.name) }
+    writeini $char(%party.member.name) Battle MP %current.mp
+
+    ; TP
+    var %current.tp $current.tp(%party.member.name)
+    var %tp.to.refill $return_percentofvalue($max.tp, 30)
+    inc %current.tp %tp.to.refill
+    if (%current.tp > $max.tp) { var %current.tp $max.tp }
+    writeini $char(%party.member.name) Battle TP %current.tp
+
+    inc %current.party.member
+  }
 
   ; Display the message
   $display.message($translate(PartyRests), global) 
