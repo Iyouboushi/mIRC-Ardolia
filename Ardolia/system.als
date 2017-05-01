@@ -82,6 +82,7 @@ system_defaults_check {
     if ($readini(system.dat, system, currency) = $null) { writeini system.dat system currency Gil }
     if ($readini(system.dat, system, RPGMode) = $null) { writeini system.dat system RPGMode false }
     if ($readini(system.dat, system, GenkaiQuest) = $null) { writeini system.dat system GenkaiQuest true }
+    if ($readini(system.dat, system, PlayerLevelCap) = $null) { writeini system.dat system PlayerLevelCap 60 }
 
     ; Certain battle/adventure settings
     if ($readini(adventure.dat, AdventureStats, TotalAdventures) = $null) { writeini adventure.dat TotalAdventures 0 }
@@ -101,13 +102,13 @@ system_defaults_check {
   /.load -rs adventurecontrol.mrc
   /.load -rs battlecontrol.mrc
   /.load -rs attacks.mrc
+  /.load -rs abilities.mrc 
+  /.load -rs spells.mrc
   /.load -rs ai.mrc
   /.load -rs achivements.mrc
   /.load -rs help.mrc
 
   ; these files will eventually be loaded when they're finished
-
-  ;  /.load -rs abilities.mrc 
   ;  /.load -rs items.mrc
   ;  /.load -rs shop.mrc
 
@@ -744,8 +745,8 @@ fulls {
   ; Clear status
   ; $clear_status($1)
 
-  ; Clear ability timers
-  ; $clear_ability_timers($1)
+  ; Clear ability cooldowns
+  remini $char($1) cooldowns 
 
   ; Remove the Renkei value
   remini $char($1) Renkei

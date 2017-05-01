@@ -17,6 +17,7 @@ ShowDeleteEcho=false
 currency=Gil
 RPGMode=false
 GenakiQuest=true
+PlayerLevelCap=60
 
 
 [version]
