@@ -1,0 +1,7 @@
+12::[Health]::
+2Health is your life bar.  When you hit 0 you will be classified as "dead" in battle and will be unable to act again until the next battle.  
+12::[How do I check my HP?]::
+2Syntax: 12!hp
+2This command will display how much HP you have in the format of current / max
+12::[How do I increase my health?]::
+2Your HP will increase when you level up.. The amount you gain per level is dependent on your current job. Vitality is the most important stat when it comes to health.

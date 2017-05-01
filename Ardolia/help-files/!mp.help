@@ -1,0 +1,5 @@
+12::[MP]::
+2MP is used for casting spells.  When you cast a spell it will decrease your current MP.
+12::[How do I check my MP?]::
+2Syntax: 12!mp
+2This command will display how much MP you have in the format of current / max

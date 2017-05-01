@@ -1,0 +1,5 @@
+12::[TP]::
+2TP is used for your abilities. When you perform abilities it will consume TP.  
+12::[How do I check my TP?]::
+2Syntax: 12!tp
+2This command will display how much TP you have in the format of current / max

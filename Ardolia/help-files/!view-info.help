@@ -1,0 +1,3 @@
+12::[Viewing Info]::
+2The !view-info command allows you to view the information on weapons, armor, items, abilities and spells.
+2Syntax: 12!view-info <category> <thing to check>   14(Remember to remove the < > from the command when using it)

@@ -1,0 +1,4 @@
+12::[Elf]::
+2 $+ $readini($racefile(Elf), BasicInfo, Description)
+12::[Starting Stats]::
+2STR:4 $readini($racefile(elf), StartingStats, STR) 2DEX:4 $readini($racefile(elf), StartingStats, DEX) 2VIT:4 $readini($racefile(elf), StartingStats, VIT) 2INT:4 $readini($racefile(elf), StartingStats, INT) 2MND:4 $readini($racefile(elf), StartingStats, MND) 2PIE:4 $readini($racefile(elf), StartingStats, PIE)

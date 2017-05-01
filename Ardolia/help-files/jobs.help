@@ -1,0 +1,10 @@
+12::[Jobs]::
+2The job system allows you to change your playstyle at any time outside of an adventure. There are multiple starting jobs and more will be added as the game goes on.
+2All jobs start at level 1 but your stats and levels will be saved upon switching.
+
+12::[Basic/Starting Jobs]::
+4WAR 2(Warrior)
+2For more information on any of these jobs use 4!help JOBCODE 2such as !help WAR
+
+12::[How Do I Change Jobs?]::
+2Syntax: 12!job change <job code here>   14(Remember to remove the < > from the command when using it)

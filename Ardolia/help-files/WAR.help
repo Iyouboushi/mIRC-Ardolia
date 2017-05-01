@@ -1,0 +1,2 @@
+12::[Warrior (WAR)]::
+2 $+ $readini($jobfile(WAR), BasicInfo, Description)

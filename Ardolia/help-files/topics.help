@@ -1,7 +1,7 @@
 [HELP]
-list=<Intro> <Registering> <Goal> <!ID> <!newpass> <Descriptions> <!setgender> <Health> <MP> 
-list2=
-list3=
+list=<Intro> <Registering> <Goal> <Races> <Jobs> <!ID> <!newpass> 
+list2=<Descriptions> <!setgender> <Health> <MP> <TP> <!stats>
+list3=<Battles>
 
 
  
