@@ -367,6 +367,8 @@ EnteredTheBattle=$chr(3) $+ 4 $+  $+ $get_chr_name(%current.monster.to.spawn.na
 
 NoAdventureCurrently=$chr(3) $+ 4 There is no adventure currently going.
 
+NoBattleCurrently=$chr(3) $+ 4 There is no battle currently going.
+
 AdventureClosed=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as either there is no adventure or the entry period is already closed.
 
 NotEnoughPlayersInAdventure=$chr(3) $+ 4 $+ There were not enough players to in the adventuring party to go on this adventure!  The adventure is over. 

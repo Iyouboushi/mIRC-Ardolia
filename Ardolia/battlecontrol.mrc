@@ -323,7 +323,8 @@ alias battle.end {
   writeini adventure.dat BattleStats BattlesWon %total.battles
 
   ; Is this the final boss/combat room of the dungeon?  If so, we won! Let's end the adventure with victory
-  if (($1 = victory) && (%current.room = $readini($zonefile(adventure), Info, ClearRoom))) { $adventure.end(victory)   }
+  if (($1 = victory) && (%current.room = $readini($zonefile(adventure), Info, ClearRoom))) { $adventure.end(victory)  }
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -365,7 +366,7 @@ alias next {
 
   if (%battleis = off) { $clear_battle | halt }
 
-  if ($readini($char(%who), info, ai_type) = PayToAttack) { writeini $char(%who) currencies gil 0 }
+  if ($readini($char(%who), info, ai_type) = PayToAttack) { writeini $char(%who) currencies money 0 }
 
   inc %line 1
   set %next.person $read -l $+ %line $txtfile(battle.txt)

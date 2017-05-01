@@ -42,8 +42,12 @@ LastIP=N/a
 Created=N/a
 Version=1.0
 Flag=monster
-xpvalue=5
 
+[Drops]
+xp=5
+money=1
+ItemDropChance=100
+Items=
 
 [Descriptions]
 Char=is a small black and yellow bee

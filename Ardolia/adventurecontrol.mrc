@@ -36,7 +36,11 @@ on 2:TEXT:!party list:#: { $adventure.party.show }
 ; Displays the room
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!look*:#: {
-  if ($2 = $null) { $adventure.look }
+  if ($2 = $null) { 
+    if ((%adventureis = on) && (%battleis != on)) { $adventure.look }
+    if ((%adventureis = on) && (%battleis = on)) { $battle.list }
+    if (%adventureis = off) { $lookat($nick, channel) }
+  }
   else { $checkchar($2) | $lookat($2, channel) }
 }
 

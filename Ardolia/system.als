@@ -188,12 +188,11 @@ system.intromessage {
   var %player.loginpoints $readini($char($1), stuff, loginpoints)
   if (%player.loginpoints = $null) { var %player.loginpoints 0 }
 
-  var %player.gil $bytes($readini($char($1), currencies, gil),b)
-  if (%player.gil = $null) { var %player.gil 0 }
-
+  var %player.money $currency.amount($1, money)
+  if (%player.money = $null) { var %player.money 0 }
 
   $display.private.message(2Welcome back4 $get_chr_name($1) $+ . 2The current local bot time is4 $asctime(hh:nn tt) 2on4  $asctime(mmm dd yyyy) 2and this is bot version5 $game.version )
-  $display.private.message(2You currently have:7 $bytes($currency.amount($1, gil),b) 2 $+ $readini(system.dat, system, currency) $+ $chr(44) 7 $+ $bytes($currency.amount($1, CraftingPoints),b) 2Crafting Points $+ $chr(44) 7 $+ $bytes($currency.amount($1, GuildPoints),b) 2Guild Points $+ $chr(44) and 7 $+ $bytes($currency.amount($1, LoginPoints),b) 2Login Points)  
+  $display.private.message(2You currently have:7 $bytes(%player.money,b) 2 $+ $readini(system.dat, system, currency) $+ $chr(44) 7 $+ $bytes($currency.amount($1, CraftingPoints),b) 2Crafting Points $+ $chr(44) 7 $+ $bytes($currency.amount($1, GuildPoints),b) 2Guild Points $+ $chr(44) and 7 $+ $bytes($currency.amount($1, LoginPoints),b) 2Login Points)  
 
   if ($isfile($txtfile(motd.txt)) = $true) { $display.private.message(4Current Admin Message2: $read($txtfile(motd.txt))) }
   return
@@ -1330,7 +1329,7 @@ clear_variables {
   unset %battle.* |  unset %monsters.* | unset %curbat
   unset %line | unset %next.person | unset %who | unset %whoturn | unset %temp.battle.list | unset %file.to.read.lines
   unset %current.room | unset %file | unset %total.targets | unset %random.target | unset %damage.display.color
-  unset %true.turn
+  unset %true.turn | unset %adventureisopen
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

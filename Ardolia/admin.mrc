@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; admin.mrc
-;;;; Last updated: 04/30/17
+;;;; Last updated: 05/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 on 2:TEXT:!bot admin*:*: {  $bot.admin(list) }
@@ -191,7 +191,7 @@ on 50:TEXT:@add *:*:{
     $fulls($2)
   }
 
-  if ($3 = gil) {  $currency.add($2, gil, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 gil) }
+  if ($3 = money) {  $currency.add($2, money, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 $return.systemsetting(currency) }
   if ($3 = craftingpoints) {  $currency.add($2, CraftingPoints, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 crafting points) }
 
 }
@@ -200,23 +200,19 @@ on 50:TEXT:@add *:*:{
 ; Bot owners can force the next turn
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 50:TEXT:@next*:*: { 
-  if (%adventureis = on)  { $next | halt }
-  else { $display.message($translate(NoCurrentAdventure), private) | halt }
+  if (%battleis = on)  { $next | halt }
+  else { $display.message($translate(NoBattleCurrently), private) | halt }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Bot owners can start an adventure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 50:TEXT:@adventure start*:*: {
-  if ($3 = manual) { halt }
-  /.timerAdventureStart off
-  $start.newadventure
+on 50:TEXT:@adventure start *:*: {
+  $start.newadventure($nick, $3)
 }
 
-on 50:TEXT:@start adventure*:*: {
-  if ($3 = manual) { halt }
-  /.timerAdventureStart off
-  $start.newadventure
+on 50:TEXT:@start adventure *:*: {
+  $start.newadventure($nick, $3)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

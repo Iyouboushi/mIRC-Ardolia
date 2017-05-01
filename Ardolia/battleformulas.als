@@ -28,26 +28,13 @@ damage.modifiers.check {
 
   ; Check to see if the target is resistant/weak to the weapon itself
 
-  $modifer_adjust($3, $readini($char($1), weapons, equipped))
-
-  ; Check for Left-Hand weapon, if applicable
-  if ($readini($char($1), equipped, weapon2) != nothing) { 
-    var %weapon.type2 $readini($dbfile(weapons.db), $readini($char($1), equipment, weapon2), type)
-    if (%weapon.type2 != shield) { $modifer_adjust($3, $readini($char($1), equipment, weapon2))  }
-  }
-
+  $modifer_adjust($3, $return.equipped($1, weapon))
 
   ;;;;;;;;;;;;;; Melee checks: weapon element and weapon type
   if ($4 = melee) { 
 
     var %weapon.element $readini($dbfile(weapons.db), $2, element)
     if ((%weapon.element != $null) && (%weapon.element != none)) {  $modifer_adjust($3, %weapon.element)  }
-
-    ; Check for Left-Hand weapon element, if applicable
-    if ((%weapon.type2 != $null) && (%weapon.type2 != shield)) { 
-      var %weapon.element2 $readini($dbfile(weapons.db), $readini($char($1), weapons, EquippedLeft), Element )
-      $modifer_adjust($3, %weapon.element2) 
-    }
 
     ; Check for weapon type weaknesses.
     var %weapon.type $readini($dbfile(weapons.db), $2, type)

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 04/29/17
+;;;; Last updated: 05/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -348,14 +348,15 @@ deal_damage {
     writeini $char($2) battle status dead 
     writeini $char($2) battle hp 0
 
-    ; Add the XP and gil drops to the pool
+    ; Add the XP, money and item drops to the pool
 
     ; check for an item drop
     $add.monster.drop($1, $2)
     $add.monster.xp($1, $2)
+    $add.monster.money($1, $2)
 
     ; if the attacker isn't a monster we need to increase the total # of kills
-    if (($readini($char($1), info, flag) != monster) && ($readini($char($1), battle, hp) > 0)) {
+    if (($readini($char($1), info, flag) != monster) && ($current.hp($1) > 0)) {
       $inc_monster_kills($1)
     }
   }
@@ -784,22 +785,32 @@ add.monster.drop {
 
   if ($flag($2) != monster) { return }
 
-  ; Determine gil
-  var %gil.reward $roll(1d5)
+  ; Determine money
+  var %money.reward $readini($char($2), Drops, money)
+  if (%money.reward = $null) { var %money.reward 0 }
 
-  var %total.gil.amount $readini($txtfile(adventure.txt), Rewards, Gil)
-  if (%total.gil.amount = $null) { var %total.gil.amount 0 }
-  inc %total.gil.amount %gil.reward
+  var %total.money.amount $readini($txtfile(adventure.txt), Rewards, Money)
+  if (%total.money.amount = $null) { var %total.money.amount 0 }
+  inc %total.money.amount %money.reward
 
 
-  writeini $txtfile(adventure.txt) Rewards Gil %total.gil.amount
+  writeini $txtfile(adventure.txt) Rewards Money %total.money.amount
 
 
   ; Determine spoil
-  var %drop.chance $readini($char($2), Info, DropChance)
+  var %drop.chance $readini($char($2), Drops, ItemDropChance)
   if (%drop.chance = $null) { var %drop.chance 10 }
 
   ; Is there an item for this monster?
+  var %drop.list $readini($dbfile(drops.db), drops, $2)
+  if (%drops.list = $null) { var %drop.list $readini($char($2), Drops, Items) }
+
+  if ((%drops.list != $null) && ($rand(1,100) <= %drop.chance)) { 
+    ; Pick a random item from the list and add it to the item pool
+
+  }
+
+
 
 }
 
@@ -815,7 +826,7 @@ add.monster.xp {
   if ($flag($2) != monster) { return }
 
   ; Get the XP value from the monster
-  var %xp.amount $readini($char($2), info, xpvalue) 
+  var %xp.amount $readini($char($2), Drops, xp)
   if (%xp.amount = $null) { var %xp.amount 1 }
 
   var %total.xp.amount $readini($txtfile(adventure.txt), Rewards, XP)
@@ -824,9 +835,6 @@ add.monster.xp {
 
   writeini $txtfile(adventure.txt) Rewards XP %total.xp.amount
 }
-
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Action Point alias

@@ -291,7 +291,7 @@ return.equipped {
 ; name
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set_chr_name {
-  set %real.name $readini($char($1), BaseStats, Name)
+  set %real.name $readini($char($1), Info, Name)
   if (%real.name = $null) { set %real.name $1 | return }
   else { return }
 }
@@ -786,39 +786,41 @@ remove.armor {
 ; Looking at a character
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 lookat {
-  $weapon_equipped($1) | $set_chr_name($1)
-  var %equipped.accessory $return.equipped($1, accessory1)
+  $set_chr_name($1)
 
+  var %equipped.weapon $return.equipped($1, weapon)
+  var %equipped.shield $return.equipped($1, shield)
   var %equipped.armor.head $return.equipped($1, head)
   var %equipped.armor.body $return.equipped($1, body)
   var %equipped.armor.legs $return.equipped($1, legs)
   var %equipped.armor.feet $return.equipped($1, feet)
   var %equipped.armor.hands $return.equipped($1, hands)
+  var %equipped.armor.ears $return.equipped($1, ears)
+  var %equipped.armor.neck $return.equipped($1, neck)
+  var %equipped.armor.wrists $return.equipped($1, wrists)
+  var %equipped.armor.ring $return.equipped($1, ring)
 
-  var %equipped.accessory $equipment.color(%equipped.accessory) $+  $+ %equipped.accessory $+ 3
-
-  if ($readini($char($1), equipment, accessory2) != $null) { 
-    var %equipped.accessory2 $equipment.color($readini($char($1), equipment, accessory2)) $+ $readini($char($1), equipment, accessory2)
-    var %equipped.accessory %equipped.accessory 3and %equipped.accessory2 $+ 3
-  }
-
-  var %equipped.armor.head $equipment.color(%equipped.armor.head) $+ %equipped.armor.head $+ 3
-  var %equipped.armor.body $equipment.color(%equipped.armor.body) $+ %equipped.armor.body $+ 3
-  var %equipped.armor.legs $equipment.color(%equipped.armor.legs) $+ %equipped.armor.legs $+ 3
-  var %equipped.armor.feet $equipment.color(%equipped.armor.feet) $+ %equipped.armor.feet $+ 3 
-  var %equipped.armor.hands $equipment.color(%equipped.armor.hands) $+ %equipped.armor.hands $+ 3
-
-  var %weapon.equipped $equipment.color(%weapon.equipped) $+ %weapon.equipped
+  var %equipped.weapon $rarity.color.check(%equipped.weapon, weapon) $+ %equipped.weapon $+ 3
+  if (%equipped.shield != nothing) { var %equipped.shield $rarity.color.check(%equipped.shield, armor) $+ %equipped.shield $+ 3 }
+  var %equipped.armor.head $rarity.color.check(%equipped.armor.head, armor) $+ %equipped.armor.head $+ 3
+  var %equipped.armor.body $rarity.color.check(%equipped.armor.body, armor) $+ %equipped.armor.body $+ 3
+  var %equipped.armor.legs $rarity.color.check(%equipped.armor.legs, armor) $+ %equipped.armor.legs $+ 3
+  var %equipped.armor.feet $rarity.color.check(%equipped.armor.feet,armor) $+ %equipped.armor.feet $+ 3 
+  var %equipped.armor.hands $rarity.color.check(%equipped.armor.hands, armor) $+ %equipped.armor.hands $+ 3
+  var %equipped.armor.ears $rarity.color.check(%equipped.armor.ears,armor) $+ %equipped.armor.ears $+ 3 
+  var %equipped.armor.neck $rarity.color.check(%equipped.armor.neck,armor) $+ %equipped.armor.neck $+ 3 
+  var %equipped.armor.wrists $rarity.color.check(%equipped.armor.wrists,armor) $+ %equipped.armor.wrists $+ 3 
+  var %equipped.armor.ring $rarity.color.check(%equipped.armor.ring,armor) $+ %equipped.armor.ring $+ 3 
 
   if ($readini($char($1), info, CustomTitle) != $null) { var %custom.title " $+ $readini($char($1), info, CustomTitle) $+ " }
 
   if ($readini(system.dat, system, botType) = IRC) { 
-    if ($2 = channel) {  $display.message(3 $+ %real.name %custom.title is wearing %equipped.armor.head on $gender($1) head; %equipped.armor.body on $gender($1) body; %equipped.armor.legs on $gender($1) legs; %equipped.armor.feet on $gender($1) feet; %equipped.armor.hands on $gender($1) hands. %real.name also has %equipped.accessory equipped $iif(%equipped.accessory2 = $null, as an accessory, as accessories) and is currently using the %weapon.equipped $iif(%weapon.equipped.left != nothing, 3and $equipment.color(%weapon.equipped.left) $+ %weapon.equipped.left 3weapons, 3weapon),private) }
-    if ($2 != channel) { $display.private.message(3 $+ %real.name %custom.title is wearing %equipped.armor.head on $gender($1) head; %equipped.armor.body on $gender($1) body; %equipped.armor.legs on $gender($1) legs; %equipped.armor.feet on $gender($1) feet; %equipped.armor.hands on $gender($1) hands. %real.name also has %equipped.accessory $iif(%equipped.accessory2 = $null, as an accessory, as accessories) and is currently using the %weapon.equipped $iif(%weapon.equipped.left != nothing, 3and $equipment.color(%weapon.equipped.left) $+ %weapon.equipped.left 3weapons, 3weapon)) }
+    if ($2 = channel) {  $display.message(3 $+ %real.name %custom.title is wearing %equipped.armor.head on $gender($1) head; %equipped.armor.body on $gender($1) body; %equipped.armor.legs on $gender($1) legs; %equipped.armor.feet on $gender($1) feet; %equipped.armor.hands on $gender($1) hands; %equipped.armor.ears on $gender($1) ears; %equipped.armor.neck on $gender($1) neck; %equipped.armor.wrists on $gender($1) wrists and  %equipped.armor.ring on $gender($1) ring finger. %real.name is currently using the %equipped.weapon weapon $iif(%equipped.shield != nothing, and %equipped.shield shield), private) }
+    if ($2 != channel) {  $display.private.message(3 $+ %real.name %custom.title is wearing %equipped.armor.head on $gender($1) head; %equipped.armor.body on $gender($1) body; %equipped.armor.legs on $gender($1) legs; %equipped.armor.feet on $gender($1) feet; %equipped.armor.hands on $gender($1) hands; %equipped.armor.ears on $gender($1) ears; %equipped.armor.neck on $gender($1) neck; %equipped.armor.wrists on $gender($1) wrists and  %equipped.armor.ring on $gender($1) ring finger. %real.name is currently using the %equipped.weapon weapon $iif(%equipped.shield != nothing, and %equipped.shield shield)) }
+
   }
 
   unset %real.name
-  unset %weapon.equipped*
 }
 
 

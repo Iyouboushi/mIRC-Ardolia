@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 04/29/17
+;;;; Last updated: 05/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -256,12 +256,14 @@ on 2:TEXT:!xp:#: { $display.message($translate(ViewMyXP), private) }
 on 2:TEXT:!xp:?: { $display.private.message($translate(ViewMyXP)) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; View your gil
+; View your main currency
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!gil:#: { $display.message($translate(ViewMyMoney), private) }
 on 2:TEXT:!gil:?: { $display.private.message($translate(ViewMyMoney), private) }
 on 2:TEXT:!money:#: { $display.message($translate(ViewMyMoney), private) }
 on 2:TEXT:!money:?: { $display.private.message($translate(ViewMyMoney), private) }
+on 2:TEXT:!gold:#: { $display.message($translate(ViewMyMoney), private) }
+on 2:TEXT:!gold:?: { $display.private.message($translate(ViewMyMoney), private) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; View your craftingpoints
