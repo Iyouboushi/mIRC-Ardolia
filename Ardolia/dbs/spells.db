@@ -6,33 +6,32 @@
 ; Description= What shows when this is used in battle
 ; Cooldown=# how many turns do you have to wait to use this one again
 ; Cost=how much does it cost to use?
-; CostType=TP/MP
 ; Potency= the potency amount for attack type, the buff amount for buffs
 ; Enmity= The amount of enmity generated on top of the normal amount. This will most likely be 0 unless it's an ability designed
 ;         to give bonus to enmity for tanks.
 ; BuffLength= How many turns will the player(s) gain this buff?
 
-=============================================
-WARRIOR
-=============================================
 
 =============================================
 PALADIN
-=============================================
-
-=============================================
-MONK
-=============================================
-
-
-=============================================
-ROG
 =============================================
 
 
 =============================================
 WHM
 =============================================
+[Protect]
+Level=1
+Type=Buff
+AOE=true
+Info=
+Description=
+Cooldown=10
+Cost=100
+Potency=100
+Enmity=0
+BuffLength=10
+
 
 =============================================
 BLM

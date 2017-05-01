@@ -138,6 +138,7 @@ adventure.begin {
   set %current.room 0
   set %adventure.open false
   set %adventureis on 
+  set %true.turn 0
 
   ; Display the first room's info
   $display.message(7*2 $readini($zonefile(adventure), 0, EnterDesc), global)

@@ -60,8 +60,8 @@ alias battle.generate.manual {
   ; Are there any monsters in battle?
   if (($return_monstersinbattle = $null) || ($return_monstersinbattle = 0)) { $translate(NoMonstersInBattle),battle) | $battle.end(defeat) | halt }
 
-  ; Set the turns
-  set %true.turn 0 | set %current.turn 0
+  ; Set the turn
+  set %current.turn 0
 
   ; The battle may start
   $battle.start
