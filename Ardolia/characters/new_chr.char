@@ -35,6 +35,7 @@ Dex=1
 Vit=1
 Int=1
 Mnd=1
+Pie=1
 Det=1
 Status=alive
 inbattle=false
@@ -85,43 +86,25 @@ WindSpellsCasted=0
 WaterSpellsCasted=0
 IceSpellsCasted=0
 LightningSpellsCasted=0
-TimesDodged=0
-TimesCountered=0
 TimesParried=0
 TimesBlocked=0
 TotalDmg.Melee=0
 MeleeHits=0
-TotalDmg.Tech=0
-TechHits=0
+TotalDmg.Ability=0
+AbilityHits=0
+TotalDmg.Spells=0
+SpellsCast=0
 TotalXPGained=0
-TotalCapacityPointsGained=0
 TotalStatPointsSpent=0
 
 [Jobs]
 CurrentJob=WAR
 WAR=1
-MNK=1
-WHM=1
-BLM=1
-THF=1
-DRG=0
-SAM=0
-NIN=0
-RNG=0
+
 
 [Exp]
 WAR=0
-MNK=0
-WHM=0
-BLM=0
-THF=0
-DRG=0
-SAM=0
-NIN=0
-RNG=0
-COOK=0
-CRAFT=0
-CapacityPoints=0
+
 
 [Inventory]
 fists=1
