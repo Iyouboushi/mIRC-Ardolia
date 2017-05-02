@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -130,6 +130,45 @@ ON 1:TEXT:!quick id*:*:{ $idcheck($nick , $3, quickid) | mode %battlechan +v $ni
 }
 on 2:TEXT:!logout*:*:{ .auser 1 $nick | close -c $nick | mode %battlechan -v $nick | .flush 1 }
 on 2:TEXT:!log out*:*:{ .auser 1 $nick | close -c $nick | mode %battlechan -v $nick | .flush 1 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Allocate your free stat points
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!stat *:?: {
+  ; !stat [add] [stat] [amount]
+  if (($2 = point) || ($2 = points)) { $display.private.message($translate(ViewMyStatPoints)) | halt }
+  if (($2 != add) && ($2 != remove)) { $gamehelp(!stat, $nick) | halt }
+  if (($3 = $null) || ($4 !isnum)) { $gamehelp(!stat, $nick) | halt }
+  if ((. isin $4) || ($4 <= 0)) { $gamehelp(!stat, $nick) | halt }
+
+  var %valid.stats str.dex.vit.int.mnd.pie
+  if ($istok(%valid.stats, $3, 46) = $false) { $display.private.message($translate(InvalidStatSelection)) | halt }
+
+  ; Are we in an adventure?  If so, we can't do this.
+  if ($in.adventure($nick) = true) { $display.private.message($translate(Can'tAllocateRightNow)) | halt }
+
+  if ($2 = add) {
+    ; Do we have enough stat points?
+    if ($4 > $current.freestatpoints($nick)) { $display.private.message($translate(NotEnoughStatPoints)) | halt }
+
+    if ($3 = str) { var %current.stat $resting.str($nick) } 
+    if ($3 = dex) { var %current.stat $resting.dex($nick) }
+    if ($3 = vit) { var %current.stat $resting.vit($nick) }  
+    if ($3 = int) { var %current.stat $resting.int($nick) } 
+    if ($3 = mnd) { var %current.stat $resting.mnd($nick) } 
+    if ($3 = pie) { var %current.stat $resting.pie($nick) }
+
+    inc %current.stat $4
+
+    writeini $char($nick) basestats $3 %current.stat 
+    writeini $char($nick) info UnallocatedStatPoints $calc($current.freestatpoints($nick) - $4)
+    $miscstats($nick, add, TotalStatPointsSpent, $4)
+
+    $display.private.message($translate(AllocatedStatPoints, $4, $3, %current.stat)) 
+
+    $fulls($nick, yes)
+  }
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Changing/Checking Jobs

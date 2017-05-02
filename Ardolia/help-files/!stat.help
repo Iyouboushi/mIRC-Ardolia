@@ -1,0 +1,7 @@
+12::[!stat add]::
+2You currently have $current.freestatpoints($nick) stat points to allocate between your six stats: STR, DEX, VIT, INT, MND, and PIE.
+
+12::[How Do I Allocate My Stats?]:: 
+2Syntax: 12!stat <add> <stat> <amount>   14(Remember to remove the < > from the command when using it)
+4NOTE2: You must allocate unused stat points before you are able to change to another job
+

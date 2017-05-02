@@ -1,28 +1,30 @@
 Ardolia Bot Changelog
 =========================
 
+05-02-2017
+- Added a free stat point to allocate at will upon level up.
+- Added the !stat add statname amount  command used to allocate free stat points.
 
-04-23-2017
-- Added basic file and folder structure
-- Added basic attack description files
-- Added topics.help
+05-01-2017
+- Added the rest of the !rest command. It now works properly.
+- Added the ability for adventures to properly give XP to players
+- Added the ability for adventures to properly give fame to players for clearing the adventure
+- Added the ability for adventures to properly mark that the player has cleared the adventure if it's a victory
+- Added the ability for players to level up properly
+- Added the ability for everyone to regain 10% TP per turn (currently 100)
+- Added a bunch of help files that can be viewed with !help
+- Changed !look a little bit. Outside of an adventure it shows what you're wearing to people. Inside of adventure but not in 
+  battle it shows the room. Inside of battle it shows the battle info.
+- Changed the char file to store the main currency as "money" rather than "gil" in case other bot owners don't want to use gil.
+- Changed where the xp/money/item drops are stored in the monster files
+- Fixed a small issue with the melee damage formula not counting the stat properly
 
-04-27-2017
-- Added !new char
-- Added !newpass
-- Added !hp, !mp
-- Added a test adventure in \zones\ for testing the bot out
-- Added !adventure start test
-- Added adventure commands: !go [direction], !look, !warp, !pull/!push/!read/!open [object name]
-- Added a very basic combat system that will inflict 1 damage to monsters
-
-04-28-2017
-- Added a small delay between !go commands so that it cannot be spammed 
-- Added three races that can be chosen upon new char: human, elf and galka
-- Added basic stats. They are based on FFXIV: STR, DEX, VIT, INT, MND, PIE
-- Added a basic melee damage formula
-- Added defense/magic defense values into monster files
-- Added the ability for weapons to determine which stat is calculated for when that weapon is used in combat
+04-30-2017
+- Added code to check for level up
+- Added code to check for level 60 level cap and the soft cap of 50. It checks to see if the Genkai adventure is clear.
+- Added code for increasing the number of battles/adventures and wins/losses of each.
+- Added the starting code for abilities and spells
+- Fixed adventures to write the $fulldate when the very first adventure is started
 
 04-29-2017
 - Added weapon information into !view-info.  Use !view-info weaponnamehere to view information on the weapon
@@ -40,20 +42,24 @@ Ardolia Bot Changelog
 - Added rarity to equipment and weapons.  1-5 with 5 being considered legendary
 - Fixed a bad bug that would cause player files to be erased at the end of adventures
 
-04-30-2017
-- Added code to check for level up
-- Added code to check for level 60 level cap and the soft cap of 50. It checks to see if the Genkai adventure is clear.
-- Added code for increasing the number of battles/adventures and wins/losses of each.
-- Added the starting code for abilities and spells
-- Fixed adventures to write the $fulldate when the very first adventure is started
+04-28-2017
+- Added a small delay between !go commands so that it cannot be spammed 
+- Added three races that can be chosen upon new char: human, elf and galka
+- Added basic stats. They are based on FFXIV: STR, DEX, VIT, INT, MND, PIE
+- Added a basic melee damage formula
+- Added defense/magic defense values into monster files
+- Added the ability for weapons to determine which stat is calculated for when that weapon is used in combat
 
-05-01-2017
-- Added the rest of the !rest command. It now works properly.
-- Added the ability for adventures to properly give XP to players
-- Added the ability for adventures to properly give fame to players for clearing the adventure
-- Added the ability for adventures to properly mark that the player has cleared the adventure if it's a victory
-- Added the ability for players to level up properly
-- Added the ability for everyone to regain 10% TP per turn (currently 100)
-- Fixed a small issue with the melee damage formula not counting the stat properly
+04-27-2017
+- Added !new char
+- Added !newpass
+- Added !hp, !mp
+- Added a test adventure in \zones\ for testing the bot out
+- Added !adventure start test
+- Added adventure commands: !go [direction], !look, !warp, !pull/!push/!read/!open [object name]
+- Added a very basic combat system that will inflict 1 damage to monsters
 
-
+04-23-2017
+- Added basic file and folder structure
+- Added basic attack description files
+- Added topics.help

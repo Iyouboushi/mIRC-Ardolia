@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -107,6 +107,12 @@ current.fame {
   var %current.fame $readini($char($1), Info, Fame)
   if (%current.fame = $null) { return 0 }
   else { return %current.fame }
+}
+
+current.freestatpoints {
+  var %current.statpoints $readini($char($1), Info, UnallocatedStatPoints)
+  if (%current.statpoints = $null) { return 0 }
+  else { return %current.statpoints }
 }
 
 job.hp {
@@ -228,7 +234,10 @@ in.battle { return $readini($char($1), battle, inbattle) }
 ; Returns true if the person is in an adventure party
 in.adventure { 
   var %party.list $readini($txtfile(adventure.txt), Info, PartyMembersList)
+  if (%party.list = $null) { return false }
+
   $if($istok(%party.list, $1, 46) = $true) { return true }
+  else { return false }
 }
 
 ; Returns the current level
@@ -482,6 +491,10 @@ levelup {
     var %stat.det $resting.det($1)
     inc %stat.det $readini($jobfile($current.job($1)), LevelUpInfo, Det)
     writeini $char($1) BaseStats Det %stat.det
+
+    var %unallocated.statpoints $current.freestatpoints($1)
+    inc %unallocated.statpoints 1
+    writeini $char($1) Info UnallocatedStatPoints %unallocated.statpoints
 
     ; Tell the player all that he/she's won!
     $display.private.message2($1, $translate(leveledupreward, $1))

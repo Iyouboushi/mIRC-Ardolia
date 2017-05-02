@@ -34,10 +34,9 @@ CharacterCreated=$chr(3) $+ 7*2 $nick the $race($nick) has joined the Ardolia
 
 
 
-AllocatedStatPoints=$chr(3) $+ 3 $+ You spend $4 stat points to raise your $3 stat to %current.stat $+ . You now have $statpoints($nick) left to spend.
-RemovedAllocatedStatPoints=$chr(3) $+ 3 $+ You refund $4 stat points to lower your $3 stat to %current.stat $+ . You now have $statpoints($nick) left to spend.
-CurrentStats-Allocation=$chr(3) $+ 3 $+ Your current stats are: 12STR:4 $resting.str($nick) 12AGI:4 $resting.agi($nick) 12VIT:4 $resting.vit($nick) 12MAG:4 $resting.mag($nick) 12CHR:4 $resting.chr($nick) 12SPD:4 $resting.spd($nick)     
-AllocationDone-Newchar=$chr(3) $+ 3 $+ You have allocated all of your stat points. If you are satisfied with your stats you may now change your job to finalize your character's base stats. For more information on jobs use 12!help jobs  3If you are not ready you may still remove and reallocate the stat points.
+AllocatedStatPoints=$chr(3) $+ 3 $+ You spend $2 stat $iif($2 > 1, points, point) to raise your $3 stat to $4 $+ . You now have $current.freestatpoints($nick) left to spend.
+
+
 
 ; Job Change and unlock
 ChangedJob=$chr(3) $+ 3 $+ $get_chr_name($nick) has changed into a level2 $get.level($nick) $current.job($nick) $+ 3!
@@ -142,7 +141,7 @@ BossLevelSynced200=$chr(3) $+ 4 $+ The level cap for this boss battle has been
 GainedEnhancementPoint=$chr(3) $+ 7 $+ You have gained 1 enhancement point bringing your new total to %current.enhancementpoints $+ .
 
 ; Level up
-LeveledUpReward=$chr(3) $+ 2 $+ You have leveled up! You have gained + $+ $round($calc($readini($jobfile($current.job($2)), LevelUpInfo, Vit)  * $job.hp($2)),0) HP $+ $chr(44) + $+ $round($calc($readini($jobfile($current.job($2)), LevelUpInfo, Pie)  * $job.mp($2)),0) MP $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Str) Str $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Dex) Dex $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Vit) Vit $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Int) Int $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Mnd) Mnd $+ $chr(44) and + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Pie) Pie  
+LeveledUpReward=$chr(3) $+ 2 $+ You have leveled up! You have gained + $+ $round($calc($readini($jobfile($current.job($2)), LevelUpInfo, Vit)  * $job.hp($2)),0) HP $+ $chr(44) + $+ $round($calc($readini($jobfile($current.job($2)), LevelUpInfo, Pie)  * $job.mp($2)),0) MP $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Str) Str $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Dex) Dex $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Vit) Vit $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Int) Int $+ $chr(44) + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Mnd) Mnd $+ $chr(44) and + $+ $readini($jobfile($current.job($2)), LevelUpInfo, Pie) Pie    You have also received 1 free stat point you can allocate however you wish with !stat add statname amount in private.
 LeveledUp=$chr(3) $+ 7*2 $get_chr_name($2) has reached level $get.level($2) $current.job($2) $+ !
 
 
@@ -314,17 +313,15 @@ CanOnlySwitchOutsideAdventure=$chr(3) $+ 4 $+ Error: You can only switch weapo
 
 ; Stat point allocating errors
 Can'tRemoveStats=$chr(3) $+ 4 $+ Error: You can no longer remove stat points from your stats. 
-NotEnoughStatPoints=$chr(3) $+ 4 $+ Error: You do not have enough stat points to do this. You only have $statpoints($nick) points to spend.
-Can'tAllocateInBattle=$chr(3) $+ 4 $+ Error: You must wait until you are out of battle to allocate your stat points.
-Can'tLeaveLessThan1InStat=$chr(3) $+ 4 $+ Error: You cannot leave less than 1 in any stat.
-Can'tAllocateOverMaximum=$chr(3) $+ 4 $+ Error: You cannot go above your maximum stat. The maximum for this stat is %max.stat
-InvalidStatSelection=$chr(3) $+ 4 $+ Error: Invalid stat selection. The stats are: STR, AGI, VIT, MAG, CHR, SPD
+NotEnoughStatPoints=$chr(3) $+ 4 $+ Error: You do not have enough stat points to do this. You only have $current.freestatpoints($nick) points to spend.
+Can'tAllocateRightNow=$chr(3) $+ 4 $+ Error: You must wait until you are out of of an adventure to allocate your stat points.
+InvalidStatSelection=$chr(3) $+ 4 $+ Error: Invalid stat selection. The stats are: STR, DEX, VIT, INT, MND, PIE
  
 ; Job changing errors
 JobDoesNotExist=$chr(3) $+ 4 $+ Error: Invalid job code.
 DoNotHaveJob=$chr(3) $+ 4 $+ Error: You do not have this job and cannot switch to it.
 Can'tChangeJobsWithStatPointsLeft=$chr(3) $+ 4 $+ Error: You cannot switch jobs while you still have stat points remaining.
-Can'tChangeJobsInBattle=$chr(3) $+ 4 $+ Error: You cannot switch jobs while you are in battle.
+Can'tChangeJobsRightNow=$chr(3) $+ 4 $+ Error: You cannot switch jobs while you are in an adventure
 SameJob=$chr(3) $+ 4 $+ Error: You are already a $current.job($nick) $+ .
 
 ; Attacking Errors
