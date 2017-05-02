@@ -38,6 +38,7 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
   .copy $char(new_chr) $char($nick)
   writeini $char($nick) Info Name $nick 
   writeini $char($nick) Info Created $fulldate
+  writeini $char($nick) Info Race $3
 
   ; Copy the starting stats over
   writeini $char($nick) StartingStats Str $readini($racefile($3), StartingStats, Str)
@@ -323,23 +324,72 @@ on 2:TEXT:!currencies:?: { $display.private.message($translate(ViewMyCurrencies)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!stats*:*: {
 
-  ; to be re-added later
-  halt
-
+  ; Check your own stats
   if ($2 = $null) { 
+
+    var %equipped.weapon $return.equipped($nick, weapon)
+    var %equipped.shield $return.equipped($nick, shield)
+    var %equipped.armor.head $return.equipped($nick, head)
+    var %equipped.armor.body $return.equipped($nick, body)
+    var %equipped.armor.legs $return.equipped($nick, legs)
+    var %equipped.armor.feet $return.equipped($nick, feet)
+    var %equipped.armor.hands $return.equipped($nick, hands)
+    var %equipped.armor.ears $return.equipped($nick, ears)
+    var %equipped.armor.neck $return.equipped($nick, neck)
+    var %equipped.armor.wrists $return.equipped($nick, wrists)
+    var %equipped.armor.ring $return.equipped($nick, ring)
+
+    var %equipped.weapon $rarity.color.check(%equipped.weapon, weapon) $+ %equipped.weapon $+ 3
+    if (%equipped.shield != nothing) { var %equipped.shield $rarity.color.check(%equipped.shield, armor) $+ %equipped.shield $+ 3 }
+    var %equipped.armor.head $rarity.color.check(%equipped.armor.head, armor) $+ %equipped.armor.head $+ 3
+    var %equipped.armor.body $rarity.color.check(%equipped.armor.body, armor) $+ %equipped.armor.body $+ 3
+    var %equipped.armor.legs $rarity.color.check(%equipped.armor.legs, armor) $+ %equipped.armor.legs $+ 3
+    var %equipped.armor.feet $rarity.color.check(%equipped.armor.feet,armor) $+ %equipped.armor.feet $+ 3 
+    var %equipped.armor.hands $rarity.color.check(%equipped.armor.hands, armor) $+ %equipped.armor.hands $+ 3
+    var %equipped.armor.ears $rarity.color.check(%equipped.armor.ears,armor) $+ %equipped.armor.ears $+ 3 
+    var %equipped.armor.neck $rarity.color.check(%equipped.armor.neck,armor) $+ %equipped.armor.neck $+ 3 
+    var %equipped.armor.wrists $rarity.color.check(%equipped.armor.wrists,armor) $+ %equipped.armor.wrists $+ 3 
+    var %equipped.armor.ring $rarity.color.check(%equipped.armor.ring,armor) $+ %equipped.armor.ring $+ 3 
+
     $display.private.message.delay.custom([4 $+ $get_chr_name($nick) 4the12 $race($nick) $+ ] [4Job12 $current.job($nick) $+ ]  [4Level12 $get.level($nick) $+ ] [4Exp12 $current.xp($nick) $chr(47) $xp.to.level($nick) $chr(40) $+ $round($calc(($current.xp($nick) / $xp.to.level($nick)) * 100),0) $+ $chr(37) $+ $chr(41) $+ ]    ,2,$nick)
     $display.private.message.delay.custom([4HP12 $current.hp($nick) $+ 1/ $+ 12 $+ $resting.hp($nick) $+ ] [4MP12 $current.mp($nick) $+ 1/ $+ 12 $+ $resting.mp($nick) $+ ] [4TP12 $current.tp($nick) $+ ], 2, $nick)
-    $display.private.message.delay.custom([4STR:12 $resting.str($nick) 3+ $+ $bonus.stat($nick,str) $+ ]  [4AGI:12 $resting.agi($nick) 3+ $+ $bonus.stat($nick,agi) $+ ] [4VIT:12 $resting.vit($nick) 3+ $+ $bonus.stat($nick,vit) $+ ] [4MAG:12 $resting.mag($nick) 3+ $+ $bonus.stat($nick,mag) $+ ] [4CHR:12 $resting.chr($nick) 3+ $+ $bonus.stat($nick,chr) $+ ] [4SPD:12 $resting.spd($nick) 3+ $+ $bonus.stat($nick,spd) $+ ], 2, $nick)
-    $display.private.message.delay.custom([4 $+ $iif($return.equipped($nick, LeftHand) != nothing, Weapons, Weapon) Equipped12 $return.equipped($nick, RightHand) $iif($return.equipped($nick, LeftHand) != nothing, 4and12 $return.equipped($nick, LeftHand)) $+ ] [4Accessory Slot 112 $return.equipped($nick, accessory1) $+ ]  [4Accessory Slot 212 $return.equipped($nick, accessory1) $+ ] [4Head Armor12 $return.equipped($nick, head) $+ ] [4Body Armor12 $return.equipped($nick, body) $+ ] [4Leg Armor12 $return.equipped($nick, legs) $+ ] [4Feet Armor12 $return.equipped($nick, feet) $+ ] [4Hand Armor12 $return.equipped($nick, hands) $+ ] ,2, $nick)
+    $display.private.message.delay.custom([4Strength:12 $resting.str($nick) $+ ]  [4Dexterity:12 $resting.dex($nick) $+ ] [4Vitality:12 $resting.vit($nick) $+ ] [4Intelligence:12 $resting.int($nick) $+ ] [4Mind:12 $resting.mnd($nick) $+ ] [4Piety:12 $resting.pie($nick) $+ ], 2, $nick)
+    $display.private.message.delay.custom([4Weapon12 %equipped.weapon $+ ] $iif(%equipped.shield != nothing, [4Shield12 %equipped.shield $+ ]) [4Head Armor12 %equipped.armor.head $+ ] [4Body Armor12 %equipped.armor.body $+ ] [4Leg Armor12 %equipped.armor.legs $+ ] [4Feet Armor12 %equipped.armor.feet $+ ] [4Hand Armor12 %equipped.armor.hands $+ ] [4Earrings12 %equipped.armor.ears $+ ] [4Neck Armor12 %equipped.armor.neck $+ ] [4Wrist Armor12 %equipped.armor.wrists $+ ] [4Ring12 %equipped.armor.ring $+ ],2,$nick)
   }
 
+  ; Check someone else's stats
   else { $checkchar($2) 
     if ($flag($2) != $null) { $display.private.message($translate(CanOnlyViewPlayerStats)) | halt }
 
+    var %equipped.weapon $return.equipped($2, weapon)
+    var %equipped.shield $return.equipped($2, shield)
+    var %equipped.armor.head $return.equipped($2, head)
+    var %equipped.armor.body $return.equipped($2, body)
+    var %equipped.armor.legs $return.equipped($2, legs)
+    var %equipped.armor.feet $return.equipped($2, feet)
+    var %equipped.armor.hands $return.equipped($2, hands)
+    var %equipped.armor.ears $return.equipped($2, ears)
+    var %equipped.armor.neck $return.equipped($2, neck)
+    var %equipped.armor.wrists $return.equipped($2, wrists)
+    var %equipped.armor.ring $return.equipped($2, ring)
+
+    var %equipped.weapon $rarity.color.check(%equipped.weapon, weapon) $+ %equipped.weapon $+ 3
+    if (%equipped.shield != nothing) { var %equipped.shield $rarity.color.check(%equipped.shield, armor) $+ %equipped.shield $+ 3 }
+    var %equipped.armor.head $rarity.color.check(%equipped.armor.head, armor) $+ %equipped.armor.head $+ 3
+    var %equipped.armor.body $rarity.color.check(%equipped.armor.body, armor) $+ %equipped.armor.body $+ 3
+    var %equipped.armor.legs $rarity.color.check(%equipped.armor.legs, armor) $+ %equipped.armor.legs $+ 3
+    var %equipped.armor.feet $rarity.color.check(%equipped.armor.feet,armor) $+ %equipped.armor.feet $+ 3 
+    var %equipped.armor.hands $rarity.color.check(%equipped.armor.hands, armor) $+ %equipped.armor.hands $+ 3
+    var %equipped.armor.ears $rarity.color.check(%equipped.armor.ears,armor) $+ %equipped.armor.ears $+ 3 
+    var %equipped.armor.neck $rarity.color.check(%equipped.armor.neck,armor) $+ %equipped.armor.neck $+ 3 
+    var %equipped.armor.wrists $rarity.color.check(%equipped.armor.wrists,armor) $+ %equipped.armor.wrists $+ 3 
+    var %equipped.armor.ring $rarity.color.check(%equipped.armor.ring,armor) $+ %equipped.armor.ring $+ 3 
+
     $display.private.message.delay.custom([4 $+ $get_chr_name($2) 4the12 $race($2) $+ ] [4Job12 $current.job($2) $+ ]  [4Level12 $get.level($2) $+ ] [4Exp12 $current.xp($2) $chr(47) $xp.to.level($2) $chr(40) $+ $round($calc(($current.xp($2) / $xp.to.level($2)) * 100),0) $+ $chr(37) $+ $chr(41) $+ ]    ,2,$nick)
-    $display.private.message.delay.custom([4HP12 $current.hp($2) $+ 1/ $+ 12 $+ $resting.hp($2) $+ ] [4MP12 $current.mp($2) $+ 1/ $+ 12 $+ $resting.mp($2) $+ ] [4TP12 $current.tp($2) $+ ], 2, $nick)
-    $display.private.message.delay.custom([4STR:12 $resting.str($2) 3+ $+ $bonus.stat($2,str) $+ ]  [4AGI:12 $resting.agi($2) 3+ $+ $bonus.stat($2,agi) $+ ] [4VIT:12 $resting.vit($2) 3+ $+ $bonus.stat($2,vit) $+ ] [4MAG:12 $resting.mag($2) 3+ $+ $bonus.stat($2,mag) $+ ] [4CHR:12 $resting.chr($2) 3+ $+ $bonus.stat($2,chr) $+ ] [4SPD:12 $resting.spd($2) 3+ $+ $bonus.stat($2,spd) $+ ], 2, $nick)
-    $display.private.message.delay.custom([4 $+ $iif($return.equipped($2, LeftHand) != nothing, Weapons, Weapon) Equipped12 $return.equipped($2, RightHand) $iif($return.equipped($2, LeftHand) != nothing, 4and12 $return.equipped($2, LeftHand)) $+ ] [4Accessory Slot 112 $return.equipped($2, accessory1) $+ ]  [4Accessory Slot 212 $return.equipped($2, accessory1) $+ ] [4Head Armor12 $return.equipped($2, head) $+ ] [4Body Armor12 $return.equipped($2, body) $+ ] [4Leg Armor12 $return.equipped($2, legs) $+ ] [4Feet Armor12 $return.equipped($2, feet) $+ ] [4Hand Armor12 $return.equipped($2, hands) $+ ] ,2, $nick)
+    $display.private.message.delay.custom([4HP12 $current.hp($2) $+ 1/ $+ 12 $+ $resting.hp($2) $+ ] [4MP12 $current.mp($2) $+ 1/ $+ 12 $+ $resting.mp($2) $+ ] [4TP12 $current.tp($2) $+ ], 2, $2)
+    $display.private.message.delay.custom([4Strength:12 $resting.str($2) $+ ]  [4Dexterity:12 $resting.dex($2) $+ ] [4Vitality:12 $resting.vit($2) $+ ] [4Intelligence:12 $resting.int($2) $+ ] [4Mind:12 $resting.mnd($2) $+ ] [4Piety:12 $resting.pie($2) $+ ], 2, $nick)
+    $display.private.message.delay.custom([4Weapon12 %equipped.weapon $+ ] $iif(%equipped.shield != nothing, [4Shield12 %equipped.shield $+ ]) [4Head Armor12 %equipped.armor.head $+ ] [4Body Armor12 %equipped.armor.body $+ ] [4Leg Armor12 %equipped.armor.legs $+ ] [4Feet Armor12 %equipped.armor.feet $+ ] [4Hand Armor12 %equipped.armor.hands $+ ] [4Earrings12 %equipped.armor.ears $+ ] [4Neck Armor12 %equipped.armor.neck $+ ] [4Wrist Armor12 %equipped.armor.wrists $+ ] [4Ring12 %equipped.armor.ring $+ ],2,$nick)
+
   }
 }
 
