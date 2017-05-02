@@ -4,6 +4,11 @@ Ardolia Bot Changelog
 05-02-2017
 - Added a free stat point to allocate at will upon level up.
 - Added the !stat add statname amount  command used to allocate free stat points.
+- Added code for changing jobs (!job change jobcodehere) -- It now looks in \jobs\ to see if it's a valid job. 
+  Players can freely change into any job code listed in \jobs\ without having to unlock anything
+- Added !stats
+- Changed the new_chr.char file slightly. Getting closer to being finalized/ready.
+- Fixed an issue where race wasn't being written to the player's file.
 
 05-01-2017
 - Added the rest of the !rest command. It now works properly.
