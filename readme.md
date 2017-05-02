@@ -9,7 +9,7 @@ Once set up the game is entirely automatic and does not need anyone to run it.
 
 A full in-depth guide with commands and more in-depth information will eventually be listed on this game's wiki.
 
-Note: As of April 28, 2017 the game is still in heavy development and is not fully playable.
+Note: As of May 2, 2017 the game is still in heavy development and is not fully playable.
 
 
 ## SETUP
@@ -31,21 +31,19 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-* APRIL 29, 2017
+* MAY 1 & MAY 2, 2017
+Over the last two days I have added quite a few things.  Commands added: !rest, !stats, !stat add statname amount (for allocating free stat points players get upon leveling up) and !job change jobcode. !look has been updated to work differently depending on whether an adventure is on going, a battle is ongoing or neither.
 
-With this update it is now possible to equip and unequip weapons and armor.  Players will now start with a basic tunic already equipped and their fists weapon. 
+Added the ability for players to level up properly and adventures will now properly award xp from monsters killed and clearing the adventure. 
 
-Also with this update comes more player commands.  !party will display a list of who's in the adventure party (if an adventure is currently going) and !view-info weapon weaponname will display information on a weapon. !weapons weapontype will show you what weapons of that type you own. !armor armortype will show you the armor you own of that type (for example use !armor body)
+Added a bunch of !help files for players to look over. 
 
-Rarity has been added weapons and armor. It can go from 1 to 5 with 1 being super common and 5 being legendary.
+Fixed a few issues.
 
-Armor will now return the proper defense/magic defense values.
-
-And last, but not least, a bad bug that was erasing player files at the end of adventures should be fixed.
 
 ## TO-DO
 
-In order to make this game fully playable there are still a huge amount of things to be done.  Up next will be fixing !look and adding help information to help players learn more about the game,  
+In order to make this game fully playable there are still a huge amount of things to be done.  Up next will be adding some basic abilities for testing.  
 
 ## THANKS
 
