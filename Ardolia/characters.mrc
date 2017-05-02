@@ -176,24 +176,21 @@ on 2:TEXT:!stat *:?: {
 on 2:TEXT:!job change *:*: {
   ; !job change [job]
 
-  ; Can't change jobs if you're in battle
-  if ($in.battle($nick) = true) { $display.private.message($translate(Can'tChangeJobsInBattle)) | halt }
-
-  ; Can't change jobs if you're in in the middle of an adventure
-  if ($in.adventure($nick) = true) { $display.private.message($readini(translation.dat, errors, Can'tChangeJobsInBattle)) | halt }
+  ; Can't change jobs if you're in an
+  if ($in.adventure($nick) = true) { $display.private.message($translate(Can'tChangeJobsRightNow)) | halt }
 
   ; Is this the same job you already are?
   if ($3 = $current.job($nick)) { $display.private.message($translate(SameJob)) | halt }
 
-  ; If this is a brand new char we need to finalize some things
-  if ($creatingcharacter($nick) = true) { $finalize.newchar($nick) }
+  ; does the player still have unallocated stat points?
+  if ($current.freestatpoints($nick) > 0) { $display.private.message($translate(Can'tChangeJobsWithStatPointsLeft)) | halt }
 
   ; Is this a valid job?
   if ($isfile($jobfile($3)) != $true) { $display.private.message($translate(JobDoesNotExist)) | halt }
 
-  ; Does the player have this job available to change to?
+  ; If the player's file doesn't have that job write that we're now level 1 to it
   var %job.level $readini($char($nick), jobs, $3)
-  if ((%job.level = $null) || (%job.level = 0)) { $display.private.message($translate(DoNotHaveJob)) | halt }
+  if ((%job.level = $null) || (%job.level = 0)) { writeini $char($nick) jobs $3 1 | writeini $char($nick) Exp $3 0 }
 
   ; Make a current copy of the stats of the old job and clear the equipment
   if ($current.job($nick) != none) {  
@@ -211,35 +208,15 @@ on 2:TEXT:!job change *:*: {
 
     ; Get a copy from the starting stats
     $copyini($nick, StartingStats, BaseStats)
-
-    ; Roll the job's starting HP
-    var %starting.hp $readini($jobfile($3), StartingStats, HP)
-    var %job.bonus.hp.dice $readini($jobfile($3), LevelUpInfo, HP)
-    inc %starting.hp $roll(%job.bonus.hp.dice)
-    inc %starting.hp $resting.vit($nick)
-
-    ; Roll the job's starting MP
-    var %starting.mp $readini($jobfile($3), StartingStats, MP)
-
-    if (%starting.mp != 0) {  
-      var %job.bonus.mp.dice $readini($jobfile($3), LevelUpInfo, MP)
-      inc %starting.mp $dice(%job.bonus.mp.dice)
-      inc %starting.mp $resting.mag($nick)
-    }
-
-    writeini $char($nick) BaseStats HP %starting.hp
-    writeini $char($nick) BaseStats MP %starting.mp
   }
 
   writeini $char($nick) Jobs CurrentJob $3
 
-  ; Restore the player's HP/MP/stats
-  writeini $char($nick) info NeedsFulls yes
-  $fulls($nick)
+  ; Restore the player's HP/MP/battle stats
+  $fulls($nick, yes)
 
   ; Tell the world we've changed jobs
   $display.message($translate(ChangedJob))
-
 }
 
 on 2:TEXT:!jobs:#: {  var %jobs.list $jobs.list($nick) |  $display.message($translate(ViewMyJobs), private) }

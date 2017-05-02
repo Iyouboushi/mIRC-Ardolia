@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1662,13 +1662,14 @@ finalize.newchar {
 ; Reset Equipment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 equipment.reset {
-  writeini $char($1) equipment RightHand fists
-  writeini $char($1) equipment LeftHand nothing
-  writeini $char($1) equipment accessory1 nothing
-  writeini $char($1) equipment accessory2 nothing
+  writeini $char($1) equipment weapon fists
   writeini $char($1) equipment head nothing
   writeini $char($1) equipment body nothing
   writeini $char($1) equipment legs nothing
   writeini $char($1) equipment feet nothing
   writeini $char($1) equipment hands nothing
+  writeini $char($1) equipment ears nothing
+  writeini $char($1) equipment neck nothing
+  writeini $char($1) equipment wrists nothing
+  writeini $char($1) equipment ring nothing
 }
