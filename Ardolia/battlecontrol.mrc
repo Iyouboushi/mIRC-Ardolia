@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -351,7 +351,12 @@ alias battle.clear {
   unset %techs | unset %damage.display.color
   unset %total.targets | unset %random.target | unset %temp.battle.list
   unset %whoturn | unset %file | unset %file.to.read.lines
+
+  ; Restore dead party members to 1 hp
+  $battle.restoredead
 }
+
+
 
 ; ==========================
 ; The $next command.
@@ -625,4 +630,26 @@ alias battle.monster.death.check {
 
   if (%death.count >= $return_monstersinbattle) { return true } 
   else { return false }
+}
+
+; ==========================
+; Restores dead party members
+; back to 1 HP
+; ==========================
+alias battle.restoredead {
+  var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
+  while (%current.party.member <= $adventure.party.count) { 
+    var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
+
+    if ($readini($char(%party.member.name), Battle, Status) = dead) {
+      writeini $char(%party.member.name) Battle HP 1
+      writeini $char(%party.member.name) Battle Status Normal
+    }
+
+    ; To be added: clearing statuses except buffs
+
+
+    inc %current.party.member
+  }
+
 }
