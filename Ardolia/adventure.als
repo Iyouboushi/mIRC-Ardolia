@@ -349,9 +349,28 @@ adventure.rewards {
 
   ; Reward spoils (if there are any) -- This is given out randomly while there's rewards left to give. Some players may end up with more than one.
   ; if isfile adventure_spoils.txt = true
+  if ($isfile($txtfile(battlespoils.txt)) = $true) {
+    var %spoils.to.reward $lines($txtfile(battlespoils.txt))
+    var %current.spoil.number 1
+
+    while (%current.spoil.number <= %spoils.to.reward) {
+      var %spoil.name $read($txtfile(battlespoils.txt), %current.spoil.number)
+      var %random.partymember $gettok(%adventure.party, $rand(1, $numtok(%adventure.party,46)), 46)
+      var %spoil.reward %spoil.name ->  $+ %random.partymember $+ 
+      if ($istok(%winners.spoils, %spoil.reward, 46) = $true) { %winners.spoils = %winners.spoils $+ . %spoil.reward }
+      else { %winners.spoils = $addtok(%winners.spoils, %spoil.reward, 46) } 
+
+      $inventory.add(%random.partymember, %spoil.name, $calc($inventory.amount(%random.partymember, %spoil.name) + 1))
+
+      inc %current.spoil.number
+    }
+    %winners.spoils = $clean.list(%winners.spoils)
+
+  }
 
   ; Show the rewards.
   $display.message($translate(ShowXPRewards), global)
+  $display.message($translate(ShowSpoilRewards), global)
 
   ; Unset variables
   unset %winners.xp
