@@ -7,6 +7,9 @@ Ardolia Bot Changelog
 - Added code for changing jobs (!job change jobcodehere) -- It now looks in \jobs\ to see if it's a valid job. 
   Players can freely change into any job code listed in \jobs\ without having to unlock anything
 - Added !stats
+- Added the code so players can chop down trees in adventures
+- Added the ability for adventures to give the battle spoils to random players at the end of adventures
+- Added @add person ITEM itemname amount 
 - Changed the new_chr.char file slightly. Getting closer to being finalized/ready.
 - Fixed an issue where race wasn't being written to the player's file.
 
