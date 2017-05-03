@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -487,7 +487,10 @@ adventure.go {
   ; If the room is not clear, check for combat.  If the combat is true, start a battle and show the battle begin message.
   if ($readini($zonefile(adventure), %current.room, combat) = true) { 
     $display.message(4* $readini($zonefile(adventure), %current.room, CombatDesc), global)
-    $battle.generate
+
+    var %battle.type $readini($zonefile(adventure), %current.room, BattleType)
+    if (%battle.type = $null) { var %battle.type normal }
+    $battle.generate(Normal)
     halt
   }
   else { $adventure.look | halt }
