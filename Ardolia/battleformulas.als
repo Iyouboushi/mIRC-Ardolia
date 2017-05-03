@@ -198,6 +198,34 @@ calculate.wpn.damage {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Calculates ability damage
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+calculate.ability.damage {
+  ; $1 = the person we're checking
+  ; $2 = ability name
+
+  var %weapon.damage $weapon.damage($1)
+  var %stat.needed $readini($dbfile(abilities.db), $2, stat)
+  var %potency $readini($dbfile(abilities.db), $2, potency)
+  if (%potency = $null) { var %potency 100 }
+
+  if (%stat.needed = str) { var %current.stat $current.str($1) } 
+  if (%stat.needed = dex) { var %current.stat $current.dex($1) } 
+  if (%stat.needed = vit) { var %current.stat $current.vit($1) } 
+  if (%stat.needed = int) { var %current.stat $current.int($1) } 
+  if (%stat.needed = mnd) { var %current.stat $current.mnd($1) } 
+  if (%stat.needed = pie) { var %current.stat $current.pie($1) } 
+
+  var %current.det $current.det($1)
+
+  var %base.ability.damage $calc(((0.0032 * %current.stat + 0.4162) * %weapon.damage + (0.1001 * %current.stat - 0.3529) + (%current.det - 202) * 0.035))
+  var %base.ability.damage $abs($calc((%potency / 100) * %base.ability.damage))
+  inc %base.ability.damage $rand(1,2)
+
+  return $round(%base.ability.damage,0)
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Calculates defense
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 calculate.defense {
@@ -271,7 +299,15 @@ formula.melee.monster {
 ; Attack Ability Formula for Players
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 formula.ability.player {
+  ; $1 = the person we're checking
+  ; $2 = the ability name
+  ; $3 = the target
 
+  set %attack.damage $calculate.ability.damage($1, $2)
+  var %damage.defense.percent $calculate.defense($3, physical)
+
+  set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+  if (%attack.damage <= 0) { set %attack.damage 1 }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
