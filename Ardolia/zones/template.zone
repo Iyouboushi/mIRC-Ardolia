@@ -13,7 +13,8 @@
 ; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. Can be a static # or 
                  $return_percentofvalue($xp.to.level(%party.member.name), percentnumberhere)) 
                  ex: $return_percentofvalue($xp.to.level(%party.member.name), 5)) will return 5% of the player's TNL
-; FameRewarded= How much fame will the players receive if this dungeon is cleared?
+; FameRewarded= How much fame will the players receive if this adventure is cleared?
+; AdventureClearMessage= This message is shown to the players if the adventure is cleared.
 
 [Info]
 Name=
