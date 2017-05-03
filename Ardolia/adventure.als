@@ -163,8 +163,6 @@ adventure.end {
   var %total.adventure.duration $adventure.calculateduration
 
   if ($1 = victory) {  
-    echo -a we win!
-
     var %victory.message $readini($zonefile(adventure), Info, AdventureClearMessage)
     if (%victory.message = $null) { var %victory.message The party returns to town victorious! }
     $display.message(3 $+ %victory.message, global)
@@ -644,6 +642,8 @@ adventure.choptree {
   ; decrease the # of trees
   dec %tree.count 1
   writeini $zonefile(adventure) %current.room Trees %tree.count
+
+  unset %log.list | unset %log.reward
 
   ; Check to see if the party has run out of actions to use.  
   $adventure.actions.checkforzero
