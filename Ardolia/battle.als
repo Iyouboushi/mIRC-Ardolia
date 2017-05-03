@@ -206,7 +206,7 @@ deal_damage {
   ; $1 = person dealing damage
   ; $2 = target
   ; $3 = action that was done (ability name, item, etc)
-  ; $4 = absorb or none
+  ; $4 = melee, ability or spell
 
   $set_chr_name($1) | set %user %real.name
   $set_chr_name($2) | set %enemy %real.name
@@ -262,7 +262,7 @@ deal_damage {
 
   ; If it's an Absorb HP type, we need to add the hp to the person.
   if ($person_in_mech($2) = false) { 
-    if (($4 = absorb) || (%absorb = absorb)) { 
+    if (%absorb = absorb) { 
 
       if ($readini($char($2), info, IgnoreDrain) != true) {
 
@@ -271,20 +271,13 @@ deal_damage {
             var %absorb.amount $round($calc(%attack.damage / 3),0)
             if (%bloodmoon = on) {  var %absorb.amount $round($calc(%attack.damage / 1.4),0) }
 
-            if ($accessory.check($1, CurseAddDrain) = true) {
-              var %absorb.amount $round($calc(%attack.damage / 1.7),0)
-              unset %accessory.amount
-            }
-
             unset %current.accessory | unset %current.accessory.type
 
-            if ((%battle.type = torment)  || (%battle.type = dungeon)) { 
-              if (($readini($char($1), info, flag) = $null) || ($readini($char($1), info, flag) = npc)) {
-                if (%absorb.amount > 1500) { var %absorb.amount 1500 }
-              }
+            if (($readini($char($1), info, flag) = $null) || ($readini($char($1), info, flag) = npc)) {
+              if (%absorb.amount > 200) { var %absorb.amount 200 }
             }
 
-            set %life.target $readini($char($1), Battle, HP) | set %life.max $resting.hp($1)
+            set %life.target $current.hp($1) | set %life.max $resting.hp($1)
             inc %life.target %absorb.amount
             if (%life.target >= %life.max) { set %life.target %life.max }
             writeini $char($1) battle hp %life.target
@@ -296,61 +289,16 @@ deal_damage {
       if (%guard.message != $null) { unset %absorb | unset %absorb.amount }
     }
 
-    if (($augment.check($1, AbsorbTP) = true) && (%guard.message = $null)) {
-      var %tp.absorb.amount $calc(%augment.strength * 10)
-      set %tp.target $readini($char($2), battle, tp) 
 
-      if (%tp.target > 0) {
-        set %tp.user $readini($char($1), battle, tp) | set %tp.max $readini($char($1), basestats, tp) 
-        inc %tp.user %tp.absorb.amount
-        if (%tp.user >= %tp.max) { writeini $char($1) battle tp %tp.max }
-        if (%tp.user < %tp.max) { writeini $char($1) battle tp %tp.user }
-
-        $set_chr_name($1) | set %absorb.message 3 $+ %real.name absorbs %tp.absorb.amount TP from $set_chr_name($2) %real.name $+ !
-        set %tp.max $readini($char($2), basestats, tp) 
-        dec %tp.target %tp.absorb.amount
-        if (%tp.target <= 0) { writeini $char($2) battle tp 0 }
-        if (%tp.target > 0) { writeini $char($2) battle tp %tp.target }
-      }
-      unset %tp.user | unset %tp.target | unset %tp.max
-    } 
-
-    if (($augment.check($1, AbsorbIG) = true) && (%guard.message = $null)) {
-      if ((%aoe.turn <= 1) || (%aoe.turn = $null)) {
-        var %ig.absorb.amount $calc(%augment.strength * 5)
-        if ($readini($char($1), info, flag) = monster) { var %ig.absorb.amount $calc(%augment.strength * 10) }
-
-        set %ig.target $readini($char($2), battle, IgnitionGauge)
-        if (%ig.target < %ig.absorb.amount) { var %ig.absorb.amount %ig.target }
-
-        if (%ig.target > 0) { 
-          set %ig.user $readini($char($1), battle, IgnitionGauge)
-          set %ig.max $readini($char($1), basestats, IgnitionGauge) 
-          inc %ig.user %ig.absorb.amount
-          if (%ig.user >= %ig.max) { writeini $char($1) battle IgnitionGauge %ig.max }
-          if (%ig.user < %ig.max) { writeini $char($1) battle IgnitionGauge %ig.user }
-
-          $set_chr_name($1) | set %absorb.message 3 $+ %real.name absorbs %ig.absorb.amount Ignition Gauge from $set_chr_name($2) %real.name $+ !
-
-          set %ig.max $readini($char($2), basestats, IgnitionGauge) 
-          dec %ig.target %ig.absorb.amount
-          if (%ig.target <= 0) { writeini $char($2) battle IgnitionGauge 0 }
-          if (%ig.target > 0) { writeini $char($2) battle IgnitionGauge %ig.target }
-        }
-        unset %ig.user | unset %ig.target | unset %ig.max
-      }
-    }
   }
 
-
+  ; Did the target die?
   if ($readini($char($2), battle, HP) <= 0) { 
 
     writeini $char($2) battle status dead 
     writeini $char($2) battle hp 0
 
     ; Add the XP, money and item drops to the pool
-
-    ; check for an item drop
     $add.monster.drop($1, $2)
     $add.monster.xp($1, $2)
     $add.monster.money($1, $2)
@@ -363,12 +311,11 @@ deal_damage {
 
   $ai.learncheck($2, $3)
 
-  if (%guard.message = $null) { $renkei.calculate($1, $2, $3) }
-
   ; Increase total damage that we're keeping track of
-  if ((($4 = tech) || ($4 = melee) || ($5 = tech))) {
+  if ((($4 = ability) || ($4 = melee) || ($4 = spell))) {
     if (($person_in_mech($1) = false) && (%guard.message = $null)) {
-      if (($4 = tech) || ($5 = tech)) { var %totalstat tech }
+      if (($3 = ability) { var %totalstat ability }
+      if ($3 = spell) { var %totalstat spell } 
       else { var %totalstat melee }
 
       var %current.totaldamage $readini($char($1), MiscStats, totalDmg. $+ %totalstat) 
@@ -384,7 +331,22 @@ deal_damage {
   }
 
   ; Increase enmity
-  if ($flag($1) != monster) { $enmity($1, add, %attack.damage) }
+  if ($flag($1) != monster) { 
+
+    ; Get the multiplier
+    var %enmity.amount %attack.damage
+    if ($4 = melee) { var %enmity.multiplier 1 }
+    if ($4 = ability) { var %enmity.multiplier $readini($dbfile(abilities.db), $3, EnmityMultiplier) }
+    if ($4 = spell) { var %enmity.multiplier $readini($dbfile(abilities.db), $3, EnmityMultiplier) }
+
+    ; If the user has any enmity lowering abilities, calculate that here
+
+    ; Calculate total enemity gained
+    var %enmity.gained $calc(%enmity.multiplier * %attack.damage)
+
+    $enmity($1, add, %enmity.gained) 
+
+  }
 
 }
 

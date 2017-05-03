@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 04/28/17
+;;;; Last updated: 05/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ON 3:ACTION:attacks *:#:{ 
@@ -297,13 +297,6 @@ alias melee.aoe {
   unset %element.desc | unset %showed.melee.desc | unset %aoe.turn
   set %timer.time $calc(%number.of.hits * 1.1) 
 
-  if ($readini($dbfile(weapons.db), $2, magic) = yes) {
-    ; Clear elemental seal
-    if ($readini($char($1), skills, elementalseal.on) = on) { 
-      writeini $char($1) skills elementalseal.on off 
-    }
-  }
-
   unset %statusmessage.display
   if ($readini($char($1), battle, hp) > 0) {
     set %inflict.user $1 | set %inflict.meleewpn $2 
@@ -311,9 +304,6 @@ alias melee.aoe {
     if (%statusmessage.display != $null) { $display.message(%statusmessage.display, battle) | unset %statusmessage.display }
   }
 
-
-  ; Turn off the True Strike skill
-  writeini $char($1) skills truestrike.on off
 
   if (%timer.time > 20) { %timer.time = 20 }
 
