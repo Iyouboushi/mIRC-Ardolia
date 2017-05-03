@@ -220,8 +220,32 @@ on 2:TEXT:!job change *:*: {
   $display.message($translate(ChangedJob))
 }
 
-on 2:TEXT:!jobs:#: {  var %jobs.list $jobs.list($nick) |  $display.message($translate(ViewMyJobs), private) }
-on 2:TEXT:!jobs:?: {  var %jobs.list $jobs.list($nick) |  $display.private.message($translate(ViewMyJobs)) }
+on 2:TEXT:!jobs*:#: {  
+  unset %jobs.list
+
+  if ($2 = $null) { .echo -q $findfile( $job_path , *.job, 0, 0, jobs.list $nick $1-) }
+  else { $checkchar($2) | var %char.name $2 | .echo -q $findfile( $job_path , *.job, 0, 0, jobs.list %char.name $1-) }
+
+  %jobs.list = $clean.list(%jobs.list)  
+
+  if ($2 = $null) {  $display.message($translate(ViewMyJobs), private) }
+  if ($2 != $null) { $display.message($translate(ViewOthersJobs, $2), private) }
+
+  unset %jobs.list
+}
+on 2:TEXT:!jobs*:?: {  
+  unset %jobs.list
+
+  if ($2 = $null) { .echo -q $findfile( $job_path , *.job, 0, 0, jobs.list $nick $1-) }
+  else { $checkchar($2) | var %char.name $2 | .echo -q $findfile( $job_path , *.job, 0, 0, jobs.list %char.name $1-) }
+
+  %jobs.list = $clean.list(%jobs.list)  
+
+  if ($2 = $null) {  $display.private.message($translate(ViewMyJobs))  }
+  if ($2 != $null) { $display.private.message($translate(ViewOthersJobs, $2)) }
+
+  unset %jobs.list
+}
 on 2:TEXT:!job:*: {  $display.message($translate(ViewMyCurrentJob),private) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

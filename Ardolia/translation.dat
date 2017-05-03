@@ -43,8 +43,8 @@ ChangedJob=$chr(3) $+ 3 $+ $get_chr_name($nick) has changed into a level2 $get
 UnlockedJob=$chr(3) $+ 7*2 $get_chr_name($1) has unlocked the advanced job:4 %job.name $+ 2!
 
 ; View jobs
-ViewMyJobs=$chr(3) $+ 3 $+ $get_chr_name($nick) has the following jobs unlocked: %jobs.list 
-ViewOthersJobs=
+ViewMyJobs=$chr(3) $+ 3 $+ $get_chr_name($nick) has the following job levels: %jobs.list 
+ViewOthersJobs=$chr(3) $+ 3 $+ $get_chr_name($2) has the following job levels: %jobs.list 
 ViewMyCurrentJob=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.level($nick) $current.job($nick) $+ .
 
 ; View Level

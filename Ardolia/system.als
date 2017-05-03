@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/02/17
+;;;; Last updated: 05/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -48,6 +48,8 @@ dbfile { return " $+ $mircdir $+ dbs\ $+ $1" }
 zonefile { return " $+ $mircdir $+ zones\ $+ $1 $+ .zone $+ " }
 jobfile { return " $+ $mircdir $+ jobs\ $+ $1 $+ .job $+ " }
 racefile { return " $+ $mircdir $+ races\ $+ $1 $+ .race $+ " }
+job_path { return " $+ $mircdir $+ jobs $+ " }
+zone_path { return " $+ $mircdir $+ zones $+ " }
 char_path { return " $+ $mircdir $+ %player_folder $+ " }
 mon_path { return " $+ $mircdir $+ %monster_folder $+ " }
 boss_path { return " $+ $mircdir $+ %boss_folder $+ " }
@@ -828,19 +830,15 @@ build_battlehp_list {
 ; Builds the jobs list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 jobs.list {
-  unset %jobs.temp.list 
-  unset %item.name | unset %item_amount | unset %number.of.items | unset %value
-  var %value 1 | var %jobs.lines $lines($lstfile(jobs.lst))
+  set %job.name $remove($2,.job)
+  set %job.name $nopath(%job.name)
 
-  while (%value <= %jobs.lines) {
-    var %job.name $read -l $+ %value $lstfile(jobs.lst)
-    var %player.job.level $readini($char($1), jobs, %job.name)
-    if ((%player.job.level != $null) && (%player.job.level >= 1)) { var %jobs.temp.list $addtok(%jobs.temp.list,  $+ %job.name $+  $+ $chr(040) $+ %player.job.level $+ $chr(041), 46) }
-    inc %value 1 
-  }
+  var %player.job.level $readini($char($1), jobs, %job.name)
+  if (%player.job.level = $null) { writeini $char($1) jobs %job.name 1 }
 
-  if ($chr(046) isin %jobs.temp.list) { var %replacechar $chr(044) $chr(032) | var %jobs.temp.list $replace(%jobs.temp.list, $chr(046), %replacechar)  }
-  return %jobs.temp.list
+  %jobs.list = $addtok(%jobs.list,  $+ %job.name $+  $+ $chr(040) $+ %player.job.level $+ $chr(041), 46) 
+
+  unset %job.name 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
