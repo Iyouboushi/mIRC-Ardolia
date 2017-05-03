@@ -194,6 +194,19 @@ on 50:TEXT:@add *:*:{
   if ($3 = money) {  $currency.add($2, money, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 $return.systemsetting(currency) }
   if ($3 = craftingpoints) {  $currency.add($2, CraftingPoints, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 crafting points) }
 
+  if ($3 = item) { 
+    if ($readini($dbfile(items.db), $4, type) = $null) { $display.message(4Invalid item) | halt }
+    $inventory.add($2, $4, $5)
+    $display.message(3 $+ $2 has gained $5 $+ x $4, global) 
+  }
+
+  if ($3 = armor) { 
+
+  }
+
+  if ($3 = weapon) { 
+
+  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
