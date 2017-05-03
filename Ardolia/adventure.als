@@ -165,6 +165,10 @@ adventure.end {
   if ($1 = victory) {  
     echo -a we win!
 
+    var %victory.message $readini($zonefile(adventure), Info, AdventureClearMessage)
+    if (%victory.message = $null) { var %victory.message The party returns to town victorious! }
+    $display.message(3 $+ %victory.message, global)
+
     ; Increase the # of adventures we've cleared
     var %total.adventures $readini(adventure.dat, AdventureStats, TotalAdventuresCleared)
     inc %total.adventures 1
@@ -577,6 +581,8 @@ adventure.warp {
 adventure.choptree {
   ; $1 = the person trying to use the command
 
+  if (%chopping.trees = true) { halt }
+
   ; are we in an adventure?
   if (%adventureis != on) { $display.message($translate(NotCurrentlyInAdventure), global) | halt }
 
@@ -587,17 +593,43 @@ adventure.choptree {
   if ($1 != $adventure.party.leader) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
 
   ; Are there any trees in this room?
+  var %tree.count $adventure.tree.count
+  if (%tree.count <= 0) { $display.message($translate(NoTreesInHere), global) | halt }
 
   ; Does $1 have a hatchet to use?
+  if ($inventory.amount($1, hatchet) = 0) { $display.message($translate(NoHatchetToUse, $1), global) | halt }
 
-  ; Take an adventure action from their total.  If 0, boot them out with the adventure ending in failure
+  ; Set a variable so people can't just spam the command
+  var %chopping.trees true
+
+  ; Take an adventure action from their total. 
   $adventure.actions.decrease(1)
 
   ; Add a log to the item pool and show the message to the channel
+  var %log.list $readini($zonefile(adventure), %current.room, LogList)
+  if (%log.list = $null) { var %log.list AshLog) }
+  var %log.reward $gettok(%log.list, $rand(1, $numtok(%log.list, 46)), 46)
+  write $txtfile(battlespoils.txt) %log.reward
+  $display.message($translate(ItemAddedToItemPool, %log.reward), global)  
+
+  ; Does the hatchet break?
+  var %hatchet.breakchance $readini($dbfile(items.db), Hatchet, BreakChance)
+  if (%hatchet.breakchance = $null) { var %hatchet.breakchance 65 }
+  var %break.roll $roll(1d100)
+  if (%break.roll <= %hatchet.breakchance) { 
+    ; hatchet broke
+    $inventory.decrease($1, hatchet, 1)
+    $display.message($translate(HatchetBroke, $1), global)
+  }
+
+  ; decrease the # of trees
+  dec %tree.count 1
+  writeini $zonefile(adventure) %current.room Trees %tree.count
 
   ; Check to see if the party has run out of actions to use.  
   $adventure.actions.checkforzero
 
+  /.timerUnsetTreeSlowdown 1 2 unset %chopping.trees
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

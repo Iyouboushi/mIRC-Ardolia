@@ -1673,3 +1673,17 @@ equipment.reset {
   writeini $char($1) equipment wrists nothing
   writeini $char($1) equipment ring nothing
 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;An/A grammar check
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+an.a.grammar.check {
+  ; $1 = the word we're checking
+
+  if (A = $left($1, 1)) { return An }
+  if (E = $left($1, 1)) { return An }
+  if (I = $left($1, 1)) { return An }
+  if (O = $left($1, 1)) { return An }
+  if (U = $left($1, 1)) { return An }
+  return A
+}
