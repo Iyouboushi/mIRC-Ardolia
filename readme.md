@@ -9,7 +9,7 @@ Once set up the game is entirely automatic and does not need anyone to run it.
 
 A full in-depth guide with commands and more in-depth information will eventually be listed on this game's wiki.
 
-Note: As of May 2, 2017 the game is still in heavy development and is not fully playable.
+Note: As of May 4, 2017 the game is still in heavy development and is not fully playable.
 
 
 ## SETUP
@@ -31,19 +31,18 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-* MAY 1 & MAY 2, 2017
-Over the last two days I have added quite a few things.  Commands added: !rest, !stats, !stat add statname amount (for allocating free stat points players get upon leveling up) and !job change jobcode. !look has been updated to work differently depending on whether an adventure is on going, a battle is ongoing or neither.
+* MAY 3 & MAY 4, 2017
 
-Added the ability for players to level up properly and adventures will now properly award xp from monsters killed and clearing the adventure. 
+Over the last two days I have finished with the !jobs command and should be finished with all of the adventure party commands.  !open chest now works, !stamina now shows how much stamina (adventure actions) the party has left to complete the adventure, and the adventures can successfully reward items and XP at the end.  The only thing left to do with adventures is to introduce a party leader timer so that someone can't idle for hours and stall the game.
 
-Added a bunch of !help files for players to look over. 
+Also in these last two days I have expanded the !view-info command to allow players to see adventure information and armor/shield information.  
 
-Fixed a few issues.
+I also fixed a minor issue with !armor
 
 
 ## TO-DO
 
-In order to make this game fully playable there are still a huge amount of things to be done.  Up next will be adding some basic abilities for testing.  
+In order to make this game fully playable there are still a huge amount of things to be done.  Up next will be adding some basic abilities for testing and creating an anti-idle party leader timer so that someone can't stall the game/bot for hours.  
 
 ## THANKS
 
