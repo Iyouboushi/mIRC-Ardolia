@@ -1129,19 +1129,20 @@ armor.list {
       var %armor.name %current.ini.item
       var %player.amount $inventory.amount($1, %current.ini.item)
       var %armor.color $rarity.color.check(%armor.name, armor)
+      unset %wearing.armor
 
       ; If the player's level is too low for this accessory, the color is maroon
       if ($get.level($1) < $readini($dbfile(equipment.db), %current.ini.item, PlayerLevel)) { var %armor.color 5 }
 
-      ; If the player's job can't use this accessory, the color is bright red
+      ; If the player's job can't use this armor, the color is bright red
       var %jobs.list $readini($dbfile(equipment.db), %current.ini.item, jobs)
       if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { var %armor.color 4 }
 
       ; Is the player wearing this armor? If so we'll add a (w) to the name.
-      if ($readini($char($1), equipment, $2) = %current.ini.item) { var %wearing.armor (w) }
+      if ($return.equipped($1, %item.type) = %armor.name) {  var %wearing.armor (w) }
 
       ; Build the name
-      var %armor.name  $+ %armor.color $+ %armor.name %wearing.armor 3x $+ %player.amount $+ 
+      var %armor.name  $+ %armor.color $+ %armor.name  $+ %wearing.armor 3x $+ %player.amount
 
       if (%token.count.armor <= 20) { 
         %armor.list = $addtok(%armor.list, %armor.name,46) 
