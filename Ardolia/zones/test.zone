@@ -6,10 +6,11 @@ MinimumPlayers=1
 PreReq=
 AdventureActions=30
 ClearRoom=5
-ClearReward.Items=
+ClearReward.List=reward_test.lst
 ClearReward.XP=$return_percentofvalue($xp.to.level(%party.member.name), 2))
 FameRewarded=1
 iLevel=1
+AdventureClearMessage=The party has cleared out the test dungeon and lived to tell the tale!
 
 
 [0]

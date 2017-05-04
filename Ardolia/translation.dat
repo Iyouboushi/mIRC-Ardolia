@@ -445,6 +445,7 @@ Show rewards
 
 ShowXPRewards=$chr(3) $+ 3 $+ Players have been rewarded with experience points $+ : %winners.xp
 ShowSpoilRewards=$chr(3) $+ 3 $+ The following players have found spoils from this adventure $+ : %winners.spoils
+ShowClearRewards=$chr(3) $+ 3 $+ The following adventure clear rewards have been given: %winners.clearrewards
 
 =======================
 Status Related Messages

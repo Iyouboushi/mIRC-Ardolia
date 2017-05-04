@@ -8,13 +8,12 @@
 ; ilevel= if you want the dungeon to have a certain minimum level of armor/weapon iLevel to be able to start/enter
 ; AdventureActions= How many actions does a party get before they're kicked out of the dungeon?
 ; ClearRoom= The room number that says the dungeon is beat when the players clear it. The dungeon will end when this room is clear
-; ClearReward.Items=An item from this list will be chosen at random and rewarded to each player in the party after the dungeon is clear
-;                   Put the items between periods if there's more than one. Like Item1.Item2.Item3.Item4
+; ClearReward.List=A list file in \lsts\ that has a list of available items. One will be given out at random to every player
+                   if the party clears the adventure
 ; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. Can be a static # or 
                  $return_percentofvalue($xp.to.level(%party.member.name), percentnumberhere)) 
                  ex: $return_percentofvalue($xp.to.level(%party.member.name), 5)) will return 5% of the player's TNL
-; FameRewarded= How much fame will the players receive if this adventure is cleared?
-; AdventureClearMessage= This message is shown to the players if the adventure is cleared.
+; FameRewarded= How much fame will the players receive if this dungeon is cleared?
 
 [Info]
 Name=
@@ -25,7 +24,7 @@ PreReq=
 iLevel=
 AdventureActions=#
 ClearRoom=
-ClearReward.Items=
+ClearReward.List=
 ClearReward.XP=#
 FameRewarded=
 AdventureClearMessage=
@@ -44,6 +43,7 @@ AdventureClearMessage=
 ; LogList= the types of logs that can be obtained by chopping trees.
 ;
 ; Combat= true/false, if set to true then a battle will begin when players enter this room if the room is not clear
+; BattleType= the type of battle. 99.999% of the time this will be "normal"
 ; Monsters= A list of monsters that can spawn in this room for players to fight
 ; Monsters.Needed= A direct # of monsters to spawn, or you can use $iif to adjust based on how many players are in the party
 ; CombatDesc= A message displayed when combat begins 

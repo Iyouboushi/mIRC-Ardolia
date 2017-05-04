@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/02/17
+;;;; Last updated: 05/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -9,9 +9,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 dungeon.list {
   ; [dungeonfilename] Dungeon Full Name - # of players - Level Range
-  ; Should the dungeons be listed in a .lst file to read?
 
   ; Check the filename and see if the dungeon is available (pre-req required or hoilday dungeon)
+
+  set %zone.name $remove($2,.zone)
+  set %zone.name $nopath(%zone.name)
+
+
+  ; Check for month. If not the right month, return
+
+  ; Check for pre-req. 
+
+  ; Check for min level requirement
+
+
+  ; Check for iLevel requirement
+
+
+  ; Write the line that will be shown
+
+
+
+  unset %zone.name
 
 }
 
@@ -310,17 +329,27 @@ adventure.rewards {
       writeini $char(%party.member.name) Info Fame %fame.to.reward
 
       ; Give a random clear reward
-      ; if (isfile($lstfile($readini($zonefile(adventure), Info, OriginalFile)  $+ _clear)) = true) { 
+      var %original.adventure.name $readini($zonefile(adventure), Info, OriginalFile)
+      if (%original.adventure.name != $null) { 
+        var %reward.file $readini($zonefile(adventure), Info, ClearReward.list)
+        if ($isfile($lstfile(%reward.file)) = $true) { 
+          var %random.reward $read($lstfile(%reward.file), $rand(1,$lines($lstfile(%reward.file))))
 
-      ; pull a random item from that list 
+          ; give it to the player
+          $inventory.add(%party.member.name, %random.reward, $calc($inventory.amount(%party.member.name %random.reward) + 1))
 
-      ; give it to the player
+          ; find out what kind of item it is so we can do a rarity color on it
+          if ($readini($dbfile(items.db), %random.reward, Itemlevel) != $null) { var  %reward.color.check $rarity.color.check(%random.reward, item) }
+          if ($readini($dbfile(equipment.db), %random.reward, Itemlevel) != $null) { var  %reward.color.check $rarity.color.check(%random.reward, armor) }
+          if ($readini($dbfile(weapons.db), %random.reward, Itemlevel) != $null) { var  %reward.color.check $rarity.color.check(%random.reward, weapon) }
 
-      ; find out what kind of item it is so we can do a rarity color on it
+          ; add the spoil to the list of spoils
+          var %display.reward.to.add  $+ %party.member.name -> %reward.color.check $+ %random.reward $+ 3
 
-      ; add the spoil to the list of spoils
-      ;  %winners.spoils = $addtok(%winners.xp, $+ %party.member.name $+  $+ $chr(91) $+ $chr(43) $+ %spoil.reward $+ $chr(93),46)
-      ;  }
+          %winners.clearrewards = $addtok(%winners.clearrewards, %display.reward.to.add, 46)
+        }
+
+      }
 
       ; Add some bonus xp for clearing the adventure
       inc %xp.to.reward $readini($zonefile(adventure), Info, ClearReward.XP)
@@ -346,7 +375,6 @@ adventure.rewards {
 
 
   ; Reward spoils (if there are any) -- This is given out randomly while there's rewards left to give. Some players may end up with more than one.
-  ; if isfile adventure_spoils.txt = true
   if ($isfile($txtfile(battlespoils.txt)) = $true) {
     var %spoils.to.reward $lines($txtfile(battlespoils.txt))
     var %current.spoil.number 1
@@ -367,12 +395,15 @@ adventure.rewards {
   }
 
   ; Show the rewards.
-  $display.message($translate(ShowXPRewards), global)
-  $display.message($translate(ShowSpoilRewards), global)
+  if (%winners.xp != $null) { %winners.xp = $clean.list(%winners.xp) | $display.message($translate(ShowXPRewards), global) }
+  if (%winners.spoils != $null) {  $display.message($translate(ShowSpoilRewards), global) }
+
+  if ($1 = victory) { %winners.clearrewards = $clean.list(%winners.clearrewards) | $display.message($translate(ShowClearRewards), global) }
 
   ; Unset variables
   unset %winners.xp
   unset %winners.spoils
+  unset %winners.clearrewards
 
 }
 
