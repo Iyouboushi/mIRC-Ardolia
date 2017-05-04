@@ -53,6 +53,11 @@ LookDesc=The party is in a large gray hallway. The path splits east and west.
 ; Combat Info
 Combat=False
 
+; Chest
+Chest=true
+Chest.Open=false
+Chest.List=chest_test.lst
+
 
 ;Exits
 ExitList=South.East.West

@@ -402,7 +402,11 @@ AdventureWarpOut=$chr(3) $+ 7* $+ 12 $adventure.party.leader 2casts warp. A 
 
 ItemAddedToItemPool=$chr(3) $+ 7*  2 $+ $an.a.grammar.check($2) $+ 12 $2 2has been added to the item pool and will be given out as a reward after the adventure.
 
+ChestItemAddedToItemPool=$chr(3) $+ 7*  2The chest opens and $2 finds $an.a.grammar.check($3) $+ 12 $3 2inside. This has been added to the item pool and will be given out as a reward after the adventure.
+
 ThisActionHasNoEffect=$chr(3) $+ 7 $+ * 4This action seems to have no effect
+
+NoChestHere=$chr(3) $+ 4 $+ $get_chr_name($2) does not see a chest here.
 
 DoNotSeeThatObject=$chr(3) $+ 4 $+ $get_chr_name($2) does not see that object in this room.
 

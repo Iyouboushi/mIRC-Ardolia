@@ -700,7 +700,7 @@ adventure.object {
   if ($1 != $adventure.party.leader) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
 
   ; Does the object exist?
-  if ($2 = chest) { $adventure.chest($1, $3) }
+  if ($2 = chest) { $adventure.chest($1, $2, $3) }
   else { 
     var %room.objects $readini($zonefile(adventure), %current.room, ObjectList)
     if ($istok(%room.objects,$2,46) = $false) {  $display.message($translate(DoNotSeeThatObject, $1), global) | halt }
@@ -728,22 +728,41 @@ adventure.chest {
   ; $1 = the party leader
   ; $3 = action
 
-  if ($3 != open) { error | halt }
+  if (%opening.chest = true) { halt }
+  if ($readini($zonefile(adventure), %current.room, Chest) != true) { $display.message($translate(NoChestHere, $1), global) | halt }
+  if ($3 != open) { $display.message($translate(ThisActionHasNoEffect), global) | halt }
 
   ; Get a list of items from the chest
+  var %chest.file $readini($zonefile(adventure), %current.room, Chest.List)
+  if ($isfile($lstfile(%chest.file)) = $false) { $display.message(4The chest's file is missing! Have a bot owner fix this., global) | halt }
+
+  ; Set a variable so it can't be spammed
+  set %opening.chest true
 
   ; Pick one at random
+  var %chest.item $read($lstfile(%chest.file), $rand(1,$lines($lstfile(%chest.file))))
+
+  echo -a chest file: %chest.file
+  echo -a chest item: %chest.item
 
   ; Add item to item pool to be given at the end of the adventure
+  write $txtfile(battlespoils.txt) %chest.item
+
+  ; show what item was in the chest
+  $display.message($translate(ChestItemAddedToItemPool, $1, %chest.item), global)  
 
   ; Erase the chest from the room
   remini $zonefile(adventure) %current.room Chest
+  writeini $zonefile(adventure) %current.room Chest.Open true
 
   ; remove 1 adventure action
   $adventure.actions.decrease(1)
 
   ; If adventure actions = 0, boot us out.
   $adventure.actions.checkforzero
+
+  /.timerOpeningChest 1 2 unset %opening.chest
+  halt
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -4,6 +4,7 @@ Ardolia Bot Changelog
 05-03-2017
 - Added !jobs [name] to return a list of levels of all the jobs the player has
 - Added the ability for clear rewards to be given out at the end of successful adventures
+- Added the ability to open chests in adventures
 - Fixed an issue with !armor
 
 05-02-2017
