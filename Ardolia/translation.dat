@@ -382,7 +382,7 @@ NoAdventureByThatName=$chr(3) $+ 4 $+ Error: There is no adventure by that nam
 
 AlreadyInAdventure=$chr(3) $+ 4 $+ Error: $2 has already joined the adventure party!
 
-AdventureActionsMessage=$chr(3) $+ 3 $+ The party has12 $adventure.actions 3actions left to complete this dungeon with.
+AdventureActionsMessage=$chr(3) $+ 3 $+ The party has12 $adventure.actions 3stamina points left to complete this dungeon with.
 
 NotCurrentlyInAdventure=$chr(3) $+ 4 $+  Error: This command can only be used when there is an adventure in progress
 

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 04/29/17
+;;;; Last updated: 05/04/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -73,3 +73,12 @@ on 2:TEXT:!read *:#: { $adventure.object($nick, $2-, read) }
 ; Chop down a tree
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!chop tree:#: { $adventure.choptree($nick) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Check party stamina
+; aka adventure actions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!stamina:#: {
+  if (%adventureis = on) { $display.message($translate(AdventureActionsMessage), global) }
+  else { $display.message($translate(NotCurrentlyInAdventure), global) | halt }
+}
