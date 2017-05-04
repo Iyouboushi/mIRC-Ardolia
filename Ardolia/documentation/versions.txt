@@ -1,6 +1,14 @@
 Ardolia Bot Changelog
 =========================
 
+05-04-2017
+- Added !view-info armor
+- Added !view-info shield
+- Added !view-info adventure
+- Added !stamina This command will display how many stamina points the party has left to complete the adventure with.
+- Changed the colors on a few of the rarity levels
+- Changed the display of !view-info weapon slightly.
+
 05-03-2017
 - Added !jobs [name] to return a list of levels of all the jobs the player has
 - Added the ability for clear rewards to be given out at the end of successful adventures
