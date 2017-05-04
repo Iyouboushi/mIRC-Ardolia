@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/03/17
+;;;; Last updated: 05/04/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1193,8 +1193,8 @@ rarity.color.check {
 
   var %rarity $readini($dbfile(%dbfile), $1, rarity)
   if (%rarity = 2) { var %rarity.color 10 }
-  if (%rarity = 3) { var %rarity.color 12 } 
-  if (%rarity = 4) { var %rarity.color 6 }
+  if (%rarity = 3) { var %rarity.color 6 } 
+  if (%rarity = 4) { var %rarity.color 13 }
   if (%rarity = 5) { var %rarity.color 7 }
 
   return %rarity.color
