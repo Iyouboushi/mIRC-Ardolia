@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/02/17
+;;;; Last updated: 05/04/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -10,6 +10,9 @@
 ; Battle Generate
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias battle.generate { 
+  ; $1 = normal (later will add more modes)
+
+  $adventure.idleTimer(stop)
 
   ; Let's move on by determining how many monsters we need to generate.
   var %monsters.needed $readini($zonefile(adventure), %current.room, monsters.needed)
@@ -324,6 +327,8 @@ alias battle.end {
 
   ; Is this the final boss/combat room of the dungeon?  If so, we won! Let's end the adventure with victory
   if (($1 = victory) && (%current.room = $readini($zonefile(adventure), Info, ClearRoom))) { $adventure.end(victory)  }
+
+  $adventure.idleTimer(start)
 
 }
 

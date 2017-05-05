@@ -1,0 +1,6 @@
+12::[The Anti-Idle Timer ]::
+2When a party enters the dungeon a timer will start to countdown. When this timer hits 0 an anti-idle command will trigger and a few things can happen depending on the size of the party.  If the party is only 1 person the adventure will end automatically as a failure.
+2If two+ players are in the party then the party leader will lose the "party leader" status and ANYONE IN THE PARTY will be able to use commands.
+2Should the anti-idle timer command trigger a second time, the party will begin losing stamina. If the stamina goes to 0 or below, the adventure will end as a failure. Stamina will continue to drain every time the command triggers.
+12::[Why is there an Anti-Idle Timer?]::
+2This timer is put into place so that players cannot idle and hog the game. Due to the way the game is designed, players who miss the !enter period will be unable to join the party and play until the current adventure is over.  Some of the adventures may have many actions/rooms available. In order to keep it fair, the adventure must keep going forward.

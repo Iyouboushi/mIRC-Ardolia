@@ -357,6 +357,11 @@ AdventureOpen=$chr(3) $+ 12 $+ $2 4is leading a party to12 $readini($zonefi
 AdventureIsOver=$chr(3) $+ 2* 7The Adventure comes to a close after $adventure.calculateduration $+ .
 AdventureFailMessage=$chr(3) $+ 4 $+ Unfortunately the party was forced to retreat from this adventure and return to town.
 
+AdventureEndDueToIdle=$chr(3) $+ 2* 4 $adventure.party.leader has been idle for too long! A darkness sweeps through the adventure and forces the adventure to end in failure!
+
+PartyLeaderOpen=$chr(3) $+ 2* 4 $adventure.party.leader is no longer in control of this party due to being idle for too long! Any other party member can now perform any command.
+
+PartyStaminaCutDueToIdle=$chr(3) $+ 2* 4The party has been idle for too long! The party's stamina has been cut decreased by $2 
 
 EnteredTheAdventure=$chr(3) $+ 4 $+  $+ $get_chr_name($1) has joined the party and is ready for the adventure! 
 
@@ -382,7 +387,7 @@ NoAdventureByThatName=$chr(3) $+ 4 $+ Error: There is no adventure by that nam
 
 AlreadyInAdventure=$chr(3) $+ 4 $+ Error: $2 has already joined the adventure party!
 
-AdventureActionsMessage=$chr(3) $+ 3 $+ The party has12 $adventure.actions 3stamina points left to complete this dungeon with.
+AdventureActionsMessage=$chr(3) $+ 3 $+ The party has12 $adventure.actions 3stamina points left to complete this adventure with.
 
 NotCurrentlyInAdventure=$chr(3) $+ 4 $+  Error: This command can only be used when there is an adventure in progress
 
@@ -559,58 +564,6 @@ Earth=$chr(3) $+ 4 $+  $read -l $+ $rand(1, $lines($txtfile(elementalmsg_earth.
 Achievements
 =======================
 BigSpender=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Big Spender and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-BossKiller=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Boss Killer and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-SirDiesALot=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Sir Dies A Lot and receives 1 Gold Orb as a reward!
-Don'tYouHaveaHome=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Don't You Have a Home? and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-MakeMoney=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Maaaaake Money! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-ScardyCat=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Scardy Cat and receives 1 Gold Orb as a reward!
-Cheapskate=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Cheapskate and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-Can'tKeepAGoodManDown=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: You Can't Keep A Good Man Down and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-MonsterSlayer=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: %real.name The Monster Slayer and receives $bytes($3,b) Silver Apple as a reward!
-PrettyGemCollector=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Pretty Gem Collector and receives 1 Gold Orb as a reward!
-MasterOfUnlocking=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Master of Unlocking and receives 5 Gold Keys as a reward!
-Santa'sLittleHelper=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Santa's Little Helper and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-BattleArenaAnon=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I belong in Battle Arena Anonymous! Seriously, please! Get some help! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-Don'tForgetYourFriendsAndFamily=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Please Don't Forget You Have Friends and Family Who Love You and May Need You! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-AreYouTheKeyMaster=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Are You The Keymaster? and receives 5 Gold Keys as a reward!
-PartyIsGettingCrazy=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: This Party's Getting CRAAAAAAZY! and receives a full Ignition Gauge as a reward!
-Can'tTouchThis=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: You Can't Touch This and receives 1 Gold Orb as a reward!
-NowYou'rePlayingWithPower=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Now You're Playing With Power and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-NeverAskedForThis=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I Never Asked For This and receives 1 Gold Orb as a reward!
-AlliedScrub=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: No Longer An Allied Scrub and has been given 1 AlliedTrainingPaper to go show the other newbies how it's done!
-AlliedSoldier=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: You're A Regular Allied Soldier Now and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-AlliedGeneral=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Everyone Salute the Allied Forces General! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-GlassCannon=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Glass Cannon and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-StoneWall=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Stone Wall and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-BloodGoneDry=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I think Your Blood Has Run Dry and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-IceIceBaby=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Ice Ice Baby and receives 1 Ether as a reward!
-DiscoInferno=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Disco Inferno and receives 1 Ether as a reward!
-BlindedByTheLight=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Blinded By The Light and receives 1 Ether as a reward!
-RockYouLikeAHurricane=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Rock You Like a Hurricane and receives 1 Ether as a reward!
-1.21gigawatts=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: 1.21 Gigawatts! Great Scott! and receives 1 Ether as a reward!
-It'sAllDoomAndGloom=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: It's All Doom And Gloom With You and receives 1 Ether as a reward!
-TimeToBuildAnArk=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Time To Build an Ark and receives 1 Ether as a reward!
-InTuneWithMotherEarth=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: In Tune with Mother Earth and receives 1 Ether as a reward!
-HiHoHiHo=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Hi Ho, Hi Ho, It's Off To Work We Go and receives 5 Repair Hammers as a reward!
-BloodGoneToHead=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: All of %real.name $+ 's Blood Has Gone to $gender($1) Head! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-YouBringMonstersI'llBringWeapons=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: You Bring the Monsters and I'll Bring the Weapons! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-Warbound=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Warbound and receives 1 Gold Orb as a reward!
-SSStylish=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Super SSStylish! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-FillYourDarkSoulWithLight=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Fill Your Dark Soul With Light and receives 1 IgnitionStar as a reward!
-IAmIronMan=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I Am Iron Man and receives 5 E-tanks as a reward!
-Jackpot=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Jackpot! and receives 1 4leaf-clover as a reward!
-HumanoidTyphoon=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I'm Worth As Much as The Humanoid Typhoon! and receives Vash's Jacket as a reward!
-ICanQuitBettingAnyTimeIWant=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I Can Quit Any Time I Want! I Just Don't Want To! and receives %currency.symbol $+ 100 as a reward!
-DoIHear500=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Do I Hear 500? and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-SoldToTheOneInFront=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Sold! To the One in Front and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-MasteredTechnique=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Mastered a Technique! and receives $bytes($3,b) $readini(system.dat, system, currency) as a reward!
-You'veGotAFriendInMe=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: You've Got a Friend In Me and receives Big Whoop as a reward!
-JustGettingStarted=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Just Getting Started and receives $bytes($3,b) black orb as a reward!
-ALightInTheDark=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: A Light in the Dark and receives $bytes($3,b) red orbs as a reward!
-OnTheEdge=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: On the Edge and receives $bytes($3,b) SuperPotion as a reward!
-NoOne'sPuppet=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: I'm No One's Puppet and receives $bytes($3,b) red orbs as a reward!
-HarderBetterFasterStronger=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Harder Better Faster Stronger and receives $bytes($3,b) red orbs as a reward!
-GottaCollectThemAll=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Gotta Collect Them All and receives  as a reward!
 
 
 =======================
@@ -670,22 +623,5 @@ SpiritOftheHero=$chr(3) $+ 7 $+ Spirit of the Hero buff
 Ignition.on=$chr(3) $+ 7 $+ ignition boosted
 Boosted=$chr(3) $+ 7 $+ power boosted
 FinalGetsuga=$chr(3) $+ 6 $+ final getsuga
-
-=======================
-Conquest Stuff
-=======================
-ConquestTallyTimeToTally=$chr(3) $+ 7*** $chr(3) $+ 2 $+ The current Conquest Period is over!  Tallying Results!
-ConquestTallyPlayersWin=$chr(3) $+ 7*** $chr(3) $+ 2 $+ The Allied Forces of Good now hold majority control over the world!
-ConquestTallyMonstersWin=$chr(3) $+ 7*** $chr(3) $+ 2 $+ The Forces of Evil now hold majority control over the world!
-ConquestTallyCurrentMon=$chr(3) $+ 2 $+ The Forces of Evil are currently in the lead during this current conquest period.
-ConquestTallyCurrentPlayers=$chr(3) $+ 2 $+ The Allied Forces of Good are currently in the lead during this current conquest period.
-ConquestPreviousMon=$chr(3) $+ 2 $+ The Forces of Evil won the last conquest and currently hold control over the world.
-ConquestPreviousPlayers=$chr(3) $+ 2 $+ The Allied Forces of Good won the last conquest and currently hold control over the world.  Players are receiving an orb bonus for their valiant work.
-ConquestPeriodOverIn=$chr(3) $+ 2 $+ The current Conquest Period will be over in roughly %conquest.hours.left hours.
-ConquestPoints=$chr(3) $+ 2 $+ The Allied Forces of Good currently have4 $bytes(%conquest.points.players,b) 2conquest points. The Forces of Evil have4 $bytes(%conquest.points.monsters,b) 2conquest points.
-ConquestRecord=$chr(3) $+ 2 $+ Total Conquest Periods: %total.wins $+ . The Allied Forces of Good has won %wins.players $iif(%wins.players = 1, time, times) and the Forces of Evil has won %wins.monsters $iif(%wins.monsters = 1, time, times)) 
-; old conquest messages
-ConquestPointsMonsters=$chr(3) $+ 2 $+ The Allied Forces of Good currently have no conquest points. The Forces of Evil have $abs(%conquest.points) conquest points.
-ConquestPointsPlayers=$chr(3) $+ 2 $+ The Allied Forces of Good currently have $abs(%conquest.points) conquest points.
 
 

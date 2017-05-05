@@ -6,6 +6,15 @@ Ardolia Bot Changelog
 - Added !view-info shield
 - Added !view-info adventure
 - Added !stamina This command will display how many stamina points the party has left to complete the adventure with.
+- Added the anti-idle timer for adventures. It's set to 3 minutes by default. If it expires and there's only 1 person in the
+  adventure then the adventure will end in failure. If there's more than one person, the first time it expires everyone becomes
+  the party leader. Second time and beyond the party will lose stamina. If stamina hits 0 the adventure will end.
+  The timer is reset when the leader does !go, !rest, !chop tree, !open chest, or interacts with objects. It does not reset
+  when players use !look.  The timer is turned off when inside of a battle
+- Added the system.dat setting: EnablePartyIdleTimer   It will be set as true by default. Set this to false if you do not
+  want there to be any Party Idle timers
+- Added the system.dat setting: PartyIdleTime  It's set to 180 by default. This is how long, in seconds, a party leader has
+  to idle before the anti-idle command will trigger. 
 - Changed the colors on a few of the rarity levels
 - Changed the display of !view-info weapon slightly.
 

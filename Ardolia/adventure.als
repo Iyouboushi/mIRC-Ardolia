@@ -165,6 +165,9 @@ adventure.begin {
   ; Display the number of adventure actions the party has to complete this
   $display.message($translate(AdventureActionsMessage), global)
 
+  ; Start the anti-idle timer
+  $adventure.idleTimer(start)
+
   ; Display the first room's look info.
   set %show.room true
   /.timerShowFirstRoom 1 1 /adventure.look
@@ -231,6 +234,7 @@ adventure.end {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 clear_timers {
   /.timerAdventureBegin off
+  $adventure.idleTimer(stop)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -305,8 +309,6 @@ adventure.clearfiles {
 ; after the adventure is over
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.rewards {
-  ; This code block is not finished but it's close
-
   unset %winners.xp
   unset %winners.spoils
 
@@ -356,23 +358,25 @@ adventure.rewards {
 
     } 
 
-    ; Reward XP
-    var %current.xp $current.xp(%party.member.name) 
+    ; Reward XP if it's not 0
 
-    var %level.cap $return.systemsetting(PlayerLevelCap)
-    if (%level.cap = null) { var %level.cap 60 }
-    if ($get.level >= %level.cap) { var %xp.to.reward 0 }
+    if ((%xp.to.reward != $null) && (%xp.to.reward > 0)) { 
+      var %current.xp $current.xp(%party.member.name) 
 
-    inc %current.xp %xp.to.reward
-    writeini $char(%party.member.name) exp $current.job(%party.member.name) %current.xp
+      var %level.cap $return.systemsetting(PlayerLevelCap)
+      if (%level.cap = null) { var %level.cap 60 }
+      if ($get.level >= %level.cap) { var %xp.to.reward 0 }
 
-    ; Add the player and the xp amount to the list to be shown 
-    %winners.xp = $addtok(%winners.xp, $+ %party.member.name $+  $+ $chr(91) $+ $chr(43) $+ $bytes(%xp.to.reward,b) $+ $chr(93),46)
+      inc %current.xp %xp.to.reward
+      writeini $char(%party.member.name) exp $current.job(%party.member.name) %current.xp
+
+      ; Add the player and the xp amount to the list to be shown 
+      %winners.xp = $addtok(%winners.xp, $+ %party.member.name $+  $+ $chr(91) $+ $chr(43) $+ $bytes(%xp.to.reward,b) $+ $chr(93),46)
+    }
 
     ; We're done with this party member. Move onto the next (if there are any more)
     inc %current.party.member
   }
-
 
   ; Reward spoils (if there are any) -- This is given out randomly while there's rewards left to give. Some players may end up with more than one.
   if ($isfile($txtfile(battlespoils.txt)) = $true) {
@@ -391,7 +395,6 @@ adventure.rewards {
       inc %current.spoil.number
     }
     %winners.spoils = $clean.list(%winners.spoils)
-
   }
 
   ; Show the rewards.
@@ -434,6 +437,8 @@ adventure.actions.checkforzero {
     $adventure.end(failure) 
     halt
   }
+
+  $adventure.idleTimer(start)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -507,8 +512,7 @@ adventure.move {
   if (%battleis = on) { $display.message($translate(AdventureActionCannotBeUsedInBattle), global) | halt }  
 
   ; Is $1 the party leader?
-  if ($1 != $adventure.party.leader) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
-
+  if (($1 != $adventure.party.leader) && ($adventure.party.leader != anyone)) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
 
   ; Are we still showing a room? If so, we can't go anywhere (this is to throttle it to keep people from spamming go actions)
   if (%show.room = true) { halt }
@@ -615,6 +619,9 @@ adventure.warp {
   ; Is $1 the party leader?
   if ($1 != $adventure.party.leader) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
 
+  ; Stop the idle timer so it doesn't fire when we're in the middle of this action
+  $adventure.idleTimer(stop)
+
   ; Display a message showing that the dungeon is ending and then end the adventure.
   $display.message($translate(AdventureWarpOut), global)
 
@@ -649,6 +656,9 @@ adventure.choptree {
 
   ; Set a variable so people can't just spam the command
   var %chopping.trees true
+
+  ; Stop the idle timer so it doesn't fire when we're in the middle of this action
+  $adventure.idleTimer(stop)
 
   ; Take an adventure action from their total. 
   $adventure.actions.decrease(1)
@@ -739,11 +749,11 @@ adventure.chest {
   ; Set a variable so it can't be spammed
   set %opening.chest true
 
+  ; Stop the idle timer so it doesn't fire when we're in the middle of this action
+  $adventure.idleTimer(stop)
+
   ; Pick one at random
   var %chest.item $read($lstfile(%chest.file), $rand(1,$lines($lstfile(%chest.file))))
-
-  echo -a chest file: %chest.file
-  echo -a chest item: %chest.item
 
   ; Add item to item pool to be given at the end of the adventure
   write $txtfile(battlespoils.txt) %chest.item
@@ -754,6 +764,8 @@ adventure.chest {
   ; Erase the chest from the room
   remini $zonefile(adventure) %current.room Chest
   writeini $zonefile(adventure) %current.room Chest.Open true
+
+  unset %object.list
 
   ; remove 1 adventure action
   $adventure.actions.decrease(1)
@@ -807,10 +819,10 @@ adventure.party.leader {
   var %party.list $readini($txtfile(adventure.txt), Info, PartyMembersList)
   var %party.leader $gettok(%party.list, 1, 46)
 
-  ; to do: make it so if the party leader is idle long enough then everyone is considered a party leader (thus anyone can use commands)
-  ; if the party leader is idle for too long and he/she is the only one in battle then just end the adventure in failure.
+  ; If the party leader has lost control due to being idle, then anyone can do any command.
 
-  return %party.leader
+  if ($readini($txtfile(adventure.txt), Info, PartyLeaderOpen) = true) { return anyone }
+  else { return %party.leader }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -852,4 +864,60 @@ adventure.party.addmember {
 
   ; Restore player's HP, MP and TP
   $fulls($1, yes)
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; controls the idle timer
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.idleTimer {
+  ; $1 = start or stop
+
+  if (%adventureis = off) { halt }
+  if ($return.systemsetting(EnablePartyIdleTimer) = false) { return }
+
+  if ($1 = stop) { /.timerPartyLeaderIdle off }
+  if ($1 = start) { 
+    ; Get the time party leaders can idle in adventures
+    var %partyIdleTime $return.systemsetting(PartyIdleTime)
+    if (%partyIdleTime = null) { var %partyIdleTime 180 }
+    /.timerPartyLeaderIdle 1 %partyIdleTime /adventure.removepartyleader
+  }
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Performs the anti-idle command
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.removepartyleader {
+
+  if (%adventureis = off) { halt }
+
+  if ($adventure.party.count = 1) { 
+    ; The adventure ends because the party leader was idle.
+    $display.message($translate(AdventureEndDueToIdle), gloal)
+    $adventure.end(failure)
+    halt    
+  }
+
+  ; There's more than one player, so let's see if the party leader has already been removed
+  var %partyleaderopen $readini($txtfile(adventure.txt), Info, PartyLeaderOpen)
+
+  if (%partyleaderopen != true) { 
+    $display.message($translate(PartyLeaderOpen), global)
+    writeini $txtfile(adventure.txt) Info PartyLeaderOpen true
+    $adventure.idleTimer(start)
+  }
+
+  if (%partyleaderopen = true) { 
+    ; Cut the current stamina by half of max stamina
+    var %stamina.to.decrease $readini($zonefile($readini($zonefile(adventure), Info, OriginalFile)), Info, AdventureActions)
+    var %stamina.to.decrease $round($calc(%stamina.to.decrease / 2), 0)
+    $adventure.actions.decrease(%stamina.to.decrease)
+
+    ; Display a message that stamina has been cut.
+    $display.message($translate(PartyStaminaCutDueToIdle, %stamina.to.decrease), global)
+
+    ; If stamina has run out, end. 
+    $adventure.actions.checkforzero
+  }
+
 }

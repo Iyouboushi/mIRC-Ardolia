@@ -1,8 +1,9 @@
 [HELP]
 list=<Intro> <Registering> <Goal> <Races> <Jobs> <!ID> <!newpass> 
-list2=<Descriptions> <!setgender> <Health> <MP> <TP> <!stats>
-list3=<Battles>
-
+list2=<Descriptions> <!setgender> <Health> <MP> <TP> <!stats> <!xp>
+list3=<Adventures> <AdventureCommands> <!look> <!go> <!rest> <ObjectCommands> <!warp>
+list4=<Battles> <Attacking> <Abilities> <Spells> <Items>
+list5=<anti-idleTimer>
 
  
 

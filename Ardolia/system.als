@@ -78,6 +78,8 @@ system_defaults_check {
     if ($readini(system.dat, system, aisystem) = $null) { writeini system.dat system aisystem on } 
     if ($readini(system.dat, system, TimeForIdle) = $null) { writeini system.dat system TimeForIdle 180 }
     if ($readini(system.dat, system, TimeToEnter) = $null) { writeini system.dat system TimeToEnter 120 }
+    if ($readini(system.dat, system, PartyIdleTime) = $null) { writeini system.dat system PartyIdleTime 180 }
+    if ($readini(system.dat, System, EnablePartyIdleTimer) = $null) { writeini system.dat system EnablePartyIdleTimer true }
     if ($readini(system.dat, system, MaxNumberOfMonsInBattle) = $null) { writeini system.dat system MaxNumberOfMonsInBattle 10 }
     if ($readini(system.dat, system, TwitchDelayTime) = $null) { writeini system.dat system TwitchDelayTime 2 }
     if ($readini(system.dat, system, ShowDeleteEcho) = $null) { writeini system.dat system ShowDeleteEcho false }
@@ -1329,6 +1331,7 @@ clear_variables {
   unset %line | unset %next.person | unset %who | unset %whoturn | unset %temp.battle.list | unset %file.to.read.lines
   unset %current.room | unset %file | unset %total.targets | unset %random.target | unset %damage.display.color
   unset %true.turn | unset %adventureisopen
+  unset %adventure.open 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
