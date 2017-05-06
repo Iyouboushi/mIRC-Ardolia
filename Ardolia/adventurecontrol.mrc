@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 05/04/17
+;;;; Last updated: 05/05/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -82,3 +82,8 @@ on 2:TEXT:!stamina:#: {
   if (%adventureis = on) { $display.message($translate(AdventureActionsMessage), global) }
   else { $display.message($translate(NotCurrentlyInAdventure), global) | halt }
 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Eats food
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!eat *:#: { $item.eatfood($nick, $2) }

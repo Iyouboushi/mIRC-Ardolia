@@ -344,6 +344,9 @@ NotInBattle=$chr(3) $+ 4 $+ Error: $2 is not currently in this battle!
 
 NeedToDoGenkaiQuest=$chr(3) $+ 4 $+ Error: In order to level up any further you first need to complete the Genkai quest. This is a solo level 50 adventure.  To start it use !start adventure genkai
 
+DoNotHaveThisItem=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not have this item to use!
+AlreadyEaten=$chr(3) $+ 4 $+ Error: $get_chr_name($2) has already eaten the $readini($char($2), Battle, Food) food item and cannot eat anything else this adventure.
+ThisFoodItemDoesNotExist=$chr(3) $+ 4 $+ Error: $2 is not a food item that can be eaten!
 
 =======================
 Battle and Adventure Related Messages
@@ -420,6 +423,8 @@ PartyRests=$chr(3) $+ 7* $+ 12 $adventure.party.leader 2decides that the par
 ShowParty=$chr(3) $+ 3The current adventure party is made up of: $2
 CurrentPartyLeader=$chr(3) $+ 3The current party leader is: $2
 
+FoodEaten=$chr(3) $+ 3 $+ $get_chr_name($2) has eaten the $3 food item!  Nom nom nom!
+
 
 BatListTitleMessage=$chr(3) $+ 10 $+ -=BATTLE INFORMATION=-
 StepsUpFirst=$chr(3) $+ 2 $+ $get_chr_name($read($txtfile(battle.txt),1)) steps up first in the battle!
@@ -444,7 +449,6 @@ ThirdEyeDodge=$chr(3) $+ 7 $+ %real.name predicts the attack and dodges it!
 
 PerformsAMultiHitAttack=$chr(3) $+ 4 $+ %user performs a %number.of.hits $+ -hit $iif($4 = tech, attack!, $iif($readini($char($1), weapons, equippedLeft) != $null, attack against %enemy using two weapons!, attack against %enemy $+ !))
 
-RewardLineCP=$chr(3) $+ 7* 2 $+ $get_chr_name(%who.battle) has gained %xp.reward capacity points and %gil.reward  $+ $readini(system.dat, system, currency)
 RewardLineXP=$chr(3) $+ 7* 2 $+ $get_chr_name(%who.battle) has gained %xp.reward experience points and %gil.reward  $+ $readini(system.dat, system, currency)
 
 

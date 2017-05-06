@@ -738,9 +738,11 @@ fulls {
   ; Restore full TP
   writeini $char($1) Battle TP $max.tp
 
+  ; Clear food effects
+  writeini $char($1) Battle Food none
+
   ; Check for things that shouldn't be null
   if ($readini($char($1), battle, status) != inactive) {  writeini $char($1) Battle Status alive }
-  if ($readini($char($1), status, FoodEffect) = $null) { writeini $char($1) Status FoodEffect none }
 
   ; If an adventure is over, let's write that we're not in battle any more
   if (%adventureis != on) { writeini $char($1) Battle InBattle false }

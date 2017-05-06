@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/03/17
+;;;; Last updated: 05/05/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -839,6 +839,8 @@ adventure.alreadyinparty.check {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.party.addmember {
 
+  writeini $char($1) Info NeedsFull yes
+
   ; Add the person into the adventure.
   var %curbat $readini($txtfile(adventure.txt), Info, PartyMembersList)
   %curbat = $addtok(%curbat,$1,46)
@@ -864,6 +866,8 @@ adventure.party.addmember {
 
   ; Restore player's HP, MP and TP
   $fulls($1, yes)
+
+  writeini $char($1) Info NeedsFull yes
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

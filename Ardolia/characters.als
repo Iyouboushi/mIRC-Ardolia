@@ -363,6 +363,19 @@ inventory.add {
   writeini $char($1) inventory $2 %inventory.amount
 }
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; decreases an amount to the inventory
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+inventory.decrease {
+  ; $1 = the person
+  ; $2 = the item name
+  ; $3 = the amount we're decreasing
+
+  var %inventory.amount $inventory.amount($1, $2)
+  dec %inventory.amount $3
+  writeini $char($1) inventory $2 %inventory.amount
+}
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Allows chars to add/remove
 ; access to his/her characters
@@ -400,7 +413,7 @@ character.access {
 ; current food effect
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 return.foodeffect {
-  var %food.effect $readini($char($1), statuseffects, foodeffect)
+  var %food.effect $readini($char($1), Battle, Food)
   if (%food.effect = $null) { return none }
   else { return %food.effect }
 }

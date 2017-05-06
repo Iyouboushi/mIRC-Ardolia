@@ -1,0 +1,62 @@
+=========================
+HEALING ITEMS
+=========================
+
+
+=========================
+BATTLE ITEMS
+=========================
+
+=========================
+CRYSTALS
+=========================
+[FireCrystal]
+Type=crystal
+ItemDesc=A small crystal with the color of fire inside
+Cost=0
+SellPrice=1
+Exclusive=no
+Level=1
+
+=========================
+ADVENTURE ITEMS
+=========================
+[Hatchet]
+Type=adventure
+ItemDesc=A hatchet that can be used to chop down trees
+Cost=100
+SellPrice=1
+Exclusive=yes
+Level=1
+BreakChance=65
+
+=========================
+MISC/CRAFTING ITEMS
+=========================
+
+[AshLog]
+Type=crafting
+ItemDesc=The log from an ash tree
+Cost=0
+SellPrice=10
+Exclusive=yes
+Level=1
+
+=========================
+FOOD
+=========================
+[BoiledEgg]
+Type=food
+ItemDesc=A boiled chicken egg
+UseDesc=
+Cost=10
+SellPrice=1
+Exclusive=yes
+Level=1
+str=1
+dex=0
+vit=1
+int=0
+mnd=0
+pie=0
+det=0

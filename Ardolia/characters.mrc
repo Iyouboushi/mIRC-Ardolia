@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 05/03/17
+;;;; Last updated: 05/05/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -375,8 +375,10 @@ on 2:TEXT:!stats*:*: {
     var %equipped.armor.wrists $rarity.color.check(%equipped.armor.wrists,armor) $+ %equipped.armor.wrists $+ 3 
     var %equipped.armor.ring $rarity.color.check(%equipped.armor.ring,armor) $+ %equipped.armor.ring $+ 3 
 
+    if ($return.foodeffect($nick) != none) { var %food.eaten [4Food Eaten12 $return.foodeffect($nick) $+ ] }
+
     $display.private.message.delay.custom([4 $+ $get_chr_name($nick) 4the12 $race($nick) $+ ] [4Job12 $current.job($nick) $+ ]  [4Level12 $get.level($nick) $+ ] [4Exp12 $current.xp($nick) $chr(47) $xp.to.level($nick) $chr(40) $+ $round($calc(($current.xp($nick) / $xp.to.level($nick)) * 100),0) $+ $chr(37) $+ $chr(41) $+ ]    ,2,$nick)
-    $display.private.message.delay.custom([4HP12 $current.hp($nick) $+ 1/ $+ 12 $+ $resting.hp($nick) $+ ] [4MP12 $current.mp($nick) $+ 1/ $+ 12 $+ $resting.mp($nick) $+ ] [4TP12 $current.tp($nick) $+ ], 2, $nick)
+    $display.private.message.delay.custom([4HP12 $current.hp($nick) $+ 1/ $+ 12 $+ $resting.hp($nick) $+ ] [4MP12 $current.mp($nick) $+ 1/ $+ 12 $+ $resting.mp($nick) $+ ] [4TP12 $current.tp($nick) $+ ] %food.eaten, 2, $nick)
     $display.private.message.delay.custom([4Strength:12 $resting.str($nick) $+ ]  [4Dexterity:12 $resting.dex($nick) $+ ] [4Vitality:12 $resting.vit($nick) $+ ] [4Intelligence:12 $resting.int($nick) $+ ] [4Mind:12 $resting.mnd($nick) $+ ] [4Piety:12 $resting.pie($nick) $+ ], 2, $nick)
     $display.private.message.delay.custom([4Weapon12 %equipped.weapon $+ ] $iif(%equipped.shield != nothing, [4Shield12 %equipped.shield $+ ]) [4Head Armor12 %equipped.armor.head $+ ] [4Body Armor12 %equipped.armor.body $+ ] [4Leg Armor12 %equipped.armor.legs $+ ] [4Feet Armor12 %equipped.armor.feet $+ ] [4Hand Armor12 %equipped.armor.hands $+ ] [4Earrings12 %equipped.armor.ears $+ ] [4Neck Armor12 %equipped.armor.neck $+ ] [4Wrist Armor12 %equipped.armor.wrists $+ ] [4Ring12 %equipped.armor.ring $+ ],2,$nick)
   }
@@ -409,8 +411,10 @@ on 2:TEXT:!stats*:*: {
     var %equipped.armor.wrists $rarity.color.check(%equipped.armor.wrists,armor) $+ %equipped.armor.wrists $+ 3 
     var %equipped.armor.ring $rarity.color.check(%equipped.armor.ring,armor) $+ %equipped.armor.ring $+ 3 
 
+    if ($return.foodeffect($2) != none) { var %food.eaten [4Food Eaten12 $return.foodeffect($2) $+ ] }
+
     $display.private.message.delay.custom([4 $+ $get_chr_name($2) 4the12 $race($2) $+ ] [4Job12 $current.job($2) $+ ]  [4Level12 $get.level($2) $+ ] [4Exp12 $current.xp($2) $chr(47) $xp.to.level($2) $chr(40) $+ $round($calc(($current.xp($2) / $xp.to.level($2)) * 100),0) $+ $chr(37) $+ $chr(41) $+ ]    ,2,$nick)
-    $display.private.message.delay.custom([4HP12 $current.hp($2) $+ 1/ $+ 12 $+ $resting.hp($2) $+ ] [4MP12 $current.mp($2) $+ 1/ $+ 12 $+ $resting.mp($2) $+ ] [4TP12 $current.tp($2) $+ ], 2, $2)
+    $display.private.message.delay.custom([4HP12 $current.hp($2) $+ 1/ $+ 12 $+ $resting.hp($2) $+ ] [4MP12 $current.mp($2) $+ 1/ $+ 12 $+ $resting.mp($2) $+ ] [4TP12 $current.tp($2) $+ ] %food.eaten, 2, $2)
     $display.private.message.delay.custom([4Strength:12 $resting.str($2) $+ ]  [4Dexterity:12 $resting.dex($2) $+ ] [4Vitality:12 $resting.vit($2) $+ ] [4Intelligence:12 $resting.int($2) $+ ] [4Mind:12 $resting.mnd($2) $+ ] [4Piety:12 $resting.pie($2) $+ ], 2, $nick)
     $display.private.message.delay.custom([4Weapon12 %equipped.weapon $+ ] $iif(%equipped.shield != nothing, [4Shield12 %equipped.shield $+ ]) [4Head Armor12 %equipped.armor.head $+ ] [4Body Armor12 %equipped.armor.body $+ ] [4Leg Armor12 %equipped.armor.legs $+ ] [4Feet Armor12 %equipped.armor.feet $+ ] [4Hand Armor12 %equipped.armor.hands $+ ] [4Earrings12 %equipped.armor.ears $+ ] [4Neck Armor12 %equipped.armor.neck $+ ] [4Wrist Armor12 %equipped.armor.wrists $+ ] [4Ring12 %equipped.armor.ring $+ ],2,$nick)
 
