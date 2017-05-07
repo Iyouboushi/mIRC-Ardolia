@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/04/17
+;;;; Last updated: 05/06/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -381,7 +381,7 @@ alias next {
   inc %line 1
   set %next.person $read -l $+ %line $txtfile(battle.txt)
 
-  if (%next.person = $null) { set %line 1 } 
+  if (%next.person = $null) { set %line 1 | inc %current.turn 1 | inc %true.turn 1 } 
   set %who $read -l $+ %line $txtfile(battle.txt)
   $turn(%who)
 }
