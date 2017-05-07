@@ -3,7 +3,38 @@
 ;;;; Last updated: 05/05/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Counts how much of an item
+; you have
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!count*:#: {  
+  if ($3 = $null) { $item.countcmd($nick, $2, public) }
+  if ($3 != $null) { $checkchar($2) | $item.countcmd($2, $3, public) }
+}
+on 2:TEXT:!count*:?: {  
+  if ($3 = $null) { $item.countcmd($nick, $2, private) }
+  if ($3 != $null) { $checkchar($2) | $item.countcmd($2, $3, private) }
+}
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Alias for counting the # of an item
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias item.countcmd {
+  if (($3 = public) || ($3 = $null)) { 
+    if ($inventory.amount($1, $2) = 0) { $display.message($translate(DoNotHaveThisItem, $1), private) | halt }
+    else { $display.message($translate(CountItem, $1, $2), private) }
+  }
+  if ($3 = private) {
+    if ($inventory.amount($1, $2) = 0) { $display.private.message($translate(DoNotHaveThisItem, $1)) | halt }
+    else { $display.private.message($translate(CountItem, $1, $2)) }
+
+  }
+}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Alias for eating food
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias item.eatfood {
   ; are we in an adventure?
   if (%adventureis != on) { $display.message($translate(NotCurrentlyInAdventure), global) | halt }
