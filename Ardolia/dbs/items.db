@@ -1,11 +1,47 @@
+Item types:  Heal, RestoreMP, Revive, Crystal, Adventure, Crafting, Misc, Food
+
 =========================
 HEALING ITEMS
 =========================
-
+[Tonic]
+Type=Heal
+Cost=10
+SellPrice=1
+Level=1
+ItemDesc=A small bottle of healing tonic. Using this will restore 25 missing HP.
+UseDesc=pulls out a small bottle of tonic and gives it to %enemy who drinks it and feels better! %enemy has restored 25 missing HP!
+HealAmount=25
+Cooldown=3
+Exclusive=yes
 
 =========================
-BATTLE ITEMS
+MP RESTORE ITEMS
 =========================
+
+=========================
+REVIVE ITEMS
+=========================
+[BottledFairy]
+Type=Revive
+Cost=5000
+SellPrice=500
+Level=25
+ItemDesc=A small fairy trapped inside of a bottle. This somehow seems cruel.  Hope she has some air!  When used this item will revive a fallen player and restore 35% of his/her HP.
+UseDesc=pulls out a bottled fairy and opens it. After a moment the fairy flies out and into %enemy $+ . A bright light shines down from above and envelops %enemy and after a moment %enemy is brought back to life.
+ReviveAmount=.35
+Exclusive=yes
+Cooldown=5
+
+[PhoenixDown]
+Type=Revive
+Cost=20000
+SellPrice=1000
+ItemDesc=a small feather from a phoenix. Using this item will revive a fallen player and restore 50% of his/her HP.
+UseDesc=holds up a small feather from a phoenix over %enemy $+ . A bright light shines down from above and envelops %enemy and after a moment %enemy is brought back to life.
+ReviveAmount=.50
+Level=50
+Exclusive=yes
+Cooldown=5
 
 =========================
 CRYSTALS

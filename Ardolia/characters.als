@@ -1033,3 +1033,22 @@ miscstats {
     writeini $char($1) MiscStats $3 %misc.stat
   }
 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Revives a dead player
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+character.revive {
+  ; $1 = player to revive
+  ; $2 = revive amount (20% if missing)
+
+  var %character.revive.percent $2 
+  if (%character.revive.percent = $null) { var %character.revive.percent .20 }
+
+  var %max.hp $resting.hp($1) 
+  set %revive.current.hp $round($calc(%max.hp * %character.revive.percent),0)
+  if (%revive.current.hp <= 0) { set %revive.current.hp 1 }
+  writeini $char($1) battle hp %revive.current.hp
+  writeini $char($1) battle status normal
+  writeini $char($1) status revive no
+  unset %revive.current.hp
+}

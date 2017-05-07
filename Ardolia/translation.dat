@@ -189,7 +189,6 @@ ViewKillerTraitSkills=$chr(3) $+ 3 $+  $+ %real.name has the following 12mons
 HasNoSkills=$chr(3) $+ 3 $+  $+ %real.name currently knows no skills.
 
 ; items
-CountItem=$chr(3) $+ 3 $+ $get_chr_name($1) has %player.count.amount  $+ $2 $+ $iif(%player.count.amount  > 1, s) 
 ViewItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following items: %items.list
 ViewFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following food items: %food.items.list 
 ViewMiscItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following misc items: %misc.items.list 
@@ -331,7 +330,7 @@ CanNotAttackWhileUnconcious=$chr(3) $+ 4  $+ $get_chr_name($2) cannot attack w
 CanNotAttackSomeoneWhoIsDead=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack someone who is dead! 
 CanNotAttackSomeoneWhoFled=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack $get_chr_name($3) $+ , because $get_chr_name($3) has run away from the fight! 
 
-
+MustSpecifyName=$chr(3) $+ 4 $+ Error: You must specify a name, rather than "me"
 
 CanNotUseOnLivePerson=$chr(3) $+ 4 $+ $get_chr_name($1) cannot use this item on someone who is still alive.
 DoesNotKnowTech=$chr(3) $+ 4 $+ $get_chr_name($1) does not know how to perform the $2 weapon skill!
@@ -344,9 +343,21 @@ NotInBattle=$chr(3) $+ 4 $+ Error: $2 is not currently in this battle!
 
 NeedToDoGenkaiQuest=$chr(3) $+ 4 $+ Error: In order to level up any further you first need to complete the Genkai quest. This is a solo level 50 adventure.  To start it use !start adventure genkai
 
+; Item Errors
 DoNotHaveThisItem=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not have this item!
 AlreadyEaten=$chr(3) $+ 4 $+ Error: $get_chr_name($2) has already eaten the $readini($char($2), Battle, Food) food item and cannot eat anything else this adventure.
 ThisFoodItemDoesNotExist=$chr(3) $+ 4 $+ Error: $2 is not a food item that can be eaten!
+ThisItemDoesNotExist=$chr(3) $+ 4 $+ Error: $2 is not a valid item that can be used!
+CanOnlyUseItemsInBattle=$chr(3) $+ 4 $+ Error: $2 can only use this item inside of a battle!
+ItemUseCommandError=$chr(3) $+ 4 $+ Error: !use <item> ON <person>
+CannotUseItemOnDead=$chr(3) $+ 4 $+ Error: This item cannot be used on someone who's dead.
+CannotUseItemOnLiving=$chr(3) $+ 4 $+ Error: This item cannot be used on someone who's alive.
+ItemIsUsedForCrafting=$chr(3) $+ 4 $+ Error: This item is used for crafting or selling and cannot be used with this command.
+ItemUsedForAdventures=$chr(3) $+ 4 $+ Error: This item is used for special Adventure actions and cannot be used with this command.
+ItemCanOnlyBeUsedOnPlayers=$chr(3) $+ 4 $+ Error: This item can only be used on players!
+ItemCanOnlyBeUsedOnMonsters=$chr(3) $+ 4 $+ Error: This item can only be used on monsters!
+CannotUseItemsAgainSoFast=$chr(3) $+ 4 $+ Error: $get_chr_name($2) cannot use this item type again so soon! There $iif($3 > 1, are, is) $3 $iif($3 > 1, turns, turn) left before this item type can be used again!
+TargetDoesNotNeedHealing=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not need any healing at this time.
 
 =======================
 Battle and Adventure Related Messages
