@@ -296,6 +296,8 @@ NoAdventureCurrently=$chr(3) $+ 4 $+ Error: There is no battle currently going
 NoOneJoinedAdventureYet=$chr(3) $+ 4 $+ No one has joined the adventure yet! 
 NoMonstersInBattle=$chr(3) $+ 4 $+ No monsters are in this battle to meet the players. The adventure is over!
 
+NeedToDoGenkaiQuest=$chr(3) $+ 4 $+ Error: In order to level up any further you first need to complete the Genkai quest. This is a solo level 50 adventure.  To start it use !start adventure genkai
+
 ; Equip errors
 WeaponAlreadyEquipped=$chr(3) $+ 4 $+ Error: $get_chr_name($2) already has the $3 equipped!
 DoNotHaveWeapon=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not own that weapon! 
@@ -329,19 +331,19 @@ CanOnlyAttackMonsters=$chr(3) $+ 4 $+ $get_chr_name($1) can only attack monste
 CanNotAttackWhileUnconcious=$chr(3) $+ 4  $+ $get_chr_name($2) cannot attack while unconcious!
 CanNotAttackSomeoneWhoIsDead=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack someone who is dead! 
 CanNotAttackSomeoneWhoFled=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack $get_chr_name($3) $+ , because $get_chr_name($3) has run away from the fight! 
+NotRightLevelForAbility=$chr(3) $+ 4 $+ $get_chr_name($2) is not high enough level to use $3 $+ !
+NotRightLevelForSpell=$chr(3) $+ 4 $+ $get_chr_name($2) is not high enough level to cast $3 $+ !
+WrongJobToUseAbility=$chr(3) $+ 4 $+ $get_chr_name($2) $+  's current job cannot use $3 $+ !
+WrongJobToUseSpell=$chr(3) $+ 4 $+ $get_chr_name($2) $+  's current job cannot cast $3 $+ !
 
 MustSpecifyName=$chr(3) $+ 4 $+ Error: You must specify a name, rather than "me"
 
-CanNotUseOnLivePerson=$chr(3) $+ 4 $+ $get_chr_name($1) cannot use this item on someone who is still alive.
-DoesNotKnowTech=$chr(3) $+ 4 $+ $get_chr_name($1) does not know how to perform the $2 weapon skill!
-Can'tPerformTechWithWeapon=$chr(3) $+ 4 $+ $get_chr_name($1) cannot perform that weapon skill using $iif(%weapon.equipped.left != $null, $gender($1) equipped weapons, $gender($1) %weapon.equipped)
-NotEnoughTPforTech=$chr(3) $+ 4 $+ %real.name does not have enough TP to perform this technique! 
+NotEnoughTPforAbility=$chr(3) $+ 4 $+ $get_chr_name($2) does not have enough TP to perform this ability! 
+NotEnoughMPforSpell=$chr(3) $+ 4 $+ $get_chr_name($2) does not have enough MP to cast this spell! 
 
 WaitYourTurn=$chr(3) $+ 4 $+ Error: $get_chr_name($2) wait for your turn!
 Can'tDoThisInBattle=$chr(3) $+ 4 $+ Error: This command only works outside of battle.
 NotInBattle=$chr(3) $+ 4 $+ Error: $2 is not currently in this battle!
-
-NeedToDoGenkaiQuest=$chr(3) $+ 4 $+ Error: In order to level up any further you first need to complete the Genkai quest. This is a solo level 50 adventure.  To start it use !start adventure genkai
 
 ; Item Errors
 DoNotHaveThisItem=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not have this item!
@@ -358,6 +360,8 @@ ItemCanOnlyBeUsedOnPlayers=$chr(3) $+ 4 $+ Error: This item can only be used o
 ItemCanOnlyBeUsedOnMonsters=$chr(3) $+ 4 $+ Error: This item can only be used on monsters!
 CannotUseItemsAgainSoFast=$chr(3) $+ 4 $+ Error: $get_chr_name($2) cannot use this item type again so soon! There $iif($3 > 1, are, is) $3 $iif($3 > 1, turns, turn) left before this item type can be used again!
 TargetDoesNotNeedHealing=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not need any healing at this time.
+TargetDoesNotNeedMPHealing=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not need to restore any MP at this time.
+CanNotUseOnLivePerson=$chr(3) $+ 4 $+ $get_chr_name($1) cannot use this item on someone who is still alive.
 
 =======================
 Battle and Adventure Related Messages

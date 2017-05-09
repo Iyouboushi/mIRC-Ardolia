@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 04/30/17
+;;;; Last updated: 05/09/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file is horribly unfinished
 
@@ -31,29 +31,6 @@ ON 50:TEXT:*uses * * on *:*:{
 }
 
 ;=================
-; This alias checks
-; to see if a ability can
-; be used again
-;=================
-alias ability.turncheck {
-  ; $1 = the person using the ability
-  ; $2 = ability name (in db file)
-
-  if ($flag($1) != $null) { return }
-
-  var %ability.turns $readini($dbfile(abilities.db), $2, cooldown)
-  var %last.turn.used $readini($char($1), cooldowns, $2)
-
-  if (%last.turn.used = $null) { var %next.turn.can.use 0 }
-  else { var %next.turn.can.use $calc(%last.turn.used + %ability.turns) }
-
-  if (%true.turn >= %next.turn.can.use) { return }
-  else { $set_chr_name($1) | $display.message($translate(UnableToUseAbilityAgainSoSoon, $1, $2),private)  | $display.private.message(3You still have $calc(%next.turn.can.use - %true.turn) turns before you can use $2 again) | halt }
-}
-
-
-
-;=================
 ; The Ability command
 ;=================
 alias ability_cmd {
@@ -67,24 +44,23 @@ alias ability_cmd {
   unset %abilityincrease.check | unset %double.attack | unset %triple.attack | unset %fourhit.attack | unset %fivehit.attack | unset %sixhit.attack | unset %sevenhit.attack | unset %eighthit.attack
   unset %multihit.message.on  | unset %lastaction.nerf
 
-  $check_for_battle($1) 
-
-
-  ; Can this spell be cast outside of battle?
-  if ($readini($dbfile(abilities.db), $2, CanUseOutsideBattle) != true) {  
-    $no.turn.check($1,admin)
-  }
-
   ; Are we in an adventure?
   if (%adventureis = off) { halt }
 
-  set %ability.type $readini($dbfile(abilities.db), $2, Type) | $amnesia.check($1, ability) 
+
+  ; Can this ability be used outside of battle?
+  if ($readini($dbfile(abilities.db), $2, CanUseOutsideBattle) != true) {  
+    $check_for_battle($1) 
+    $no.turn.check($1,admin)
+  }
+
+  var %ability.type $readini($dbfile(abilities.db), $2, Type) | $amnesia.check($1, ability) 
 
   if ($flag($1) != monster) {
 
     if ((no-ability isin %battleconditions) || (no-abilities isin %battleconditions)) { 
       if (($readini($char($1), info, ai_type) != healer) && ($readini($char($1), info, ai_type) != abilityonly)) { 
-        $set_chr_name($1) | $display.message($readini(translation.dat, battle, NotAllowedBattleCondition),private) | halt 
+        $set_chr_name($1) | $display.message($translate(NotAllowedBattleCondition),private) | halt 
       }
     }
 
@@ -92,24 +68,25 @@ alias ability_cmd {
     if ($readini($char($2), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoIsDead, $1, $2),private) | unset %real.name | halt }
     if ($readini($char($2), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $2),private) | unset %real.name | halt } 
 
+    ;;
+    ; to-do: fix this so it'll work with abilities that work outside of battle
+    ;;
     $person_in_battle($3) | $checkchar($3) 
-
-
-
-    ; Are we high enough level to use this ability?
-    var %ability.level $readini($dbfile(abilities.db), $2, level)
-    if ($get.level($1) < %ability.level) { $display.message($translate(NotRightLevelForAbility, $1, $2),private) | halt }
 
     ; Can this job use this ability?
     var %jobs.list $readini($dbfile(abilities.db), $2, jobs)
     if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseAbility, $1, $2) , private) | halt }
   }
 
+  ; Are we high enough level to use this ability?
+  var %ability.level $readini($dbfile(abilities.db), $2, level)
+  if ($get.level($1) < %ability.level) { $display.message($translate(NotRightLevelForAbility, $1, $2),private) | halt }
+
   ; Can we use this ability again so soon?
-  $ability.turncheck($1, $2)
+  $cooldown.check($1, $2, abillity)
 
   ; Make sure the user has enough TP to use this in battle..
-  var %tp.needed $readini($dbfile(abilities.db), $2, TpNeeded) | var %tp.have $current.tp($1)
+  var %tp.needed $readini($dbfile(abilities.db), $2, Cost) | var %tp.have $current.tp($1)
   if (%tp.needed > %tp.have) { $display.message($translate(NotEnoughTPForAbility, $1, $2),private) | halt }
 
 
@@ -144,8 +121,10 @@ alias ability_cmd {
   ; Write to the file that we just used this ability
   writeini $char($1) cooldowns $2 %true.turn
 
-  if (%ability.type = buff) { $ability.buff($1, $2, $3) }
+  ; Write that we used this as the last action
+  writeini $txtfile(battle2.txt) Actions $1 $2 
 
+  if (%ability.type = buff) { $ability.buff($1, $2, $3) }
   if (%ability.type = heal) { $ability.heal($1, $2, $3, %tp.have) }
   if (%ability.type = heal-aoe) { $ability.aoeheal($1, $2, $3, %tp.have) }
   if (%ability.type = single) {  $ability.single($1, $2, %attack.target, %tp.have )  }

@@ -17,6 +17,16 @@ Exclusive=yes
 =========================
 MP RESTORE ITEMS
 =========================
+[SmallEther]
+Type=restoreMP
+Cost=10
+SellPrice=1
+Level=1
+ItemDesc=A small bottle of ether. Using this will restore 25 missing MP.
+UseDesc=pulls out a small bottle of ether and gives it to %enemy who drinks it and feels more focused! %enemy has restored 25 missing MP!
+HealAmount=25
+Cooldown=3
+Exclusive=yes
 
 =========================
 REVIVE ITEMS

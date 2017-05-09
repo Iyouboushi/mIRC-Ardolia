@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/09/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,6 +195,33 @@ check_for_double_turn {
   ; for now, this just moves the battle along
   ; Later I'll add a small chance
   $next
+}
+
+
+;=================
+; This alias checks
+; to see if a cooldown 
+; is ready or not
+;=================
+cooldown.check {
+  ; $1 = the person using the ability/spell/item
+  ; $2 = ability/spell name (in db file)
+  ; $3 = spell, item or ability, used to determine db file
+
+  if ($flag($1) != $null) { return }
+
+  if ($3 = spell) { var %db.file spells.db }
+  if ($3 = ability) { var %db.file abilities.db }
+  if ($3 = item) { var %db.file items.db }
+
+  var %cooldown.turns $readini($dbfile(%db.file), $2, cooldown)
+  var %last.turn.used $readini($char($1), cooldowns, $2)
+
+  if (%last.turn.used = $null) { var %next.turn.can.use 0 }
+  else { var %next.turn.can.use $calc(%last.turn.used + %ability.turns) }
+
+  if (%true.turn >= %next.turn.can.use) { return }
+  else { $set_chr_name($1) | $display.message($translate(UnableToUseAbilityAgainSoSoon, $1, $2),private)  | $display.private.message(3You still have $calc(%next.turn.can.use - %true.turn) turns before you can use $2 again) | halt }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -501,7 +528,7 @@ display_damage {
         writeini $char(%target) battle status alive
 
         if ($readini($char(%target), descriptions, Awaken) != $null) { $display.message(4 $+ %enemy  $+ $readini($char(%target), descriptions, Awaken), battle) }
-        if ($readini($char(%target), descriptions, Awaken) = $null) { $display.message($readini(translation.dat, battle, inactivealive),battle)    }
+        if ($readini($char(%target), descriptions, Awaken) = $null) { $display.message($translate(inactivealive, %enemy),battle)    }
         $next 
       }
     }
@@ -509,8 +536,6 @@ display_damage {
 
   ; Did the person die?  If so, show the death message.
   if ($readini($char(%target), battle, HP) <= 0) { 
-
-    $increase_death_tally(%target)
 
     if (%attack.damage > $resting.hp($1)) { set %overkill 7<<OVERKILL>> }
 
@@ -520,20 +545,16 @@ display_damage {
     ; check to see if a clone or summon needs to die with the target
     $check.clone.death(%target)
 
+
+    ; increase the death tally of the target
+    $increase_death_tally(%target)
     if ($readini($char($1), info, flag) = $null) {
-      ; increase the death tally of the target
       if ($readini($char(%target), battle, status) = dead) {  $increase.death.tally(%target)  }
     }
 
+    ; Check to see if something spawns after it dies
     $spawn_after_death(%target)
-    remini $char(%target) Renkei
-
     unset %number.of.hits
-  }
-
-
-  if ($readini($char(%target), battle, HP) > 0) {
-    if ($3 = tech) { unset %attack.damage | $renkei.check($1, %target) }
   }
 
 
@@ -580,11 +601,7 @@ display_aoedamage {
     }
   }
 
-  if ($3 != battlefield) {
-    if (($readini($char($1), info, flag) != monster) && (%target != $1)) { $calculate.stylepoints($1) }
-  }
-
-  if (%guard.message = $null) { $display.message($readini(translation.dat, tech, DisplayAOEDamage), battle)  }
+  if (%guard.message = $null) { $display.message($translate(DisplayAOEDamage), battle)  }
   if (%guard.message != $null) { $display.message(%guard.message, battle) | unset %guard.message }
 
   if (%target = $null) { set %target $2 }
@@ -615,18 +632,6 @@ display_aoedamage {
       }
     }
 
-    if (%battle.type = orbfountain) { 
-      if (($readini($char(%target), battle, status) != dead) && ($return_winningstreak >= 50)) { 
-        if ($rand(1,100) < 30) {
-          if (($1 != battlefield) && (%target = orb_fountain)) { 
-            $display.message($translate(MonstersDefendOrbFountain), battle)
-            $portal.clear.monsters
-            $generate_monster(monster)
-          }
-        }
-      }
-    }
-
     ; Check to see if the monster can be staggered..  
     var %stagger.check $readini($char(%target), info, CanStagger)
     if ((%stagger.check = $null) || (%stagger.check = no)) { return }
@@ -650,12 +655,8 @@ display_aoedamage {
     writeini $char(%target) battle hp 0
     $check.clone.death(%target)
     $increase_death_tally(%target)
-    $achievement_check(%target, SirDiesALot)
     if (%attack.damage > $resting.hp(%target)) { set %overkill 7<<OVERKILL>> }
-    $display.message($readini(translation.dat, battle, EnemyDefeated), battle)
-
-    if ($readini($dbfile(techniques.db), $3, magic) = yes) {  $goldorb_check(%target, magic)  }
-    if ($readini($dbfile(techniques.db), $3, magic) != yes) { $goldorb_check(%target, tech) }
+    $display.message($translate(EnemyDefeated), battle)
 
     if ($readini($char($1), info, flag) = $null) {
       ; increase the death tally of the target
@@ -728,13 +729,21 @@ display_heal {
   if ($readini($char($2), battle, HP) <= 0) { 
     $set_chr_name($2) 
     $display.message(4 $+ %enemy has been defeated by %user $+ !  %overkill,battle) 
-    $achievement_check($1, FillYourDarkSoulWithLight)
   }
 
   unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage4 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %drainsamba.on | unset %absorb
   unset %element.desc | unset %spell.element | unset %real.name  |  unset %trickster.dodged | unset %covering.someone
 
   return 
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Returns the last action taken
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+return.lastaction {
+  var %last.action $readini($txtfile(battle2.txt), Actions, $1) 
+  if (%last.action = $null) { return none }
+  else { return %last.action }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

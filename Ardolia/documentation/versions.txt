@@ -1,6 +1,16 @@
 Ardolia Bot Changelog
 =========================
 
+05-09-2017
+- Added a way for the item cooldowns to expire
+- Added more code for abilities and spells (still not finished though)
+
+05-06-2017
+- Added the !count command. Use it to count the # of a specific item that a player has.  !count itemname or !count person itemname
+- Added the !use command. Use it to, well, use items. !use itemname on target.  Most items can only be used in battle.
+  Right now only healing and revive items work
+- Fixed an issue where turn #s were not increasing
+
 05-05-2017
 - Added the !eat command. This will let players consume food items. This only works in adventures and out of battle.
   The food effects will last until the adventure is over.

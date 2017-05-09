@@ -5,16 +5,51 @@
 ; Info= Desc shown in !view-info
 ; Description= What shows when this is used in battle
 ; Cooldown=# how many turns do you have to wait to use this one again
-; Cost=how much does it cost to use?
-; CostType=TP/MP
-; Potency= the potency amount for attack type, the buff amount for buffs
-; Enmity= The amount of enmity generated on top of the normal amount. This will most likely be 0 unless it's an ability designed
-;         to give bonus to enmity for tanks.
+; Cost=how much TP does it cost to use?
+; Potency= the potency amount for attack type
+; Stat= What stat does this ability check when calculating damage?
+; EnmityMultiplier=How much enmity will this ability generate? For example 2 = 2*damage, 5 = 5*damage
 ; BuffLength= How many turns will the player(s) gain this buff?
 
 =============================================
 WARRIOR
 =============================================
+[MightyStrike]
+Level=1
+Type=Attack
+AOE=false
+Info=
+Description=
+Cooldown=50
+Cost=300
+Stat=str
+Potency=500
+EnmityMultiplier=5
+
+[HeavySwing]
+level=1
+Type=Attack
+AOE=false
+Info=
+Description=
+Cooldown=2
+Cost=100
+Stat=str
+Potency=150
+EnmityMultiplier=1.2
+
+[SkullSunder]
+level=4
+Type=Attack
+AOE=false
+Info=
+Description=
+Cooldown=2
+Cost=200
+Stat=str
+Potency=$iif($return.lastaction($1) = HeavySwing, 200, 100)
+EnmityMultiplier=1.5
+
 
 =============================================
 PALADIN

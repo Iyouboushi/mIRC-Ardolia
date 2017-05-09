@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 05/03/17
+;;;; Last updated: 05/09/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ON 3:ACTION:attacks *:#:{ 
@@ -84,6 +84,9 @@ alias attack_cmd {
 
   ; Decrease the action point cost
   $action.points($1, remove, %action.points.to.decrease)
+
+  ; Write that we used this as the last action
+  writeini $txtfile(battle2.txt) Actions $1 melee 
 
   ; Stop the battlenext timer til this action is finished
   /.timerBattleNext off

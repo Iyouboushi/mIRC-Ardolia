@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/06/17
+;;;; Last updated: 05/09/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -514,6 +514,9 @@ alias turn {
     set %file.to.read.lines $lines($txtfile(temp_status.txt))
     inc %file.to.read.lines 2
   }
+
+  ; Decrease item timers
+  $item.cooldowns.decrease($1)
 
   ; Turn off certain status effects
   ; TO BE ADDED

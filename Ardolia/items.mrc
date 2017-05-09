@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; items.mrc
-;;;; Last updated: 05/06/17
+;;;; Last updated: 05/09/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -15,7 +15,6 @@ on 2:TEXT:!count*:?: {
   if ($3 = $null) { $item.countcmd($nick, $2, private) }
   if ($3 != $null) { $checkchar($2) | $item.countcmd($2, $3, private) }
 }
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; The !use command for using items
@@ -103,7 +102,6 @@ alias uses_item {
   var %user.flag $readini($char($1), info, flag) | var %target.flag $readini($char($4), info, flag)
 
   if ((((%item.type = misc) || (%item.type = crafting) || (%item.type = crystal) || (%item.type = gem)))) { $display.message($translate(ItemIsUsedForCrafting), private) | halt }
-
 
   if (%item.type = revive) { $item.revive($1, $2, $4) }
   if (%item.type = heal) { $item.heal($1, $2, $4) } 
@@ -199,11 +197,29 @@ item.restoreMP {
   if ($flag($3) = monster) {  $display.message($translate(ItemCanOnlyBeUsedOnPlayers),private) | halt }
   if ($readini($char($1), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackWhileUnconcious), private)  | unset %real.name | halt }
 
+  if ($current.mp($3) >= $resting.mp($3)) { $display.message($translate(TargetDoesNotNeedMPHealing, $3), battle) | halt }
+
+  ; Is the cooldown empty?
+  var %healing.item.cooldown $readini($char($1), CoolDowns, MPrestoreItem)
+  if (%healing.item.cooldown != $null) { $display.message($translate(CannotUseItemsAgainSoFast, $1, %healing.item.cooldown), private) | halt }
+
   ; Decrease the action points
   $action.points($1, remove, 2)
 
   $set_chr_name($3) | var %enemy %real.name | $set_chr_name($1) 
   $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(items.db), $2, UseDesc), battle)
+
+  var %restore.amount $readini($dbfile(items.db), $2, HealAmount)
+  if (%restore.amount = $null) { var %restore.amount 1 }
+
+  ; restore the MP
+  var %current.mp $current.mp($3)
+  inc %current.mp %restore.amount
+  if (%current.mp > $resting.mp($3)) { var %current.mp $resting.mp($3) } 
+  writeini $char($3) Battle MP %current.mp
+
+  ; Write the item cooldown
+  writeini $char($1) Cooldowns MPrestoreitem $readini($dbfile(items.db), $2, CoolDown)
 
   return
 }
@@ -222,7 +238,6 @@ alias item.countcmd {
 
   }
 }
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Alias for eating food
@@ -250,4 +265,32 @@ alias item.eatfood {
   ; Show desc
   var %user $get_chr_name($1)
   if ($readini($dbfile(items.db), $2, UseDesc) = $null) {  $display.message($translate(FoodEaten, $1, $2), global) } 
+}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Decreases the item cooldowns
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias item.cooldowns.decrease {
+  var %healing.item.cooldown $readini($char($1), CoolDowns, HealingItem)
+  var %mphealing.item.cooldown $readini($char($1), CoolDowns, MPrestoreItem)
+  var %revive.item.cooldown $readini($char($1), CoolDowns, ReviveItem)
+
+  if (%healing.item.cooldown != $null) { 
+    dec %healing.item.cooldown 1
+    if (%healing.item.cooldown = 0) { remini $char($1) CoolDowns HealingItem }
+    else { writeini $char($1) CoolDowns HealingItem %healing.item.cooldown }
+  }
+
+  if (%mphealing.item.cooldown != $null) { 
+    dec %mphealing.item.cooldown 1
+    if (%mphealing.item.cooldown = 0) { remini $char($1) CoolDowns MPrestoreitem }
+    else { writeini $char($1) CoolDowns MPrestoreitem %mphealing.item.cooldown }
+  }
+
+  if (%revive.item.cooldown != $null) { 
+    dec %revive.item.cooldown 1
+    if (%revive.item.cooldown = 0) { remini $char($1) CoolDowns ReviveItem }
+    else { writeini $char($1) CoolDowns ReviveItem %revive.item.cooldown }
+  }
 }
