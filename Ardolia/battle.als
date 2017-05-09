@@ -324,6 +324,7 @@ deal_damage {
 
     writeini $char($2) battle status dead 
     writeini $char($2) battle hp 0
+    remini $txtfile(battle2.txt) enmity $2 
 
     ; Add the XP, money and item drops to the pool
     $add.monster.drop($1, $2)
