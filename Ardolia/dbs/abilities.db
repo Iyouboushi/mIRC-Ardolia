@@ -24,7 +24,7 @@ Cooldown=50
 Cost=300
 Stat=str
 Potency=500
-EnmityMultiplier=5
+EnmityMultiplier=4
 
 [HeavySwing]
 level=1
@@ -68,6 +68,17 @@ ROG
 =============================================
 WHM
 =============================================
+[Benediction]
+Level=1
+Type=Heal
+AOE=true
+Info=
+Description=
+Cooldown=100
+Cost=500
+Stat=mnd
+Potency=500
+EnmityMultiplier=4
 
 =============================================
 BLM

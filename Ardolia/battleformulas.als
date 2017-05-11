@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -223,6 +223,37 @@ calculate.ability.damage {
   inc %base.ability.damage $rand(1,2)
 
   return $round(%base.ability.damage,0)
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Calculates spell damage
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+calculate.spell.damage {
+  ; $1 = the person we're checking
+  ; $2 = ability name
+
+  var %weapon.damage $weapon.damage($1)
+  var %stat.needed $readini($dbfile(spells.db), $2, stat)
+  var %potency $readini($dbfile(spells.db), $2, potency)
+
+  if (%potency = $null) { var %potency 100 }
+  if (%stat.needed = $null) { var %stat.needed int }
+
+  if (%stat.needed = str) { var %current.stat $current.str($1) } 
+  if (%stat.needed = dex) { var %current.stat $current.dex($1) } 
+  if (%stat.needed = vit) { var %current.stat $current.vit($1) } 
+  if (%stat.needed = int) { var %current.stat $current.int($1) } 
+  if (%stat.needed = mnd) { var %current.stat $current.mnd($1) } 
+  if (%stat.needed = pie) { var %current.stat $current.pie($1) } 
+
+  var %current.det $current.det($1)
+
+  var %base.spell.damage (%weapon.damage * (0.01156 * %weapon.damage + 0.001314 * %current.det + 0.3736) + (0.2229 * %stat.needed) + (0.06071 * %current.det) + 1.7786))
+
+  var %base.spell.damage $abs($calc(%potency / 100) * %base.spell.damage)) 
+  inc %base.spell.damage $rand(1,2)
+
+  return $round(%base.spell.damage,0)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

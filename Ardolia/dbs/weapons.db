@@ -1,33 +1,6 @@
-; Weapons.db is used to store the weapon lists, weapon information, shield lists and shield information.
+; Weapons.db is used to store the weapon information.  Shields should be listed in equipment.db
 
 
-; Weapon Display Titles are for the shop so that it doesn't show stuff like "Katanas2"
-[WeaponDisplayTitles]
-HandToHand=Hand to Hand
-Swords=Swords
-Swords2=Swords
-Whips=Whips
-Guns=Guns
-Rifles=Rifles
-Bows=Bows
-Katanas=Katanas
-Katanas2=Katanas
-Wands=Wands
-Staves=Staves
-Glyphs=Glyphs
-Spears=Spears
-Scythes=Scythes
-GreatSwords=Great Swords
-Axes=Axes
-GreatAxes=Great Axes
-Daggers=Daggers
-Hammers=Hammers
-Misc=Misc
-
-
-; Below are the weapon lists
-
-[Weapons]
 
 
 ============================================
@@ -82,13 +55,109 @@ pdefense=0
 mdefense=0
 
 
-
 =============================================
 SWORDS
 =============================================
+[BronzeSword]
+Type=sword
+Info=A basic sword made of bronze.
+Jobs=WAR.PLD
+Stat=str
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=6
+Speed=4
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
 
+[VikingSword]
+Type=sword
+Info=A sword made for Vikings
+Jobs=WAR.PLD
+Stat=str
+Element=none
+ItemLevel=5
+PlayerLevel=5
+Damage=7
+Speed=4
+str=1
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
 
+[BlazefireSaber]
+Type=sword
+Info=A sword made with the forge of Blazefire
+Jobs=WAR.PLD
+Stat=str
+Element=none
+ItemLevel=13
+PlayerLevel=13
+Damage=11
+Speed=4
+str=2
+dex=0
+vit=1
+int=0
+mnd=0
+pie=0
+det=1
+pdefense=0
+mdefense=0
 
+[BronzeSpatha]
+Type=sword
+Info=A spatha blade made out of bronze
+Jobs=WAR.PLD
+Stat=str
+Element=none
+ItemLevel=13
+PlayerLevel=13
+Damage=10
+Speed=4
+str=2
+dex=0
+vit=1
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+
+[AetherialVikingSword]
+Type=sword
+Info=A viking sword infused with aether.
+Jobs=PLD
+Stat=str
+Element=none
+ItemLevel=18
+PlayerLevel=17
+Damage=18
+Speed=5
+str=2
+dex=0
+vit=2
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+rarity=2
 
 =============================================
 GREAT SWORDS
@@ -158,66 +227,3 @@ MONSTER WEAPONS
 =============================================
 These are weapons that Monsters use.  They shouldn't be available for players.
 
-
-==============================
-SHIELDS
-==============================
-
-; Small shields.. block more often, absorb less damage
-
-[WoodShield]
-Cost=5
-Type=shield
-Info=A small wooden shield.
-Hits=0
-BasePower=100
-Upgrade=0
-BlockChance=20
-AbsorbAmount=10
-hp=0
-mp=0
-str=0
-vit=0
-mag=0
-chr=0
-spd=0
-
-
-; Medium shields.. block middle of the road, absorb middle of the road
-
-[MetalShield]
-Cost=15
-Type=shield
-Info=A medium sized metal shield.
-Hits=0
-BasePower=200
-Upgrade=0
-BlockChance=15
-AbsorbAmount=20
-hp=0
-mp=0
-str=0
-vit=0
-mag=0
-chr=0
-spd=0
-
-
-; Large shields.. block least, absorb most.
-
-[TowerShield]
-Cost=20
-Type=shield
-Info=A large sized shield.
-Hits=0
-BasePower=300
-Upgrade=0
-BlockChance=10
-AbsorbAmount=30
-hp=0
-mp=0
-str=0
-vit=0
-mag=0
-chr=0
-spd=0

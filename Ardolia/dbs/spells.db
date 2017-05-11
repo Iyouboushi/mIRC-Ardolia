@@ -10,33 +10,63 @@
 ; Enmity= The amount of enmity generated on top of the normal amount. This will most likely be 0 unless it's an ability designed
 ;         to give bonus to enmity for tanks.
 ; BuffLength= How many turns will the player(s) gain this buff?
+; Element= what element is this spell?
+; Stat= what stat does the spell use? (will default to int if this is empty)
+; CanUseOutsideBattle= true/false  If true then it can be used in adventures outside of battle
+
+=============================================
+HEALING
+=============================================
+[Cure]
+Level=1
+Type=Heal
+AOE=false
+Info=This spell heals light wounds
+Description=
+Cooldown=2
+Cost=400
+Potency=$iif($current.job($1) = WHM, 400, 150)
+Enmity=1.1
+BuffLength=0
+Element=light
+Stat=mnd
 
 
 =============================================
-PALADIN
+ATTACKING
 =============================================
+[Dia]
+Level=3
+Type=Attack
+AOE=false
+Info=This spell does light damage
+Description=
+Cooldown=2
+Cost=300
+Potency=140
+Enmity=1.3
+BuffLength=0
+Element=light
+Stat=int
 
 
 =============================================
-WHM
+BUFFING
 =============================================
 [Protect]
-Level=1
+Level=5
 Type=Buff
 AOE=true
-Info=
+Info=Increases the physical defence of all party members.
 Description=
 Cooldown=10
-Cost=100
+Cost=800
 Potency=100
 Enmity=0
 BuffLength=10
-
-
-=============================================
-BLM
-=============================================
+Stat=mnd
+CanUseOutsideBattle=true
 
 =============================================
-BRD
+SONGS
 =============================================

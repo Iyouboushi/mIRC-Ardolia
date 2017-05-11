@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 05/09/17
+;;;; Last updated: 0511/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file is seriously unfinished
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -127,14 +127,85 @@ alias spell_cmd {
   ; Write that we used this as the last action
   writeini $txtfile(battle2.txt) Actions $1 $2 
 
-
-  ; to-do: add the code for the actual spell types
-
+  if (%spell.type = attack) { $spell.attack($1, $2, $3) } 
+  if (%spell.type = buff) { $spell.buff($1, $2, $3) }
+  if (%spell.type = heal) { $spell.heal($1, $2, $3) }
 
   ; Check for a postcript
   if ($readini($dbfile(spells.db), n, $2, PostScript) != $null) { $readini($dbfile(spells.db), p, $2, PostScript) }
 
   ; Time to go to the next turn
   if (%battleis = on)  {  $check_for_double_turn($1) | halt }
+
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Attack spell type
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias spell.attack {
+  ; $1 = the caster
+  ; $2 = the spell name 
+  ; $3 = the target
+
+  ; Get the attack amount
+  set %attack.damage $calculate.spell.damage($1, $2)
+
+  ; Is this spell an AOE?  If so, apply it to everyone
+  if ($readini($dbfile(spells.db), $2, AOE) = true) {   
+    if ($flag($1) = monster) { var %target player }
+    else { var %target monster } 
+
+    ; Cycle through all targets
+
+  }
+  else {
+    ; Not an AOE
+
+    ; Get the defense for one person    
+    var %damage.defense.percent $calculate.defense($3, magical)
+    set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+    if (%attack.damage <= 0) { set %attack.damage 1 }
+
+    ; Deal and display the damage done
+    $deal_damage($1, $3, $2, %absorb, spell)
+    $display_damage($1, $3, spell, $2, %absorb)
+  }
+
+
+  return
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Healing spell type
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias spell.heal {
+  ; $1 = the caster
+  ; $2 = the spell name 
+  ; $3 = the target
+
+  ; Get the amount we're healing
+  set %attack.damage $calculate.spell.damage($1, $2)
+
+
+  ; Is this spell an AOE? If so, heal everyone. 
+  if ($readini($dbfile(spells.db), $2, AOE) = true) {   
+  }
+
+  else { 
+    ; It's not then heal the one person
+
+  }
+
+
+  return
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Buff spell type
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias spell.buff {
+  ; $1 = the caster
+  ; $2 = the spell name 
+  ; $3 = the target
 
 }
