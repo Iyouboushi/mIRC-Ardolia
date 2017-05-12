@@ -10,6 +10,7 @@
 ; Stat= What stat does this ability check when calculating damage?
 ; EnmityMultiplier=How much enmity will this ability generate? For example 2 = 2*damage, 5 = 5*damage
 ; BuffLength= How many turns will the player(s) gain this buff?
+; Job= which jobs can use this ability?
 
 =============================================
 WARRIOR
@@ -20,11 +21,12 @@ Type=Attack
 AOE=false
 Info=
 Description=
-Cooldown=50
+Cooldown=100
 Cost=300
 Stat=str
 Potency=500
 EnmityMultiplier=4
+Job=WAR
 
 [HeavySwing]
 level=1
@@ -37,6 +39,7 @@ Cost=100
 Stat=str
 Potency=150
 EnmityMultiplier=1.2
+Job=WAR
 
 [SkullSunder]
 level=4
@@ -49,6 +52,7 @@ Cost=200
 Stat=str
 Potency=$iif($return.lastaction($1) = HeavySwing, 200, 100)
 EnmityMultiplier=1.5
+Job=WAR
 
 
 =============================================
@@ -79,6 +83,7 @@ Cost=500
 Stat=mnd
 Potency=500
 EnmityMultiplier=4
+Job=WHM
 
 =============================================
 BLM
