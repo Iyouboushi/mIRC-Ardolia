@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 05/05/17
+;;;; Last updated: 05/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -425,25 +425,8 @@ on 2:TEXT:!stats*:*: {
 ; View your abilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!abilities*:*: {
-
-  ; to be re-added later
-  halt
-
-  if ($2 = $null) { 
-    var %active.abilities $character.abilities($nick, active)
-    var %passive.abilities $character.abilities($nick, passive)
-    $set_chr_name($nick)
-
-  }
-  else { $checkchar($2)
-    var %active.abilities $character.abilities($2, active)
-    var %passive.abilities $character.abilities($2, passive)
-    $set_chr_name($2)
-  }
-
-  $display.message($translate(ActiveAbilities)) 
-  if (%passive.abilities != $null) { $display.message($translate(PassiveAbilities)) }
-
+  unset %ability.list
+  $abilities.list($nick, $2) | $readabilities($nick, channel)  
   unset %real.name
 }
 
@@ -452,38 +435,12 @@ on 2:TEXT:!abilities*:*: {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!spells*:*: {
 
-  if ($2 = $null) {
-    $set_chr_name($nick)
-    if ($resting.mp($nick) = 0) { $display.message($translate(Can'tCastSpells)) | unset %real.name | halt }
+  if ($resting.mp($nick) = 0) { $display.message($translate(Can'tCastSpells, $nick)) | unset %real.name | halt }
 
-
-    ; to be readded later
-    halt
-
-    var %spells.white $character.spells($nick, white)
-    var %spells.black $character.spells($nick, black)
-
-    if ($current.job = NIN) { var %spells.ninja $character.spells($nick, ninja) }
-    if ($current.job = BLU) { var %spells.black $character.spells($nick, blue) }
-  }
-
-  else { $checkchar($2)
-    $set_chr_name($2)
-    if ($resting.mp($2) = 0) { $display.message($translate(Can'tCastSpells)) | unset %real.name | halt }
-
-    var %spells.white $character.spells($2, white)
-    var %spells.black $character.spells($2, black)
-
-    if ($current.job = NIN) { var %spells.ninja $character.spells($2, ninja) }
-    if ($current.job = BLU) { var %spells.black $character.spells($2, blue) }
-  }
-
-  if (%spells.white != $null) { $display.message($translate(SpellsWhite)) }
-  if (%spells.black != $null) { $display.message($translate(SpellsBlack)) }
-  if (%spells.ninja != $null) { $display.message($translate(SpellsNinja)) }
-  if (%spells.blue != $null) { $display.message($translate(SpellsBlue)) }
-
+  unset %spell.list
+  $spells.list($nick, $2) | $readspells($nick, channel)  
   unset %real.name
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

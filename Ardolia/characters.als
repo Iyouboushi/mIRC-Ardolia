@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 05/02/17
+;;;; Last updated: 05/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -849,37 +849,52 @@ lookat {
   unset %real.name
 }
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Displays a char's accessories
+; Displays a char's abilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-readaccessories {
-  ; Display the list of accessories the player has
-  if (%accessories.list != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewAccessories),private) }
-    if ($2 = private) {  $display.private.message($translate(ViewAccessories)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewAccessories)) }
+readabilities {
+  ; $1 = the person who's checking
+  ; $2 = channel, private, dcc
 
-    if (%accessories.list2 != $null) { 
-      if ($2 = channel) {  $display.message(3 $+ %accessories.list2,private) }
-      if ($2 = private) { $display.private.message(3 $+ %accessories.list2) }
-      if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %accessories.list2) }
-    }
-
-    if (%accessories.list3 != $null) { 
-      if ($2 = channel) {  $display.message(3 $+ %accessories.list3,private) }
-      if ($2 = private) { $display.private.message(3 $+ %accessories.list3) }
-      if ($2 = dcc) { $dcc.private.message($nick, 3 $+ %accessories.list3) }
-    }
-  }
-  else { 
-    if ($2 = channel) { $display.message($translate(HasNoAccessories),private) }
-    if ($2 = private) {  $display.private.message($translate(HasNoAccessories)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoAccessories)) } 
+  if (%abilities.list = $null) { 
+    if ($2 = channel) { $display.message($translate(HasNoabilities, $1),private) | halt }
+    if ($2 = private) { $display.private.message($translate(HasNoabilities, $1)) | halt }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoabilities, $1)) | halt }
   }
 
-  unset %accessories.* | unset %accessory*
+  if ($2 = channel) { $display.message($translate(ViewAbilities, $1, $3), private) }
+  if ($2 = private) { $display.private.message($translate(ViewAbilities, $1, $3)) }
+  if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewAbilities, $1, $3)) } 
+
+  if (%abilities.list2 != $null) { $display.message(%abilities.list2), global) }
+  if (%abilities.list3 != $null) { $display.message(%abilities.list3), global) }
+  if (%abilities.list4 != $null) { $display.message(%abilities.list4), global) }
+
+  unset %abilities.list*
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Displays a char's spells
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+readspells {
+  ; $1 = the person who's checking
+  ; $2 = channel, private, dcc
+
+  if (%spells.list = $null) { 
+    if ($2 = channel) { $display.message($translate(HasNospells, $1),private) | halt }
+    if ($2 = private) { $display.private.message($translate(HasNospells, $1)) | halt }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNospells, $1)) | halt }
+  }
+
+  if ($2 = channel) { $display.message($translate(ViewSpells, $1, $3), private) }
+  if ($2 = private) { $display.private.message($translate(ViewSpells, $1, $3)) }
+  if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewSpells, $1, $3)) } 
+
+  if (%spells.list2 != $null) { $display.message(%spells.list2), global) }
+  if (%spells.list3 != $null) { $display.message(%spells.list3), global) }
+  if (%spells.list4 != $null) { $display.message(%spells.list4), global) }
+
+  unset %spells.list*
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

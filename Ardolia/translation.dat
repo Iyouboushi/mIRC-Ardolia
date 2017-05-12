@@ -45,13 +45,13 @@ UnlockedJob=$chr(3) $+ 7*2 $get_chr_name($1) has unlocked the advanced job:4
 ; View jobs
 ViewMyJobs=$chr(3) $+ 3 $+ $get_chr_name($nick) has the following job levels: %jobs.list 
 ViewOthersJobs=$chr(3) $+ 3 $+ $get_chr_name($2) has the following job levels: %jobs.list 
-ViewMyCurrentJob=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.level($nick) $current.job($nick) $+ .
+ViewMyCurrentJob=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.level($nick) $current.job($nick) $+ .
 
 ; View Level
-ViewMyLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.level($nick) $current.job($nick) $+ .
+ViewMyLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.level($nick) $current.job($nick) $+ .
 
 ; View iLevel
-ViewMyiLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently ilevel $character.ilevel($nick) $+ .
+ViewMyiLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently ilevel $character.ilevel($nick) $+ .
 
 ; View My EnhancementPoints
 ViewOthersEnhancementPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has2 $bytes($current.enhancementpoints($2),b) 3enhancement $iif($current.enhancementpoints($2) = 1, point, points) $+ .  
@@ -99,6 +99,10 @@ ViewMyHP=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) $+ 's HP is: $current.hp($n
 ViewMyTP=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) $+ 's TP is: $current.tp($nick) $chr(47) $max.tp
 ViewMyMP=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) $+ 's MP is: $current.mp($nick) $chr(47) $resting.mp($nick)
 ViewLevel=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) is a level $get.level($nick)  $+ $current.job($nick)
+
+; View Spells and Abilities
+ViewAbilities=$chr(3) $+ 3 $+  $+ $get_chr_name($2) knows the following abilities: %abilities.list
+ViewSpells=$chr(3) $+ 3 $+ $get_chr_name($2) knows the following spells: %spells.list
 
 
 HereIsYourCurrentStats=$chr(3) $+ 3 $+ Here are your current stats:
@@ -148,8 +152,6 @@ LeveledUp=$chr(3) $+ 7*2 $get_chr_name($2) has reached level $get.level($2) 
 
 
 ; Currencies
-ViewMyGil=
-ViewOthersGil=
 ViewAlliedNotes=$chr(3) $+ 3 $+  $+ %real.name has $bytes(%allied.notes,b) allied notes.
 ViewOthersLoginPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has $bytes($loginpoints($2, check),b) login points. 
 ViewMyLoginPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) has $bytes($loginpoints($nick, check),b) login points. 
@@ -179,14 +181,9 @@ EquipWeaponPlayer=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has equipped $rarity.
 EquipWeaponMonster=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has equipped $rarity.color.check($3, weapon) $+ $3 
 UnequipWeapon=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has unequipped $rarity.color.check($3, weapon) $+ $3 
 
-; skills
-ViewPassiveSkills=$chr(3) $+ 3 $+  $+ %real.name knows the following 12passive3 skills: %passive.skills.list
-ViewPassiveSkills2=$chr(3) $+ 3 $+  $+ %passive.skills.list2
-ViewActiveSkills=$chr(3) $+ 3 $+  $+ %real.name knows the following 12active3 skills: %active.skills.list
-ViewActiveSkills2=$chr(3) $+ 3 $+  $+ %active.skills.list2
-ViewResistanceSkills=$chr(3) $+ 3 $+  $+ %real.name has the following 12resistances3: %resists.skills.list 
-ViewKillerTraitSkills=$chr(3) $+ 3 $+  $+ %real.name has the following 12monster killer traits3: %killer.skills.list 
-HasNoSkills=$chr(3) $+ 3 $+  $+ %real.name currently knows no skills.
+; Abilities and Spells
+HasNoAbilities=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently knows no abilities.
+HasNoSpells=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently knows no spells.
 
 ; items
 ViewItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following items: %items.list
@@ -288,7 +285,7 @@ AccessCommandAlreadyHasAccess=$chr(3) $+ 4 $+ Error: $3 already has access to 
 DoNotHaveAccessToThatChar=$chr(3) $+ 4 $+ Error: $1 is not on $2 $+ 's access list and cannot control that character.
 MaxAccessEnteredBattle=$chr(3) $+ 4 $+ Error: $1 has already entered two other access controlled players and cannot enter any more.
 CanOnlyViewPlayerStats=$chr(3) $+ 4 $+ Error: You can only view player's stats with this command.
-Can'tCastSpells=$chr(3) $+ 4 $+ Error: %real.name $+ 's current class cannot cast spells.
+Can'tCastSpells=$chr(3) $+ 4 $+ Error: $get_chr_name($2) $+ 's current class cannot cast spells.
 DoesNotHaveThatItem=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not have that item.
 AlreadyInAdventure=$chr(3) $+ 4 $+ Error: $get_chr_name($1) is already in the adventuring party!
 NoMonsAvailable=$chr(3) $+ 4 $+ Error: There are no monsters defined for this zone.. Have the bot admin check to make sure there are monsters for players to battle! 

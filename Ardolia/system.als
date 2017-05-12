@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/04/17
+;;;; Last updated: 05/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -838,7 +838,7 @@ jobs.list {
   set %job.name $nopath(%job.name)
 
   var %player.job.level $readini($char($1), jobs, %job.name)
-  if (%player.job.level = $null) { writeini $char($1) jobs %job.name 1 }
+  if (%player.job.level = $null) { writeini $char($1) jobs %job.name 1 | var %player.job.level 1 }
 
   %jobs.list = $addtok(%jobs.list,  $+ %job.name $+  $+ $chr(040) $+ %player.job.level $+ $chr(041), 46) 
 
@@ -919,7 +919,6 @@ weapons.list {
         %weapons.list6 = $replace(%weapons.list6 , $chr(046), %replacechar)
       }
 
-
     }
     inc %current.ini.item.num 1
   }
@@ -927,7 +926,153 @@ weapons.list {
   unset %token.count.weapons
 }
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Builds the spells list
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+spells.list {
+  unset %spells.list* | unset %token.count.spells
 
+  var %current.job $current.job($1)
+  var %lstfile spells_ $+ %current.job $+ .lst
+  var %number.of.spells $lines($lstfile(%lstfile)) | var %current.spell.line 1
+
+  while (%current.spell.line <= %number.of.spells) { 
+    ; get spell name
+    var %spell.name $read($lstfile(%lstfile), %current.spell.line)
+    var %mp.needed $readini($dbfile(spells.db), %spell.name, cost)
+    var %level.needed $readini($dbfile(spells.db), %spell.name, level)
+
+    if ($get.level($1) >= %level.needed) { 
+      inc %token.count.spells 1
+
+      ; Figuring out the spell color.  If we don't have enough MP it's red
+      ; If there is a cooldown still on it, it's maroon
+      ; else it's green
+
+      var %spell.color 3
+      if ($current.mp($1) < %mp.needed) { var %spell.color 4 }
+
+      var %cooldown.turns $readini($dbfile(spells.db), %spell.name, cooldown)
+      var %last.turn.used $readini($char($1), cooldowns, %spell.name)
+      if (%last.turn.used = $null) { var %next.turn.can.use 0 }
+      else { var %next.turn.can.use $calc(%last.turn.used + %ability.turns) }
+      if (%true.turn < %next.turn.can.use) { var %spell.color 5 }
+
+      ; Build the name
+      var %spell.name  $+ %spell.color $+ %spell.name $+ 
+
+      ; Add it to the list
+
+      if (%token.count.spells <= 20) { 
+        %spells.list = $addtok(%spells.list, %spell.name,46) 
+        %spells.list = $clean.list(%spells.list)
+      }
+
+      if ((%token.count.spells > 20) && ( %token.count.spells <= 40)) { 
+        %spells.list2 = $addtok(%spells.list2, %spell.name,46) 
+        %spells.list2 = $clean.list(%spells.list2)
+      }
+
+      if ((%token.count.spells > 40) && ( %token.count.spells <= 60)) { 
+        %spells.list3 = $addtok(%spells.list3, %spell.name,46) 
+        %spells.list3 = $clean.list(%spells.list3)
+      }
+
+      if ((%token.count.spells > 60) && ( %token.count.spells <= 80)) { 
+        %spells.list4 = $addtok(%spells.list4, %spell.name,46) 
+        %spells.list4 = $clean.list(%spells.list4)
+      }
+
+      if ((%token.count.spells > 80) && ( %token.count.spells <= 100)) { 
+        %spells.list5 = $addtok(%spells.list5, %spell.name,46) 
+        %spells.list5 = $clean.list(%spells.list5)
+      }
+
+      if ((%token.count.spells > 100) && ( %token.count.spells <= 120)) { 
+        %spells.list6 = $addtok(%spells.list6, %spell.name,46) 
+        %spells.list6 = $clean.list(%spells.list6)
+      }
+
+    }
+    inc %current.spell.line 1
+  }
+
+  unset %token.count.spells
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Builds the abilities list
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+abilities.list {
+  unset %abilities.list* | unset %token.count.abilities
+
+  var %current.job $current.job($1)
+  var %lstfile abilities_ $+ %current.job $+ .lst
+  var %number.of.abilities $lines($lstfile(%lstfile)) | var %current.ability.line 1
+
+  while (%current.ability.line <= %number.of.abilities) { 
+    ; get ability name
+    var %ability.name $read($lstfile(%lstfile), %current.ability.line)
+    var %tp.needed $readini($dbfile(abilities.db), %ability.name, cost)
+    var %level.needed $readini($dbfile(abilities.db), %ability.name, level)
+
+    if ($get.level($1) >= %level.needed) { 
+      inc %token.count.abilities 1
+
+      ; Figuring out the ability color.  If we don't have enough TP it's red
+      ; If there is a cooldown still on it, it's maroon
+      ; else it's green
+
+      var %ability.color 3
+      if ($current.tp($1) < %tp.needed) { var %ability.color 4 }
+
+      var %cooldown.turns $readini($dbfile(abilities.db), %ability.name, cooldown)
+      var %last.turn.used $readini($char($1), cooldowns, %ability.name)
+      if (%last.turn.used = $null) { var %next.turn.can.use 0 }
+      else { var %next.turn.can.use $calc(%last.turn.used + %ability.turns) }
+      if (%true.turn < %next.turn.can.use) { var %ability.color 5 }
+
+      ; Build the name
+      var %ability.name  $+ %ability.color $+ %ability.name $+ 
+
+      ; Add it to the list
+
+      if (%token.count.abilities <= 20) { 
+        %abilities.list = $addtok(%abilities.list, %ability.name,46) 
+        %abilities.list = $clean.list(%abilities.list)
+      }
+
+      if ((%token.count.abilities > 20) && ( %token.count.abilities <= 40)) { 
+        %abilities.list2 = $addtok(%abilities.list2, %ability.name,46) 
+        %abilities.list2 = $clean.list(%abilities.list2)
+      }
+
+      if ((%token.count.abilities > 40) && ( %token.count.abilities <= 60)) { 
+        %abilities.list3 = $addtok(%abilities.list3, %ability.name,46) 
+        %abilities.list3 = $clean.list(%abilities.list3)
+      }
+
+      if ((%token.count.abilities > 60) && ( %token.count.abilities <= 80)) { 
+        %abilities.list4 = $addtok(%abilities.list4, %ability.name,46) 
+        %abilities.list4 = $clean.list(%abilities.list4)
+      }
+
+      if ((%token.count.abilities > 80) && ( %token.count.abilities <= 100)) { 
+        %abilities.list5 = $addtok(%abilities.list5, %ability.name,46) 
+        %abilities.list5 = $clean.list(%abilities.list5)
+      }
+
+      if ((%token.count.abilities > 100) && ( %token.count.abilities <= 120)) { 
+        %abilities.list6 = $addtok(%abilities.list6, %ability.name,46) 
+        %abilities.list6 = $clean.list(%abilities.list6)
+      }
+
+    }
+    inc %current.ability.line 1
+  }
+
+  unset %token.count.abilities
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Builds the NPC Trusts list

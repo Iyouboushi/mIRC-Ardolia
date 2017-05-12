@@ -4,6 +4,8 @@ Ardolia Bot Changelog
 05-09-2017
 - Added a way for the item cooldowns to expire
 - Added more code for abilities and spells (still not finished though)
+- Added !spells to show the current spells the player has
+- Added !abilities to show the current abilities the player has
 
 05-06-2017
 - Added the !count command. Use it to count the # of a specific item that a player has.  !count itemname or !count person itemname
