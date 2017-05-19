@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 05/11/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -20,8 +20,11 @@ current.mp {
 current.str { 
   var %stat.str $readini($char($1), battle, str)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, weapon and food
   inc %stat.str $bonus.stats($1, str)
+
+  ; Check for buffs that increase str
+  inc %stat.str $buff.check($1, str, %stat.str)
 
   return %stat.str
 }
@@ -29,8 +32,11 @@ current.str {
 current.dex { 
   var %stat.dex $readini($char($1), battle, dex)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, weapon and food
   inc %stat.dex $bonus.stats($1, dex)
+
+  ; Check for buffs that increase dex
+  inc %stat.dex $buff.check($1, dex, %stat.dex)
 
   return %stat.dex
 }
@@ -38,8 +44,11 @@ current.dex {
 current.vit { 
   var %stat.vit $readini($char($1), battle, vit)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, weapon and food
   inc %stat.vit $bonus.stats($1, vit)
+
+  ; Check for buffs that increase vit
+  inc %stat.vit $buff.check($1, vit, %stat.vit)
 
   return %stat.vit
 }
@@ -47,8 +56,11 @@ current.vit {
 current.int { 
   var %stat.int $readini($char($1), battle, int)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, weapon and food
   inc %stat.int $bonus.stats($1, int)
+
+  ; Check for buffs that increase int
+  inc %stat.int $buff.check($1, int, %stat.int)
 
   return %stat.int
 }
@@ -56,8 +68,11 @@ current.int {
 current.mnd { 
   var %stat.mnd $readini($char($1), battle, mnd)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, wepaon and food
   inc %stat.mnd $bonus.stats($1, mnd)
+
+  ; Check for buffs that increase mnd
+  inc %stat.mnd $buff.check($1, mnd, %stat.mnd)
 
   return %stat.mnd
 }
@@ -65,8 +80,11 @@ current.mnd {
 current.pie { 
   var %stat.pie $readini($char($1), battle, pie)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, weapon and food
   inc %stat.pie $bonus.stats($1, pie)
+
+  ; Check for buffs that increase pie
+  inc %stat.pie $buff.check($1, pie, %stat.pie)
 
   return %stat.pie
 }
@@ -74,20 +92,31 @@ current.pie {
 current.det { 
   var %stat.det $readini($char($1), battle, det)
 
-  ; Increase this by the bonus given by armor and weapon
+  ; Increase this by the bonus given by armor, weapon and food
   inc %stat.det $bonus.stats($1, det)
+
+  ; Check for buffs that increase det
+  inc %stat.str $buff.check($1, det, %stat.det)
 
   return %stat.det
 }
 
 current.defense { 
-  if ($flag($1) = $null) { return $armor.def($1) }
-  else { return $readini($char($1), Battle, Defense) }
+  var %defense 0 
+  if ($flag($1) = $null) { inc %defense $armor.def($1) }
+  else { inc %defense $readini($char($1), Battle, Defense) }
+
+  ; Check for buffs that increase defense
+  inc %defense $buff.check($1, defense, %defense)
 }
 
 current.mdefense { 
-  if ($flag($1) = $null) { return $armor.mdef($1) }
-  else { return $readini($char($1), Battle, MagicDefense) }
+  var %mdefense 0
+  if ($flag($1) = $null) { inc %mdefense $armor.mdef($1) }
+  else { inc %mdefense $readini($char($1), Battle, MagicDefense) }
+
+  ; Check for buffs that increase magic defense
+  inc %mdefense $buff.check($1, mdefense, %mdefense)
 }
 
 current.speed {
@@ -102,6 +131,9 @@ current.speed {
     return %char.speed
   }
 }
+
+
+
 
 current.fame {
   var %current.fame $readini($char($1), Info, Fame)
@@ -1067,3 +1099,65 @@ character.revive {
   writeini $char($1) status revive no
   unset %revive.current.hp
 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Checks for buffs that enhance stats/defenses
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+buff.check {
+  ; $1 = the person we're checking
+  ; $2 = the stat/defense we're checking
+  ; $3 = the current stat/defense amount
+
+  var %buff.increase 0
+
+  if ($2 = str) { 
+    ; abilities/spells that enhance str go here
+
+  }
+
+  if ($2 = dex) { 
+    ; abilities/spells that enhance dex go here
+
+  }
+
+  if ($2 = vit) { 
+    ; abilities/spells that enhance vit go here
+
+  }
+
+  if ($2 = int) { 
+    ; abilities/spells that enhance int go here
+
+  }
+
+  if ($2 = mnd) { 
+    ; abilities/spells that enhance mnd go here
+
+  }
+
+  if ($2 = pie) { 
+    ; abilities/spells that enhance piety go here
+
+  }
+
+  if ($2 = det) { 
+    ; abilities/spells that enhance determination go here
+
+  }
+
+  if ($2 = defense) { 
+    if ($status.check($1, protect) != $null) { inc %buff.increase $calc($3 * .5) }
+  }
+
+  if ($2 = mdefense) { 
+    if ($status.check($1, shell) != $null) { inc %buff.increase $calc($3 * .5) }
+  }
+
+  return %buff.increase
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns the current status 
+; effect amount if it's on
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+status.check { return $readini($char($1), StatusEffects, $2) }
