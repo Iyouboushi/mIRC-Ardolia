@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/09/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -211,14 +211,14 @@ cooldown.check {
   if ($flag($1) != $null) { return }
 
   if ($3 = spell) { var %db.file spells.db }
-  if ($3 = ability) { var %db.file abilities.db }
+  if (($3 = ability) || ($3 = abilities)) { var %db.file abilities.db }
   if ($3 = item) { var %db.file items.db }
 
   var %cooldown.turns $readini($dbfile(%db.file), $2, cooldown)
   var %last.turn.used $readini($char($1), cooldowns, $2)
 
   if (%last.turn.used = $null) { var %next.turn.can.use 0 }
-  else { var %next.turn.can.use $calc(%last.turn.used + %ability.turns) }
+  else { var %next.turn.can.use $calc(%last.turn.used + %cooldown.turns) }
 
   if (%true.turn >= %next.turn.can.use) { return }
   else { $set_chr_name($1) | $display.message($translate(UnableToUseAbilityAgainSoSoon, $1, $2),private)  | $display.private.message(3You still have $calc(%next.turn.can.use - %true.turn) turns before you can use $2 again) | halt }
@@ -806,6 +806,31 @@ add.monster.xp {
   inc %total.xp.amount %xp.amount
 
   writeini $txtfile(adventure.txt) Rewards XP %total.xp.amount
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Perform Status Effect
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+perform.status.effect {
+  ; $1 = the person
+  ; $2 = the status effect
+
+  echo -a person: $1
+  echo -a status effect: $2
+
+  ; Negative status effects
+  if ($2 = poison) { 
+    var %poison.damage $floor($calc($max.hp($1) * .05))
+    var %current.hp $current.hp($1)
+    dec %current.hp %poison.damage
+    writeini $char($1) Battle Hp %current.hp
+  }
+
+  ; Positive status effects
+
+
+  ; To-do: show that the status effect has happened
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

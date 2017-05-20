@@ -323,8 +323,8 @@ Can'tChangeJobsRightNow=$chr(3) $+ 4 $+ Error: You cannot switch jobs while yo
 SameJob=$chr(3) $+ 4 $+ Error: You are already a $current.job($nick) $+ .
 
 ; Attacking Errors
-Can'tAttackYourself=$chr(3) $+ 4 $+ $get_chr_name($1) cannot attack $gender2($1) $+ self! 
-CanOnlyAttackMonsters=$chr(3) $+ 4 $+ $get_chr_name($1) can only attack monsters!
+Can'tAttackYourself=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack $gender2($2) $+ self! 
+CanOnlyAttackMonsters=$chr(3) $+ 4 $+ $get_chr_name($2) can only attack monsters!
 CanNotAttackWhileUnconcious=$chr(3) $+ 4  $+ $get_chr_name($2) cannot attack while unconcious!
 CanNotAttackSomeoneWhoIsDead=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack someone who is dead! 
 CanNotAttackSomeoneWhoFled=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack $get_chr_name($3) $+ , because $get_chr_name($3) has run away from the fight! 

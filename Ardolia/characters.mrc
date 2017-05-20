@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 05/11/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -8,6 +8,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; !new char [race]
 on 1:TEXT:!new char*:*: {  $checkscript($2-)
+  if ($chr(124) isin $nick) { $display.private.message(4Cannot use a name that has illegal characters in it) | halt }
   if ($isfile($char($nick)) = $true) { $display.private.message($translate(PlayerExists)) | halt }
   if ($isfile($char($nick $+ _clone)) = $true) { $display.private.message($translate(NameReserved)) | halt }
   if ($isfile($char(evil_ $+ $nick)) = $true)  { $display.private.message($translate(NameReserved)) | halt }

@@ -7,8 +7,8 @@
 ; Cooldown=# how many turns do you have to wait to use this one again
 ; Cost=how much does it cost to use?
 ; Potency= the potency amount for attack type, the buff amount for buffs
-; Enmity= The amount of enmity generated on top of the normal amount. This will most likely be 0 unless it's an ability designed
-;         to give bonus to enmity for tanks.
+; EnmityMultiplier= Does the spell generate extra enmity on top of what it already does?
+; StatusEffect= What status effect does this spell apply?
 ; BuffLength= How many turns will the player(s) gain this buff?
 ; Element= what element is this spell?
 ; Stat= what stat does the spell use? (will default to int if this is empty)
@@ -27,7 +27,7 @@ Description=
 Cooldown=2
 Cost=150
 Potency=$iif($current.job($1) = WHM, 400, 150)
-Enmity=1.1
+EnmityMultiplier=1.2
 BuffLength=0
 Element=light
 Stat=mnd
@@ -46,7 +46,7 @@ Description=
 Cooldown=2
 Cost=300
 Potency=140
-Enmity=1.3
+EnmityMultiplier=1
 BuffLength=0
 Element=light
 Stat=int
@@ -60,15 +60,17 @@ Level=5
 Type=Buff
 AOE=true
 Info=Increases the physical defence of all party members.
-Description=
+Description=chants for a moment and a bright blue diamond flashes over the party's bodies enhancing their defense.
 Cooldown=10
 Cost=500
 Potency=100
 Enmity=0
+StatusEffect=Protect
 BuffLength=10
 Stat=mnd
 CanUseOutsideBattle=true
 Jobs=whm
+EnmityMultiplier=1.2
 
 =============================================
 SONGS

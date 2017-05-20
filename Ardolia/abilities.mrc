@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 05/09/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file is horribly unfinished
 
@@ -9,6 +9,12 @@ ON 3:ACTION:uses * * on *:#:{
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $5)
   $ability_cmd($nick , $3 , %attack.target, $7) | halt 
+} 
+
+ON 3:TEXT:!ability * on *:#:{ 
+  $no.turn.check($nick) |  $set_chr_name($nick)
+  $partial.name.match($nick, $4)
+  $ability_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
 
 ON 3:TEXT:!tech * on *:#:{ 
@@ -68,13 +74,17 @@ alias ability_cmd {
     if ($readini($char($2), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoIsDead, $1, $2),private) | unset %real.name | halt }
     if ($readini($char($2), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $2),private) | unset %real.name | halt } 
 
-    ;;
-    ; to-do: fix this so it'll work with abilities that work outside of battle
-    ;;
-    $person_in_battle($3) | $checkchar($3) 
+    ; Can this spell be cast outside of battle?
+    if ($readini($dbfile(abilities.db), $2, CanUseOutsideBattle) != true) {  
+
+      ; Are we in battle?
+      $check_for_battle($1) 
+
+      $checkchar($3)
+    }
 
     ; Can this job use this ability?
-    var %jobs.list $readini($dbfile(abilities.db), $2, jobs)
+    var %jobs.list $readini($dbfile(abilities.db), $2, job)
     if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseAbility, $1, $2) , private) | halt }
   }
 
@@ -83,12 +93,11 @@ alias ability_cmd {
   if ($get.level($1) < %ability.level) { $display.message($translate(NotRightLevelForAbility, $1, $2),private) | halt }
 
   ; Can we use this ability again so soon?
-  $cooldown.check($1, $2, abillity)
+  $cooldown.check($1, $2, ability)
 
   ; Make sure the user has enough TP to use this in battle..
   var %tp.needed $readini($dbfile(abilities.db), $2, Cost) | var %tp.have $current.tp($1)
   if (%tp.needed > %tp.have) { $display.message($translate(NotEnoughTPForAbility, $1, $2),private) | halt }
-
 
   if (%mode.pvp != on) {
     if ($3 = $1) {
@@ -109,7 +118,9 @@ alias ability_cmd {
   if (%ai.type = berserker) { var %user.flag monster }
   if (%covering.someone = on) { var %user.flag monster }
 
-  if ((%user.flag != monster) && (%target.flag != monster)) { $set_chr_name($1) | $display.message($translate(CanOnlyAttackMonsters, $1),private)  | halt }
+  if ((%ability.type != buff) && (%ability.type != heal))  {
+    if ((%user.flag != monster) && (%target.flag != monster)) { $set_chr_name($1) | $display.message($translate(CanOnlyAttackMonsters, $1),private)  | halt }
+  }
 
   ; Decrease the TP used
   dec %tp.have %tp.needed
@@ -126,7 +137,6 @@ alias ability_cmd {
 
   if (%ability.type = buff) { $ability.buff($1, $2, $3) }
   if (%ability.type = heal) { $ability.heal($1, $2, $3, %tp.have) }
-  if (%ability.type = heal-aoe) { $ability.aoeheal($1, $2, $3, %tp.have) }
   if (%ability.type = single) {  $ability.single($1, $2, %attack.target, %tp.have )  }
   if (%ability.type = suicide) { $ability.suicide($1, $2, %attack.target, %tp.have )  }
 
@@ -216,170 +226,55 @@ alias calculate_damage_ability {
 }
 
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Performs an AOE
+; Performs a buff ability
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This file isn't fully done being converted over from the other bot
-alias ability.aoe {
+alias ability.buff {
   ; $1 = user
-  ; $2 = tech
-  ; $3 = target
-  ; $4 = type, either player or monster 
-
-  set %wait.your.turn on
-
-  unset %who.battle | set %number.of.hits 0
-  unset %absorb  | unset %element.desc
+  ; $2 = ability name
 
   ; Decrease the action points
-  $action.points($1, remove, 6)
+  $action.points($1, remove, 4)
 
-  if ($5 = suicide) {
-    $set_chr_name($1)
-    $display.message($translate(SuicideUseAllHP, $1), battle)
-  }
+  ; Display the action message
+  $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(abilities.db), $2, Description), global)
 
-  ; Display the tech description
-  $set_chr_name($1) | set %user %real.name
-  $set_chr_name($2) | set %enemy %real.name
+  ; Which buff is being applied?
+  var %buff.name $readini($dbfile(abilities.db), $2, StatusEffect)
+  var %buff.length $readini($dbfile(abilities.db), $2, BuffLength)
 
-  var %enemy all targets
+  ; Is this buff a single or AOE target?  If single, just apply it and move on.  Else, cycle through
 
-  $display.message(3 $+ %user  $+ $readini($dbfile(ability.db), $2, desc), battle)
-  set %showed.tech.desc true
+  if ($readini($dbfile(abilities.db), $2, AOE) = false) { writeini $char($1) StatusEffects %buff.name %buff.length  }
+  else { 
 
-  if ($readini($dbfile(abilities.db), $2, absorb) = yes) { set %absorb absorb }
+    if ($flag($1) = monster) {
+      var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 
+      while (%current.battle.member <= $numtok(%battle.party, 46)) {
+        var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
+        if (($current.hp(%battle.member.name) > 0) && ($flag(battle.member.name) = monster)) { writeini $char(%battle.member.name) StatusEffects %buff.name %buff.length }
+        inc %current.battle.member
+      }
+      return 
+    }
 
-  var %ability.element $readini($dbfile(abilities.db), $2, element)
-
-  ; If it's player, search out remaining players that are alive and deal damage and display damage
-  if ($4 = player) {
-    var %battletxt.lines $lines($txtfile(battle.txt)) | var %battletxt.current.line 1 
-    while (%battletxt.current.line <= %battletxt.lines) { 
-      set %who.battle $read -l $+ %battletxt.current.line $txtfile(battle.txt)
-      if ($readini($char(%who.battle), info, flag) = monster) { inc %battletxt.current.line }
-      else { 
-
-        if ((%mode.pvp = on) && ($1 = %who.battle)) { var %can.hit no }
-        if (($readini($char($1), status, confuse) != yes) && ($1 = %who.battle)) { var %can.hit no }
-
-        var %current.status $readini($char(%who.battle), battle, status)
-        if ((%current.status = dead) || (%current.status = runaway)) { var %can.hit no }
-
-        if (%can.hit != no) { 
-          if ($readini($char($1), battle, hp) > 0) {
-            inc %number.of.hits 1
-            var %target.element.heal $readini($char(%who.battle), modifiers, heal)
-            if ((%tech.element != none) && (%tech.element != $null)) {
-              if ($istok(%target.element.heal,%tech.element,46) = $true) { 
-                $tech.heal($1, $2, %who.battle, %absorb)
-                inc %battletxt.current.line 1 
-              }
-            }
-
-            if (($istok(%target.element.heal,%tech.element,46) = $false) || (%tech.element = none)) { 
-
-              $covercheck(%who.battle, $2, AOE)
-
-              if (($readini($char(%who.battle), status, reflect) = yes) && ($readini($dbfile(techniques.db), $2, magic) = yes)) {
-                $calculate_damage_techs($1, $2, $1, aoe)
-                if (%attack.damage >= 5000) { set %attack.damage $rand(4000,5000) }
-                unset %absorb
-                $deal_damage($1, $1, $2, %absorb, tech)
-              }
-              else {
-                $calculate_damage_techs($1, $2, %who.battle, aoe)
-                $deal_damage($1, %who.battle, $2, %absorb, tech)
-              }
-
-              $display_aoedamage($1, %who.battle, $2, %absorb)
-              unset %attack.damage
-
-            }
-          }
-        } 
-        unset %can.hit
-        inc %battletxt.current.line 1 
+    else {   
+      var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
+      while (%current.party.member <= $adventure.party.count) { 
+        var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
+        if ($current.hp(%party.member.name) > 0) { writeini $char(%party.member.name) StatusEffects %buff.name %buff.length }
+        inc %current.party.member    
       }
     }
   }
 
-
-  ; If it's monster, search out remaining monsters that are alive and deal damage and display damage.
-  if ($4 = monster) { 
-    var %battletxt.lines $lines($txtfile(battle.txt)) | var %battletxt.current.line 1 | set %aoe.turn 1
-    while (%battletxt.current.line <= %battletxt.lines) { 
-      set %who.battle $read -l $+ %battletxt.current.line $txtfile(battle.txt)
-      if ($readini($char(%who.battle), info, flag) != monster) { inc %battletxt.current.line }
-      else { 
-        inc %number.of.hits 1
-        var %current.status $readini($char(%who.battle), battle, status)
-        if ((%current.status = dead) || (%current.status = runaway)) { inc %battletxt.current.line 1 }
-        else { 
-          if ($readini($char($1), battle, hp) > 0) {
-
-            var %target.element.heal $readini($char(%who.battle), modifiers, heal)
-            if ((%tech.element != none) && (%tech.element != $null)) {
-              if ($istok(%target.element.heal,%tech.element,46) = $true) { 
-                $tech.heal($1, $2, %who.battle, %absorb)
-              }
-            }
-
-            if (($istok(%target.element.heal,%tech.element,46) = $false) || (%tech.element = none)) { 
-              $covercheck(%who.battle, $2, AOE)
-
-              ; Check for Reflect
-              if (($readini($char(%who.battle), status, reflect) = yes) && ($readini($dbfile(techniques.db), $2, magic) = yes)) {
-                $calculate_damage_techs($1, $2, $1, aoe)
-                if (%attack.damage >= 5000) { set %attack.damage $rand(4000,5000) }
-                unset %absorb
-                $deal_damage($1, $1, $2, %absorb)
-                $display_aoedamage($1, %who.battle, $2, %absorb, tech)
-              }
-
-              else {
-                $calculate_damage_techs($1, $2, %who.battle, aoe)
-                $deal_damage($1, %who.battle, $2, %absorb, tech)
-                $display_aoedamage($1, %who.battle, $2, %absorb)
-              }
-            }
-          }
-
-          inc %battletxt.current.line 1 | inc %aoe.turn 1 | unset %attack.damage
-        } 
-      }
-    }
+  ; Increase enmity
+  if (%battleis = on) { 
+    var %base.enmity 10
+    var  %enmity.multiplier $readini($dbfile(abilities.db), $2, EnmityMultiplier)
+    if (%enmity.multiplier = $null) { var %enmity.multiplier 1 }
+    $enmity($1, add, $calc(%base.enmity * %enmity.multiplier))
   }
 
-  unset %element.desc | unset %showed.tech.desc | unset %aoe.turn
-  set %timer.time $calc(%number.of.hits * 1.1) 
-
-  if ($readini($dbfile(techniques.db), $2, magic) = yes) {
-    ; Clear elemental seal
-    if ($readini($char($1), skills, elementalseal.on) = on) { 
-      writeini $char($1) skills elementalseal.on off 
-    }
-  }
-
-  unset %statusmessage.display
-  if ($readini($char($1), battle, hp) > 0) {
-    set %inflict.user $1 | set %inflict.techwpn $2 
-    $self.inflict_status(%inflict.user, %inflict.techwpn, tech)
-    if (%statusmessage.display != $null) { $display.message(%statusmessage.display, battle) | unset %statusmessage.display }
-  }
-
-  if ($5 = suicide) {   writeini $char($1) battle hp 0 | writeini $char($1) battle status dead | $set_chr_name($1) |  $increase.death.tally($1)  }
-
-  ; Turn off the True Strike skill
-  writeini $char($1) skills truestrike.on off
-
-  if (%timer.time > 20) { %timer.time = 20 }
-
-  ; Check for a postcript
-  if ($readini($dbfile(techniques.db), n, $2, PostScript) != $null) { $readini($dbfile(techniques.db), p, $2, PostScript) }
-
-  /.timerCheckForDoubleSleep $+ $rand(a,z) $+ $rand(1,1000) 1 %timer.time /check_for_double_turn $1
-  halt
+  return
 }

@@ -1,6 +1,12 @@
 Ardolia Bot Changelog
 =========================
 
+05-19-2017
+- Added a way for stats/defense to check for abilities/spells that increase them
+- Added code for buff spells and abilities.  Buffs should work properly now
+- Added code to check for status effects and decrease their durations on each battle turn
+- Fixed a few errors that weren't caught until now.
+
 05-09-2017
 - Added a way for the item cooldowns to expire
 - Added more code for abilities and spells (still not finished though)

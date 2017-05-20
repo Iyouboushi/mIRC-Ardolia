@@ -108,6 +108,8 @@ current.defense {
 
   ; Check for buffs that increase defense
   inc %defense $buff.check($1, defense, %defense)
+
+  return %defense
 }
 
 current.mdefense { 
@@ -117,6 +119,8 @@ current.mdefense {
 
   ; Check for buffs that increase magic defense
   inc %mdefense $buff.check($1, mdefense, %mdefense)
+
+  return %mdefense
 }
 
 current.speed {
@@ -1112,45 +1116,39 @@ buff.check {
 
   if ($2 = str) { 
     ; abilities/spells that enhance str go here
-
   }
 
   if ($2 = dex) { 
     ; abilities/spells that enhance dex go here
-
   }
 
   if ($2 = vit) { 
     ; abilities/spells that enhance vit go here
-
   }
 
   if ($2 = int) { 
     ; abilities/spells that enhance int go here
-
   }
 
   if ($2 = mnd) { 
     ; abilities/spells that enhance mnd go here
-
   }
 
   if ($2 = pie) { 
     ; abilities/spells that enhance piety go here
-
   }
 
   if ($2 = det) { 
     ; abilities/spells that enhance determination go here
-
   }
 
   if ($2 = defense) { 
-    if ($status.check($1, protect) != $null) { inc %buff.increase $calc($3 * .5) }
+    if ($status.check($1, protect) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
+    if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
   }
 
   if ($2 = mdefense) { 
-    if ($status.check($1, shell) != $null) { inc %buff.increase $calc($3 * .5) }
+    if ($status.check($1, shell) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
   }
 
   return %buff.increase

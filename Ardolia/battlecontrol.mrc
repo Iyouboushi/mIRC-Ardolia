@@ -493,6 +493,39 @@ alias turn {
 
   set %wait.your.turn on
 
+  ; Restore 10% of the person's TP
+  var %current.tp $current.tp($1)
+  var %tp.to.refill $return_percentofvalue($max.tp, 10)
+  inc %current.tp %tp.to.refill
+  if (%current.tp > $max.tp) { var %current.tp $max.tp }
+  writeini $char($1) Battle TP %current.tp
+
+  ; Restore 10% of the person's MP
+  var %current.mp $current.mp($1)
+  var %mp.to.refill $return_percentofvalue($max.mp, 10)
+  inc %current.mp %mp.to.refill
+  if (%current.mp > $max.mp) { var %current.mp $max.mp }
+  writeini $char($1) Battle MP %current.mp
+
+  ; Cycle through the Status Effects and perform the status effect
+  var %number.of.statuseffects $ini($char($1), StatusEffects, 0) | var %current.status.effect 1
+  while (%current.status.effect <= %number.of.statuseffects) { 
+    var %current.statuseffect.name $ini($char($1), StatusEffects, %current.status.effect)
+    var %current.statuseffect.turnsleft $readini($char($1), StatusEffects, %current.statuseffect.name)
+
+    echo -a status effect: %current.statuseffect.name
+    echo -a turns left: %current.statuseffect.turnsleft
+
+
+    $perform.status.effect($1, %current.statuseffect.name)
+    dec %current.statuseffect.turnsleft 1
+    if (%current.statuseffect.turnsleft < 0) { remini $char($1) StatusEffects %current.statuseffect.name) }
+    else { writeini $char($1) StatusEffects %current.statuseffect.name %current.statuseffect.turnsleft }
+
+    inc %current.status.effect
+  }
+
+
   $turn.statuscheck($1) 
 
   $hp_status($1) | $set_chr_name($1)
@@ -518,23 +551,12 @@ alias turn {
   ; Decrease item timers
   $item.cooldowns.decrease($1)
 
-  ; Turn off certain status effects
-  ; TO BE ADDED
+  ; did the person die from the status effects? If so, kill the person and move onto the next person.
+  if ($current.hp($1) <= 0) { remini $char($1) StatusEffects | remini $char($1) cooldowns | writeini $char($1) status dead | $next | halt }
 
-  ; Check for status effects that cause someone to miss a turn
-  ; to be added
 
   if (($return.systemsetting(TurnType) = action) && ($action.points($1, check) <= 0)) { /.timerThrottle $+ $rand(a,z) $+ $rand(1,100) $+ $rand(a,z) 1 %file.to.read.lines /next | halt }
-
   unset %real.name
-
-
-  ; Restore 10% of the person's TP
-  var %current.tp $current.tp($1)
-  var %tp.to.refill $return_percentofvalue($max.tp, 10)
-  inc %current.tp %tp.to.refill
-  if (%current.tp > $max.tp) { var %current.tp $max.tp }
-  writeini $char($1) Battle TP %current.tp
 
 
   if (%skip.ai != on) {

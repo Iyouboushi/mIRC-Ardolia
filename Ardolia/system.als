@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/11/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -88,6 +88,11 @@ system_defaults_check {
     if ($readini(system.dat, system, GenkaiQuest) = $null) { writeini system.dat system GenkaiQuest true }
     if ($readini(system.dat, system, PlayerLevelCap) = $null) { writeini system.dat system PlayerLevelCap 60 }
 
+    writeini system.dat system JobsDPS MNK
+    writeini system.dat system JobsHealer WHM
+    writeini system.dat system JobsMage WHM.BLM.RDM
+    writeini system.dat system JobsTanks WAR.PLD
+
     ; Certain battle/adventure settings
     if ($readini(adventure.dat, AdventureStats, TotalAdventures) = $null) { writeini adventure.dat TotalAdventures 0 }
     if ($readini(adventure.dat, AdventureStats, TotalAdventuresCleared) = $null) { writeini adventure.dat TotalAdventuresCleared 0 }
@@ -108,12 +113,12 @@ system_defaults_check {
   /.load -rs attacks.mrc
   /.load -rs abilities.mrc 
   /.load -rs spells.mrc
+  /.load -rs items.mrc
   /.load -rs ai.mrc
   /.load -rs achivements.mrc
   /.load -rs help.mrc
 
   ; these files will eventually be loaded when they're finished
-  ;  /.load -rs items.mrc
   ;  /.load -rs shop.mrc
 
   ; Check to see if the aliases are loaded (except this one as it'd cause a loop)
@@ -748,9 +753,9 @@ fulls {
   if (%adventureis != on) { writeini $char($1) Battle InBattle false }
 
   ; Clear status
-  ; $clear_status($1)
+  if ($flag($1) != monster) { remini $char($1) StatusEffects }
 
-  ; Clear ability cooldowns
+  ; Clear ability/spell cooldowns
   remini $char($1) cooldowns 
 
   ; Remove the Renkei value

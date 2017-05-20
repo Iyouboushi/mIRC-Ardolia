@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 05/05/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -8,15 +8,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Get a list of dungeons
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!dungeon list:#: { $dungeon.list($nick) }
-on 2:TEXT:!adventure list:?: { $dungeon.list($nick)) }
+on 2:TEXT:!dungeon list:#: { $adventure.list($nick) }
+on 2:TEXT:!adventure list:?: { $adventure.list($nick)) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Start an adventure to a dungeon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!dungeon start *:#: { $dungeon.start($nick, $3)) }
-on 2:TEXT:!adventure start *:#: { $dungeon.start($nick, $3)) }
-on 2:TEXT:!start adventure *:#: { $dungeon.start($nick, $3)) }
+on 2:TEXT:!dungeon start *:#: { $adventure.start($nick, $3)) }
+on 2:TEXT:!adventure start *:#: { $adventure.start($nick, $3)) }
+on 2:TEXT:!start adventure *:#: { $adventure.start($nick, $3)) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Join the party to go on an adventure

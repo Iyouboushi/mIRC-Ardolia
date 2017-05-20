@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 0511/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file is seriously unfinished
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -73,10 +73,8 @@ alias spell_cmd {
     if ($readini($char($2), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoIsDead, $1, $2),private) | unset %real.name | halt }
     if ($readini($char($2), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $2),private) | unset %real.name | halt } 
 
-    $person_in_battle($3) | $checkchar($3) 
-
     ; Can this job use this ability?
-    var %jobs.list $readini($dbfile(abilities.db), $2, jobs)
+    var %jobs.list $readini($dbfile(spells.db), $2, jobs)
     if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseSpell, $1, $2) , private) | halt }
   }
 
@@ -112,7 +110,10 @@ alias spell_cmd {
   if (%ai.type = berserker) { var %user.flag monster }
   if (%covering.someone = on) { var %user.flag monster }
 
-  if ((%user.flag != monster) && (%target.flag != monster)) { $set_chr_name($1) | $display.message($translate(CanOnlyAttackMonsters, $1),private)  | halt }
+
+  if ((%spell.type != buff) && (%spell.type != heal)) { 
+    if ((%user.flag != monster) && (%target.flag != monster)) { $set_chr_name($1) | $display.message($translate(CanOnlyAttackMonsters, $1),private)  | halt }
+  }
 
   ; Decrease the MP used
   dec %mp.have %mp.needed
@@ -201,11 +202,55 @@ alias spell.heal {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Buff spell type
+; Performs a buff spell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias spell.buff {
   ; $1 = the caster
-  ; $2 = the spell name 
+  ; $2 = the spell name
   ; $3 = the target
 
+  ; Decrease the action points
+  $action.points($1, remove, 4)
+
+  ; Display the action message
+  $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(spells.db), $2, Description), global)
+
+  ; Which buff is being applied?
+  var %buff.name $readini($dbfile(spells.db), $2, StatusEffect)
+  var %buff.length $readini($dbfile(spells.db), $2, BuffLength)
+
+  ; Is this buff a single or AOE target?  If single, just apply it and move on.  Else, cycle through
+
+  if ($readini($dbfile(spells.db), $2, AOE) = false) { writeini $char($1) StatusEffects %buff.name %buff.length  }
+  else { 
+
+    if ($flag($1) = monster) {
+      var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 
+      while (%current.battle.member <= $numtok(%battle.party, 46)) {
+        var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
+        if (($current.hp(%battle.member.name) > 0) && ($flag(battle.member.name) = monster)) { writeini $char(%battle.member.name) StatusEffects %buff.name %buff.length }
+        inc %current.battle.member
+      }
+      return 
+    }
+
+    else {   
+      var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
+      while (%current.party.member <= $adventure.party.count) { 
+        var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
+        if ($current.hp(%party.member.name) > 0) { writeini $char(%party.member.name) StatusEffects %buff.name %buff.length }
+        inc %current.party.member    
+      }
+    }
+  }
+
+  ; Increase enmity
+  if (%battleis = on) { 
+    var %base.enmity 10
+    var  %enmity.multiplier $readini($dbfile(spells.db), $2, EnmityMultiplier)
+    if (%enmity.multiplier = $null) { var %enmity.multiplier 1 }
+    $enmity($1, add, $calc(%base.enmity * %enmity.multiplier))
+  }
+
+  return
 }

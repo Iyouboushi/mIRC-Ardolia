@@ -1,13 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/05/17
+;;;; Last updated: 05/19/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Lists all the dungeons/adventures
 ; that are available to the player
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-dungeon.list {
+adventure.list {
   ; [dungeonfilename] Dungeon Full Name - # of players - Level Range
 
   ; Check the filename and see if the dungeon is available (pre-req required or hoilday dungeon)
@@ -38,7 +38,7 @@ dungeon.list {
 ; Tells the game that the player
 ; wants to start an adventure/party
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-dungeon.start {
+adventure.start {
   ; $1 =  the person starting the adventure (i.e. party leader)
   ; $2 = the name of the dungeon/adventure being started 
 

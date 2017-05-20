@@ -39,7 +39,7 @@ Pie=1
 Det=1
 Status=alive
 inbattle=false
-
+Food=none
 
 [Info]
 Name=
@@ -128,15 +128,8 @@ Wrists=nothing
 Ring=nothing
 
 [StatusEffects]
-Poison=false
-Blind=false
-Charm=false
-CharmedBy=noone
 
-[StatusEffectTurns]
-Poison=0
-Blind=0
-Charm=0
+[Cooldowns]
 
 
 

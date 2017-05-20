@@ -11,6 +11,7 @@
 ; EnmityMultiplier=How much enmity will this ability generate? For example 2 = 2*damage, 5 = 5*damage
 ; BuffLength= How many turns will the player(s) gain this buff?
 ; Job= which jobs can use this ability?
+; StatusEffect= Which status effect is applied to the target?
 
 =============================================
 WARRIOR
@@ -41,11 +42,26 @@ Potency=150
 EnmityMultiplier=1.2
 Job=WAR
 
+[Foresight]
+level=2
+Type=Buff
+AOE=false
+Info=This ability will increase your defense by 20% for 3 turns. 
+Description=prepares for the next few attacks!
+Cooldown=5
+Cost=200
+Stat=str
+Potency=150
+EnmityMultiplier=1.2
+Job=WAR
+BuffLength=3
+StatusEffect=Foresight
+
 [SkullSunder]
 level=4
 Type=Attack
 AOE=false
-Info=
+Info=Delivers a 
 Description=
 Cooldown=2
 Cost=200
