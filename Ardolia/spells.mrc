@@ -1,18 +1,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This file is seriously unfinished
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+; TO-DO: Status effects
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Spell Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 3:ACTION:casts * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
-  $partial.name.match($nick, $5)
-  $spell_cmd($nick , $3 , %attack.target, $7) | halt 
+  $partial.name.match($nick, $4)
+  $spell_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
 ON 3:TEXT:!cast * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
@@ -29,8 +27,8 @@ ON 50:TEXT:*casts * on *:*:{
   if ($3 = item) { halt }
   if ($5 != on) { halt }
 
-  $partial.name.match($1, $6)
-  $spell_cmd($1 , $4,  %attack.target) 
+  $partial.name.match($1, $5)
+  $spell_cmd($1 , $3,  %attack.target) 
   halt 
 }
 
@@ -51,10 +49,11 @@ alias spell_cmd {
 
   ; Can this spell be cast outside of battle?
   if ($readini($dbfile(spells.db), $2, CanUseOutsideBattle) != true) {  
+    if (%battleis != on) { $display.message($translate(NoBattleCurrently), private) | halt }
 
     ; Are we in battle?
     $check_for_battle($1) 
-
+    $person_in_battle($3)
     $no.turn.check($1,admin)
   }
 
@@ -128,6 +127,10 @@ alias spell_cmd {
   ; Write that we used this as the last action
   writeini $txtfile(battle2.txt) Actions $1 $2 
 
+  ; Show the casting description
+  $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(spells.db), $2, Description), global)
+
+  ; Perform the spell
   if (%spell.type = attack) { $spell.attack($1, $2, $3) } 
   if (%spell.type = buff) { $spell.buff($1, $2, $3) }
   if (%spell.type = heal) { $spell.heal($1, $2, $3) }
@@ -148,19 +151,69 @@ alias spell.attack {
   ; $2 = the spell name 
   ; $3 = the target
 
-  ; Get the attack amount
-  set %attack.damage $calculate.spell.damage($1, $2)
-
   ; Is this spell an AOE?  If so, apply it to everyone
   if ($readini($dbfile(spells.db), $2, AOE) = true) {   
-    if ($flag($1) = monster) { var %target player }
-    else { var %target monster } 
 
-    ; Cycle through all targets
+    var %user.flag $flag($1)
+    if (%user.flag = npc) { unset %user.flag }
 
+    if ($is_confused($1) = true) { 
+      var %random.target.chance $rand(1,2)
+      if (%random.target.chance = 1) { var %user.flag monster }
+      if (%random.target.chance = 2) { unset %user.flag }
+    }
+
+    ; cycle through the battle list and hit the targets that are opposite of the user's flag.
+    var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 | var %targets.hit 0
+    while (%current.battle.member <= $numtok(%battle.party, 46)) {
+      var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
+
+      ; We don't want to hit ourselves..
+      if (%battle.member.name != $1) {
+        ; Is this target alive?
+        if ($current.hp(%battle.member.name) > 0) { 
+          ; Check the corresponding flags
+          if ((%user.flag = monster) && ($flag(%battle.member.name) = $null)) {
+            inc %targets.hit 1
+
+            ; Get the attack damage
+            set %attack.damage $calculate.spell.damage($1, $2)
+
+            ; Get the defense for the current
+            var %damage.defense.percent $calculate.defense(%battle.member.name, magical)
+            set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+            if (%attack.damage <= 0) { set %attack.damage 1 }
+
+            ; Deal and display the damage
+            $deal_damage($1, %battle.member.name, $2, %absorb, spell)
+            $display_aoedamage($1, %battle.member.name, $2)
+          }
+          if ((%user.flag = $null) && ($flag(%battle.member.name) = monster)) { 
+            inc %targets.hit 1
+
+            ; Get the attack damage
+            set %attack.damage $calculate.spell.damage($1, $2)
+
+            ; Get the defense for the current
+            var %damage.defense.percent $calculate.defense(%battle.member.name, magical)
+            set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+            if (%attack.damage <= 0) { set %attack.damage 1 }
+
+            ; Deal and display the damage
+            $deal_damage($1, %battle.member.name, $2, %absorb, spell)
+            $display_aoedamage($1, %battle.member.name, $2)
+          }
+        }
+      }
+
+      inc %current.battle.member
+    }
   }
   else {
     ; Not an AOE
+
+    ; Get the attack amount
+    set %attack.damage $calculate.spell.damage($1, $2)
 
     ; Get the defense for one person    
     var %damage.defense.percent $calculate.defense($3, magical)
@@ -171,7 +224,6 @@ alias spell.attack {
     $deal_damage($1, $3, $2, %absorb, spell)
     $display_damage($1, $3, spell, $2, %absorb)
   }
-
 
   return
 }
@@ -184,19 +236,64 @@ alias spell.heal {
   ; $2 = the spell name 
   ; $3 = the target
 
-  ; Get the amount we're healing
-  set %attack.damage $calculate.spell.damage($1, $2)
+  set %heal.amount $calculate.spell.damage($1, $2)
 
-
-  ; Is this spell an AOE? If so, heal everyone. 
+  ; Is this spell an AOE?  If so, apply it to everyone
   if ($readini($dbfile(spells.db), $2, AOE) = true) {   
+
+    var %user.flag $flag($1)
+    if (%user.flag = npc) { unset %user.flag }
+
+    if ($is_confused($1) = true) { 
+      var %random.target.chance $rand(1,2)
+      if (%random.target.chance = 1) { var %user.flag monster }
+      if (%random.target.chance = 2) { unset %user.flag }
+    }
+
+    ; cycle through the battle list and hit the targets that are opposite of the user's flag.
+    var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 | var %targets.hit 0
+    while (%current.battle.member <= $numtok(%battle.party, 46)) {
+      var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
+
+      ; Is this target alive?
+      if ($current.hp(%battle.member.name) > 0) { 
+        ; Check the corresponding flags
+
+        if ((%user.flag = monster) && ($flag(%battle.member.name) = monster)) {
+
+          ; Get the heal amount
+          set %attack.damage %heal.amount
+
+          ; Deal and display the damage done
+          $heal_damage($1, %battle.member.name, $2, spell)
+          $display_heal($1, %battle.member.name, spell, $2, spell)
+        }
+        if ((%user.flag = $null) && ($flag(%battle.member.name) = $null)) { 
+
+          ; Get the heal amount
+          set %attack.damage %heal.amount
+
+          ; Deal and display the damage done
+          $heal_damage($1, %battle.member.name, $2, spell)
+          $display_heal($1, %battle.member.name, spell, $2, spell)
+        }
+      }
+
+      inc %current.battle.member
+    }
+  }
+  else {
+    ; Not an AOE
+
+    ; Get the heal amount
+    set %attack.damage $calculate.spell.damage($1, $2)
+
+    ; Deal and display the damage done
+    $heal_damage($1, $3, $2, %absorb, spell)
+    $display_heal($1, $3, spell, $2, %absorb)
   }
 
-  else { 
-    ; It's not then heal the one person
-
-  }
-
+  unset %heal.amount
 
   return
 }
@@ -212,23 +309,20 @@ alias spell.buff {
   ; Decrease the action points
   $action.points($1, remove, 4)
 
-  ; Display the action message
-  $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(spells.db), $2, Description), global)
-
   ; Which buff is being applied?
   var %buff.name $readini($dbfile(spells.db), $2, StatusEffect)
   var %buff.length $readini($dbfile(spells.db), $2, BuffLength)
 
   ; Is this buff a single or AOE target?  If single, just apply it and move on.  Else, cycle through
 
-  if ($readini($dbfile(spells.db), $2, AOE) = false) { writeini $char($1) StatusEffects %buff.name %buff.length  }
+  if ($readini($dbfile(spells.db), $2, AOE) = false) { writeini $char($3) StatusEffects %buff.name %buff.length  }
   else { 
 
     if ($flag($1) = monster) {
       var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 
       while (%current.battle.member <= $numtok(%battle.party, 46)) {
         var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
-        if (($current.hp(%battle.member.name) > 0) && ($flag(battle.member.name) = monster)) { writeini $char(%battle.member.name) StatusEffects %buff.name %buff.length }
+        if (($current.hp(%battle.member.name) > 0) && ($flag(%battle.member.name) = monster)) { writeini $char(%battle.member.name) StatusEffects %buff.name %buff.length }
         inc %current.battle.member
       }
       return 

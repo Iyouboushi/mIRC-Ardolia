@@ -384,7 +384,7 @@ EnteredTheBattle=$chr(3) $+ 4 $+  $+ $get_chr_name(%current.monster.to.spawn.na
 
 NoAdventureCurrently=$chr(3) $+ 4 There is no adventure currently going.
 
-NoBattleCurrently=$chr(3) $+ 4 There is no battle currently going.
+NoBattleCurrently=$chr(3) $+ 4 There is no battle currently in progress.
 
 AdventureClosed=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as either there is no adventure or the entry period is already closed.
 
@@ -445,6 +445,7 @@ TurnMessage=$chr(3) $+ 3 $+ It is $get_chr_name($2) $+ 's turn [Health Status:
 
 EnemyDefeated=$chr(3) $+ 4 $+ %enemy $+  $iif($readini($char(%target), descriptions, DeathMessage) = $null, has been defeated by %user $+ !, $readini($char(%target), p, descriptions, DeathMessage))  %overkill
 AttackDidDamage=The attack did4 $bytes(%attack.damage,b) damage 
+DisplayAOEDamage=The attack did $+ %damage.display.color $+  $bytes(%attack.damage,b) damage to %enemy $+ ! %statusmessage.display
 TargetCovered=$chr(3) $+ 7 $+ $set_chr_name(%cover.target) $+ %real.name jumps in front of the attack to shield $set_chr_name($1) %real.name $+ !
 InactiveAlive=$chr(3) $+ 4 $+ %enemy comes to life after the attack and readies for battle.
 NotAllowedBattleCondition=$chr(3) $+ 4 $+ $+ %real.name is not allowed to do that action due to the current battle conditions!

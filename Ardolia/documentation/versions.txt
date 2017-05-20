@@ -1,6 +1,11 @@
 Ardolia Bot Changelog
 =========================
 
+05-20-2017
+- Added code for healing spells and abilities (including AOEs)
+- Added code for AOE attack abilities
+- Fixed errors with the damage formulas
+
 05-19-2017
 - Added a way for stats/defense to check for abilities/spells that increase them
 - Added code for buff spells and abilities.  Buffs should work properly now

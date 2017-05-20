@@ -1,10 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This file is horribly unfinished
+; TO-DO: status effects
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Ability Commands and code
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 3:ACTION:uses * * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $5)
@@ -76,11 +78,13 @@ alias ability_cmd {
 
     ; Can this spell be cast outside of battle?
     if ($readini($dbfile(abilities.db), $2, CanUseOutsideBattle) != true) {  
+      if (%battleis != on) { $display.message($translate(NoBattleCurrently), private) | halt }
 
       ; Are we in battle?
       $check_for_battle($1) 
 
-      $checkchar($3)
+      $person_in_battle($3)
+      $no.turn.check($1,admin)
     }
 
     ; Can this job use this ability?
@@ -135,47 +139,13 @@ alias ability_cmd {
   ; Write that we used this as the last action
   writeini $txtfile(battle2.txt) Actions $1 $2 
 
-  if (%ability.type = buff) { $ability.buff($1, $2, $3) }
+  ; Display the action message
+  $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(abilities.db), $2, Description), global)
+
+  if (%ability.type = attack) {  $ability.attack($1, $2, %attack.target, %tp.have )  }
   if (%ability.type = heal) { $ability.heal($1, $2, $3, %tp.have) }
-  if (%ability.type = single) {  $ability.single($1, $2, %attack.target, %tp.have )  }
+  if (%ability.type = buff) { $ability.buff($1, $2, $3) }
   if (%ability.type = suicide) { $ability.suicide($1, $2, %attack.target, %tp.have )  }
-
-  if (%ability.type = suicide-AOE) { 
-    if ($is_charmed($1) = true) { 
-      var %current.flag $readini($char($1), info, flag)
-      if ((%current.flag = $null) || (%current.flag = npc)) { $ability.aoe($1, $2, $3, player, suicide, %tp.have) | halt }
-      if (%current.flag = monster) { $ability.aoe($1, $2, $3 , monster, suicide, %tp.have) | halt }
-    }
-    else {
-      ; Determine if it's players or monsters
-      if (%user.flag = monster) { $ability.aoe($1, $2, $3, player, suicide, %tp.have) | halt }
-      if ((%user.flag = $null) || (%user.flag = npc)) { $ability.aoe($1, $2, $3, monster, suicide, %tp.have) | halt }
-    }
-  }
-
-  if (%ability.type = status) { $ability.single($1, $2, %attack.target, %tp.have ) } 
-
-
-  if (%ability.type = AOE) { 
-
-    if ($is_charmed($1) = true) { 
-      var %current.flag $readini($char($1), info, flag)
-      if ((%current.flag = $null) || (%current.flag = npc)) { $ability.aoe($1, $2, $3, player, %tp.have) | halt }
-      if (%current.flag = monster) { $ability.aoe($1, $2, $3, monster, %tp.have) | halt }
-    }
-    else {
-      ; check for confuse.
-      if ($is_confused($1) = true) { 
-        var %random.target.chance $rand(1,2)
-        if (%random.target.chance = 1) { var %user.flag monster }
-        if (%random.target.chance = 2) { unset %user.flag }
-      }
-
-      ; Determine if it's players or monsters
-      if (%user.flag = monster) { $ability.aoe($1, $2, $3, player, %tp.have) | halt }
-      if ((%user.flag = $null) || (%user.flag = npc)) { $ability.aoe($1, $2, $3, monster, %tp.have) | halt }
-    }
-  }
 
   ; Check for a postcript
   if ($readini($dbfile(abilities.db), n, $2, PostScript) != $null) { $readini($dbfile(abilities.db), p, $2, PostScript) }
@@ -188,7 +158,7 @@ alias ability_cmd {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Performs a regular tech/ws
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-alias ability.single {
+alias ability.attack {
   ; $1 = user
   ; $2 = tech name
   ; $3 = target
@@ -201,9 +171,55 @@ alias ability.single {
   if ($readini($dbfile(abilities.db), $2, absorb) = yes) { set %absorb absorb }
   else { set %absorb none }
 
-  $calculate_damage_ability($1, $2, $3, $4)
-  $deal_damage($1, $3, $2, %absorb, ability)
-  $display_damage($1, $3, ability, $2, %absorb)
+
+  ; Single target ability
+  if ($readini($dbfile(abilities.db), $2, AOE) != true) {
+    $calculate_damage_ability($1, $2, $3, $4)
+    $deal_damage($1, $3, $2, %absorb, ability)
+    $display_damage($1, $3, ability, $2, %absorb)
+  }
+
+  ; AOE ability
+  else {
+    var %user.flag $flag($1)
+    if (%user.flag = npc) { unset %user.flag }
+
+    if ($is_confused($1) = true) { 
+      var %random.target.chance $rand(1,2)
+      if (%random.target.chance = 1) { var %user.flag monster }
+      if (%random.target.chance = 2) { unset %user.flag }
+    }
+
+    ; cycle through the battle list and hit the targets that are opposite of the user's flag.
+    var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 | var %targets.hit 0
+    while (%current.battle.member <= $numtok(%battle.party, 46)) {
+      var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
+
+      ; We don't want to hit ourselves..
+      if (%battle.member.name != $1) {
+        ; Is this target alive?
+        if ($current.hp(%battle.member.name) > 0) { 
+          ; Check the corresponding flags
+          if ((%user.flag = monster) && ($flag(%battle.member.name) = $null)) {
+            inc %targets.hit 1
+            $calculate_damage_ability($1, $2, %battle.member.name, $4)
+            $deal_damage($1, %battle.member.name, $2, %absorb, ability)
+            $display_aoedamage($1, %battle.member.name, $2)
+          }
+          if ((%user.flag = $null) && ($flag(%battle.member.name) = monster)) { 
+            inc %targets.hit 1
+            $calculate_damage_ability($1, $2, %battle.member.name, $4)
+            $deal_damage($1, %battle.member.name, $2, %absorb, ability)
+            $display_aoedamage($1, %battle.member.name, $2)
+          }
+        }
+      }
+
+      inc %current.battle.member
+    }
+
+  }
+
   return
 }
 
@@ -225,7 +241,6 @@ alias calculate_damage_ability {
   unset %capamount
 }
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Performs a buff ability
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -235,9 +250,6 @@ alias ability.buff {
 
   ; Decrease the action points
   $action.points($1, remove, 4)
-
-  ; Display the action message
-  $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(abilities.db), $2, Description), global)
 
   ; Which buff is being applied?
   var %buff.name $readini($dbfile(abilities.db), $2, StatusEffect)
@@ -252,7 +264,7 @@ alias ability.buff {
       var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 
       while (%current.battle.member <= $numtok(%battle.party, 46)) {
         var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
-        if (($current.hp(%battle.member.name) > 0) && ($flag(battle.member.name) = monster)) { writeini $char(%battle.member.name) StatusEffects %buff.name %buff.length }
+        if (($current.hp(%battle.member.name) > 0) && ($flag(%battle.member.name) = monster)) { writeini $char(%battle.member.name) StatusEffects %buff.name %buff.length }
         inc %current.battle.member
       }
       return 
@@ -275,6 +287,76 @@ alias ability.buff {
     if (%enmity.multiplier = $null) { var %enmity.multiplier 1 }
     $enmity($1, add, $calc(%base.enmity * %enmity.multiplier))
   }
+
+  return
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Performs a healing ability
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias ability.heal {
+  ; $1 = the user
+  ; $2 = the ability
+  ; $3 = the target
+
+  ; Get the heal amount
+  set %heal.amount $calculate.ability.damage($1, $2)
+
+  ; Is this spell an AOE?  If so, apply it to everyone
+  if ($readini($dbfile(abilities.db), $2, AOE) = true) {   
+
+    var %user.flag $flag($1)
+    if (%user.flag = npc) { unset %user.flag }
+
+    if ($is_confused($1) = true) { 
+      var %random.target.chance $rand(1,2)
+      if (%random.target.chance = 1) { var %user.flag monster }
+      if (%random.target.chance = 2) { unset %user.flag }
+    }
+
+    ; cycle through the battle list and hit the targets that are opposite of the user's flag.
+    var %battle.party $readini($txtfile(battle2.txt), Battle, List) | var %current.battle.member 1 | var %targets.hit 0
+    while (%current.battle.member <= $numtok(%battle.party, 46)) {
+      var %battle.member.name $gettok(%battle.party, %current.battle.member, 46)
+
+      ; Is this target alive?
+      if ($current.hp(%battle.member.name) > 0) { 
+        ; Check the corresponding flags
+
+        if ((%user.flag = monster) && ($flag(%battle.member.name) = monster)) {
+          set %attack.damage %heal.amount
+
+          ; Deal and display the damage done
+          $heal_damage($1, %battle.member.name, $2, spell)
+          $display_heal($1, %battle.member.name, spell, $2, spell)
+        }
+        if ((%user.flag = $null) && ($flag(%battle.member.name) = $null)) { 
+          set %attack.damage %heal.amount
+
+          ; Get the heal amount
+          set %attack.damage $calculate.ability.damage($1, $2)
+
+          ; Deal and display the damage done
+          $heal_damage($1, %battle.member.name, $2, spell)
+          $display_heal($1, %battle.member.name, spell, $2, spell)
+        }
+      }
+
+      inc %current.battle.member
+    }
+  }
+  else {
+    ; Not an AOE
+
+    ; Get the heal amount
+    set %attack.damage $calculate.ability.damage($1, $2)
+
+    ; Deal and display the damage done
+    $heal_damage($1, $3, $2, %absorb, ability)
+    $display_heal($1, $3, ability, $2, %absorb)
+  }
+
+  unset %heal.amount
 
   return
 }

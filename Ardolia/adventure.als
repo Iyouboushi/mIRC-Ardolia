@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -8,12 +8,13 @@
 ; that are available to the player
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.list {
-  ; [dungeonfilename] Dungeon Full Name - # of players - Level Range
+  ; [adventurename] Adventure Full Name - # of players - Level Range
 
   ; Check the filename and see if the dungeon is available (pre-req required or hoilday dungeon)
 
   set %zone.name $remove($2,.zone)
   set %zone.name $nopath(%zone.name)
+  var %show.zone false
 
 
   ; Check for month. If not the right month, return
@@ -27,7 +28,7 @@ adventure.list {
 
 
   ; Write the line that will be shown
-
+  if (%show.zone = true) { }
 
 
   unset %zone.name
@@ -794,6 +795,9 @@ adventure.party.show {
 
   $display.message($translate(ShowParty, %curparty), global)
   $display.message($translate(CurrentPartyLeader, $adventure.party.leader), global)
+
+  ; To-Do:  Show how many tanks, dps and healers we have
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

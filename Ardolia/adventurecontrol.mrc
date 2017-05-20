@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)

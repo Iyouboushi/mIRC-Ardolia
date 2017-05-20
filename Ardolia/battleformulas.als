@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/11/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -218,8 +218,9 @@ calculate.ability.damage {
 
   var %current.det $current.det($1)
 
-  var %base.ability.damage $calc(((0.0032 * %current.stat + 0.4162) * %weapon.damage + (0.1001 * %current.stat - 0.3529) + (%current.det - 202) * 0.035))
+  var %base.ability.damage $abs($calc((%weapon.damage *.2714745 + %current.stat *.1006032 + (%current.det -202)*.0241327 + %weapon.damage * %current.stat *.0036167 + %weapon.damage * (%current.det - 202)*.0022597 - 1)))
   var %base.ability.damage $abs($calc((%potency / 100) * %base.ability.damage))
+
   inc %base.ability.damage $rand(1,2)
 
   return $round(%base.ability.damage,0)
@@ -247,13 +248,11 @@ calculate.spell.damage {
   if (%stat.needed = pie) { var %current.stat $current.pie($1) } 
 
   var %current.det $current.det($1)
-
-  var %base.spell.damage (%weapon.damage * (0.01156 * %weapon.damage + 0.001314 * %current.det + 0.3736) + (0.2229 * %stat.needed) + (0.06071 * %current.det) + 1.7786))
-
-  var %base.spell.damage $abs($calc(%potency / 100) * %base.spell.damage)) 
+  var %base.spell.damage $calc(%weapon.damage * (0.01156 * %weapon.damage + 0.001314 * %current.det + 0.3736) + (0.2229 * %current.stat) + (0.06071 * %current.det) + 1.7786))
+  var %base.spell.damage $abs($calc((%potency / 100) * %base.spell.damage)) 
   inc %base.spell.damage $rand(1,2)
-
   return $round(%base.spell.damage,0)
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -265,16 +264,10 @@ calculate.defense {
 
   var %defense.percent 100
 
-
   if ($2 = physical) { var %defense $current.defense($1) }
-
-  if ($2 = spell) { var %defense $current.mdefense($1) }
-
+  if (($2 = spell) || ($2 = magical)) { var %defense $current.mdefense($1) }
 
   var %defense.percent $abs($calc(1 - (0.044 * %defense)))
-  echo -a defense: %defense
-  echo -a percent: %defense.percent
-
   if (%defense.percent = 1) { return 1 }
   else { 
 

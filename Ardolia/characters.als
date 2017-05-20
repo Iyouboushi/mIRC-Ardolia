@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -127,11 +127,19 @@ current.speed {
   if ($flag($1) != $null) {
     var %char.speed $readini($char($1), battle, spd)
     inc %char.speed $weapon.speed($1)
+
+    ; Check for buffs that increase speed
+    inc %char.speed $buff.check($1,speed, %char.speed)
+
     return %char.speed
   }
   else {
     var %char.speed $round($calc($readini($jobfile($current.job($1)), StatInfo, BaseSpeed) * ($get.level($1) / 10)),0)
     inc %char.speed $weapon.speed($1)
+
+    ; Check for buffs that increase speed
+    inc %char.speed $buff.check($1,speed, %char.speed)
+
     return %char.speed
   }
 }
@@ -1149,6 +1157,10 @@ buff.check {
 
   if ($2 = mdefense) { 
     if ($status.check($1, shell) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
+  }
+
+  if ($2 = speed) {
+    if ($status.check($1, haste) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
   }
 
   return %buff.increase

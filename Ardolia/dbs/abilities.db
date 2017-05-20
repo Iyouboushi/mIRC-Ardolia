@@ -34,7 +34,6 @@ level=1
 Type=Attack
 AOE=false
 Info=
-Description=
 Cooldown=2
 Cost=100
 Stat=str
@@ -61,7 +60,7 @@ StatusEffect=Foresight
 level=4
 Type=Attack
 AOE=false
-Info=Delivers a 
+Info=Delivers an attack to a target. If HeavySwing was the last action done before this the attack will deal more damage.
 Description=
 Cooldown=2
 Cost=200
@@ -100,6 +99,20 @@ Stat=mnd
 Potency=500
 EnmityMultiplier=4
 Job=WHM
+
+[Pray]
+Level=5
+Type=Heal
+AOE=true
+Info=Pray to the gods for healing! The gods may or may not listen to your prayers. There is a 50% chance that this ability will only restore 1-2 HP to your allies.
+Description=
+Cooldown=5
+Cost=300
+Stat=mnd
+Potency=$iif($rand(1,2) = 1, 300, 0)
+EnmityMultiplier=2
+Job=WHM
+
 
 =============================================
 BLM

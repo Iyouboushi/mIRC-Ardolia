@@ -1,8 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; AI COMMANDS
-;;;; Last updated: 05/09/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file is seriously unfinished
+; TO-DO: let monsters pick spells and abilities and use them
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -267,9 +268,9 @@ alias ai_gettarget {
 alias ai_gettarget.random {
   unset %ai.targetlist | unset %tech.type | unset %status.type
 
-  if (%ai.action = tech) {  
-    set %tech.type $readini($dbfile(techniques.db), %ai.tech, type)  
-    var %status.type $readini($dbfile(techniques.db), %ai.tech, statusType)
+  if (%ai.action = ability) {  
+    set %tech.type $readini($dbfile(abilities.db), %ai.tech, type)  
+    var %status.type $readini($dbfile(abilities.db), %ai.tech, statusEffect)
   }
 
   if ((((%tech.type = heal) || (%tech.type = aoeheal) || (%tech.type = ClearStatusNegative) || (%tech.type = buff)))) {
@@ -287,7 +288,7 @@ alias ai_gettarget.random {
 
   if ((%opponent.flag = monster) && ($readini($char($1), info, flag) = npc)) {
     if ($is_confused($1) != true) {
-      if (%ai.action = tech) { var %element $readini($dbfile(techniques.db), %ai.tech, Element) }
+      if (%ai.action = tech) { var %element $readini($dbfile(abilities.db), %ai.tech, Element) }
       if (%ai.action = attack) { var %element $readini($dbfile(weapons.db), $readini($char($1), Weapons, Equipped), Element) }
 
       if ((%element = none) || (%element = $null)) { unset %element }

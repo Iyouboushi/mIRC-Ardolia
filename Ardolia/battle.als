@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -412,8 +412,7 @@ display_damage {
   set %user $get_chr_name($1)
   set %enemy $get_chr_name($2)
 
-
-  if (%damage.display.color = $null) { var %damage.display.color 4 }
+  if (%damage.display.color = $null) { set %damage.display.color 4 }
 
   ; Show a random attack description
   if ($3 = weapon) { 
@@ -473,6 +472,8 @@ display_damage {
       unset %statusmessage.display 
     }
   }
+
+  unset %damage.display.color
 
   if (%absorb = absorb) {
     if (%guard.message = $null) {
@@ -585,10 +586,13 @@ display_aoedamage {
   ; $3 = tech name
   ; $4 = flag for if it's a melee
 
+  ; A valid command was done, so let's turn the next timer off before we do this
+  /.timerBattleNext off
 
-  if (%damage.display.color = $null) { var %damage.display.color 4 }
+  if (%damage.display.color = $null) { set %damage.display.color 4 }
 
   unset %overkill | unset %target |  unset %style.rating
+
   $set_chr_name($1) | set %user %real.name
   if ($person_in_mech($1) = true) { set %user %real.name $+ 's $readini($char($1), mech, name) } 
 
@@ -596,14 +600,12 @@ display_aoedamage {
   if ($person_in_mech($2) = true) { set %enemy %real.name $+ 's $readini($char($2), mech, name) }
 
   ; Show the damage
-  if ($person_in_mech($2) = false) { 
-    if ($4 = $null) { 
-      if (($readini($char($2), status, reflect) = yes) && ($readini($dbfile(techniques.db), $3, magic) = yes)) { $display.message($readini(translation.dat, skill, MagicReflected), battle) | $set_chr_name($1) | set %enemy %real.name | set %target $1 | writeini $char($2) status reflect no | writeini $char($2) status reflect.timer 1  }
-    }
-  }
 
   if (%guard.message = $null) { $display.message($translate(DisplayAOEDamage), battle)  }
   if (%guard.message != $null) { $display.message(%guard.message, battle) | unset %guard.message }
+
+  unset %damage.display.color
+
 
   if (%target = $null) { set %target $2 }
 
@@ -629,23 +631,9 @@ display_aoedamage {
       if ($readini($char($1), info, flag) != monster) { 
         writeini $char(%target) battle status alive
         if ($readini($char(%target), descriptions, Awaken) != $null) { $display.message(4 $+ %enemy  $+ $readini($char(%target), descriptions, Awaken), battle) }
-        if ($readini($char(%target), descriptions, Awaken) = $null) { $display.message($readini(translation.dat, battle, inactivealive),battle)    }
+        if ($readini($char(%target), descriptions, Awaken) = $null) { $display.message($translate(inactivealive, %target),battle)    }
       }
     }
-
-    ; Check to see if the monster can be staggered..  
-    var %stagger.check $readini($char(%target), info, CanStagger)
-    if ((%stagger.check = $null) || (%stagger.check = no)) { return }
-
-    ; Do the stagger if the damage is above the threshold.
-    var %stagger.amount.needed $readini($char(%target), info, StaggerAmount)
-    dec %stagger.amount.needed %attack.damage | writeini $char(%target) info staggeramount %stagger.amount.needed
-    if (%stagger.amount.needed <= 0) { writeini $char(%target) status staggered yes |  writeini $char(%target) info CanStagger no
-      $display.message($translate(StaggerHappens), battle)
-    }
-
-
-
   }
 
 
@@ -665,7 +653,6 @@ display_aoedamage {
     }
 
     $spawn_after_death(%target)
-    $achievement_check($1, FillYourDarkSoulWithLight)
   }
 
   if ($person_in_mech($2) = true) { 
@@ -679,7 +666,7 @@ display_aoedamage {
 
 
   unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %double.attack | unset %triple.attack | unset %fourhit.attack | unset %fivehit.attack | unset %sixhit.attack | unset %sevenhit.attack | unset %eighthit.attack 
-  unset %attack.damage | unset %target
+  unset %attack.damage | unset %target | unset %damage.display.color
   return 
 }
 
@@ -696,13 +683,6 @@ display_heal {
   if ($person_in_mech($2) = true) { set %enemy %real.name $+ 's $readini($char($2), mech, name) }
 
   if (%user = %enemy ) { set %enemy $gender2($1) $+ self }
-
-  if ($3 = tech) {
-    if (%showed.tech.desc != true) {
-      $set_chr_name($1)
-      $display.message(3 $+ %real.name $+  $readini($dbfile(techniques.db), $4, desc),battle) 
-    }
-  }
 
   if ($3 = item) {
     $display.message(3 $+ %user $+  $readini($dbfile(items.db), $4, desc),battle) 

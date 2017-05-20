@@ -1,8 +1,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 05/09/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Melee Commands and code
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 3:ACTION:attacks *:#:{ 
   $no.turn.check($nick)
   $set_chr_name($nick) 
@@ -145,173 +148,28 @@ alias calculate_damage_weapon {
   ; $2 = weapon equipped
   ; $3 = target / %enemy 
 
-  echo -a step 1: Determine if we hit or not
+  ; Do I want to add the ability to dodge?? That's something to consider.
 
   var %attacker.acc $calculate.accuracy($1, $3, melee)
   var %defender.evasion $calculate.evasion($1, $3)
 
-  var %to.hit.chance 50
-  inc %to.hit.chance %attacker.acc
-  dec %to.hit.chance %defender.evasion
+  ;  var %to.hit.chance 50
+  ;  inc %to.hit.chance %attacker.acc
+  ;  dec %to.hit.chance %defender.evasion
 
-  echo -a accuracy: %attacker.acc :: evasion: %defender.evasion :: to hit chance: %to.hit.chance
+  ;  if (%to.hit.chance >= 100) { var %to.hit.chance 90 }
+  ;  if (%to.hit.chance < 10) { var %to.hit.chance 10 }
 
-  if (%to.hit.chance >= 100) { var %to.hit.chance 90 }
-  if (%to.hit.chance < 10) { var %to.hit.chance 10 }
-
-  var %hit.chance $roll(1d100)
-  echo -a hit chance: %hit.chance
+  ;  var %hit.chance $roll(1d100)
 
   var %hit.chance 1
 
   ; Check to see if the target dodged it
   ;  if (%attacker.acc < %defender.evasion) { set %guard.message $readini(translation.dat, battle, NormalDodge) }
-  if (%hit.chance > %to.hit.chance) { set %guard.message $readini(translation.dat, battle, NormalDodge) }
-
-  ; Check for third eye dodge here in the future
+  ; if (%hit.chance > %to.hit.chance) { set %guard.message $readini(translation.dat, battle, NormalDodge) }
 
   if (%guard.message != $null) { set %attack.damage 0 | return }
 
   if ($flag($1) = monster) { $formula.melee.monster($1, $2, $3, $4) }
   else { $formula.melee.player($1, $2, $3, $4) }
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Performs a melee AOE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This code is largely unchanged from BattleArena and needs to be worked
-alias melee.aoe {
-  ; $1 = user
-  ; $2 = weapon name
-  ; $3 = target
-  ; $4 = type, either player or monster 
-
-  set %wait.your.turn on
-
-  unset %who.battle | set %number.of.hits 0
-  unset %absorb  | unset %element.desc
-
-  ; Display the weapon type description
-  $set_chr_name($1) | set %user %real.name
-  if ($person_in_mech($1) = true) { set %user %real.name $+ 's $readini($char($1), mech, name) } 
-
-  var %enemy all targets
-
-  var %weapon.type $readini($dbfile(weapons.db), $2, type) |  var %attack.file $txtfile(attack_ $+ %weapon.type $+ .txt) 
-
-  $display.message(3 $+ %user $+  $read %attack.file  $+ 3., battle)
-  set %showed.melee.desc true
-
-  if ($readini($dbfile(weapons.db), $2, absorb) = yes) { set %absorb absorb }
-
-  var %melee.element $readini($dbfile(weapons.db), $2, element)
-
-  ; If it's player, search out remaining players that are alive and deal damage and display damage
-  if ($4 = player) {
-    var %battletxt.lines $lines($txtfile(battle.txt)) | var %battletxt.current.line 1 
-    while (%battletxt.current.line <= %battletxt.lines) { 
-      set %who.battle $read -l $+ %battletxt.current.line $txtfile(battle.txt)
-      if ($readini($char(%who.battle), info, flag) = monster) { inc %battletxt.current.line }
-      else { 
-
-        if (($readini($char($1), status, confuse) != yes) && ($1 = %who.battle)) { inc %battletxt.current.line 1 }
-
-        var %current.status $readini($char(%who.battle), battle, status)
-        if ((%current.status = dead) || (%current.status = runaway)) { inc %battletxt.current.line 1 }
-        else { 
-
-          if ($readini($char($1), battle, hp) > 0) {
-            inc %number.of.hits 1
-            var %target.element.heal $readini($char(%who.battle), modifiers, heal)
-            if ((%melee.element != none) && (%melee.element != $null)) {
-              if ($istok(%target.element.heal,%melee.element,46) = $true) { 
-                $heal_damage($1, %who.battle, %weapon.equipped)
-                inc %battletxt.current.line 1 
-              }
-            }
-
-            if (($istok(%target.element.heal,%melee.element,46) = $false) || (%melee.element = none)) { 
-
-              $covercheck(%who.battle, $2, AOE)
-
-              $calculate_damage_weapon($1, %weapon.equipped, %who.battle)
-              $deal_damage($1, %who.battle, %weapon.equipped, melee)
-
-              $display_aoedamage($1, %who.battle, $2, %absorb, melee)
-              unset %attack.damage
-
-            }
-          }
-
-          unset %attack.damage |  unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage4 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %attack.damage.total
-          unset %drainsamba.on | unset %absorb |  unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone
-          unset %techincrease.check |  unset %double.attack | unset %triple.attack | unset %fourhit.attack | unset %fivehit.attack | unset %sixhit.attack | unset %sevenhit.attack | unset %eighthit.attack
-          unset %multihit.message.on | unset %critical.hit.chance
-
-          inc %battletxt.current.line 1 | inc %aoe.turn 1
-        } 
-      }
-    }
-  }
-
-
-  ; If it's monster, search out remaining monsters that are alive and deal damage and display damage.
-  if ($4 = monster) { 
-    var %battletxt.lines $lines($txtfile(battle.txt)) | var %battletxt.current.line 1 | set %aoe.turn 1
-    while (%battletxt.current.line <= %battletxt.lines) { 
-      set %who.battle $read -l $+ %battletxt.current.line $txtfile(battle.txt)
-      if ($readini($char(%who.battle), info, flag) != monster) { inc %battletxt.current.line }
-      else { 
-        inc %number.of.hits 1
-        var %current.status $readini($char(%who.battle), battle, status)
-        if ((%current.status = dead) || (%current.status = runaway)) { inc %battletxt.current.line 1 }
-        else { 
-          if ($readini($char($1), battle, hp) > 0) {
-
-            var %target.element.heal $readini($char(%who.battle), modifiers, heal)
-            if ((%melee.element != none) && (%melee.element != $null)) {
-              if ($istok(%target.element.heal,%melee.element,46) = $true) { 
-                $heal_damage($1, %who.battle, %weapon.equipped)
-              }
-            }
-
-            if (($istok(%target.element.heal,%melee.element,46) = $false) || (%melee.element = none)) { 
-              $covercheck(%who.battle, $2, AOE)
-
-
-              $calculate_damage_weapon($1, %weapon.equipped, %who.battle)
-              $deal_damage($1, %who.battle, %weapon.equipped, melee)
-              $display_aoedamage($1, %who.battle, $2, %absorb, melee)
-
-            }
-          }
-
-          unset %attack.damage |  unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage4 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %attack.damage.total
-          unset %drainsamba.on | unset %absorb |  unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone
-          unset %techincrease.check |  unset %double.attack | unset %triple.attack | unset %fourhit.attack | unset %fivehit.attack | unset %sixhit.attack | unset %sevenhit.attack | unset %eighthit.attack
-          unset %multihit.message.on | unset %critical.hit.chance
-
-          inc %battletxt.current.line 1 | inc %aoe.turn 1 | unset %attack.damage
-        } 
-      }
-    }
-  }
-
-  unset %element.desc | unset %showed.melee.desc | unset %aoe.turn
-  set %timer.time $calc(%number.of.hits * 1.1) 
-
-  unset %statusmessage.display
-  if ($readini($char($1), battle, hp) > 0) {
-    set %inflict.user $1 | set %inflict.meleewpn $2 
-    $self.inflict_status(%inflict.user, %inflict.meleewpn, melee)
-    if (%statusmessage.display != $null) { $display.message(%statusmessage.display, battle) | unset %statusmessage.display }
-  }
-
-
-  if (%timer.time > 20) { %timer.time = 20 }
-
-  unset %melee.element | $formless_strike_check($1)
-
-  /.timerCheckForDoubleSleep $+ $rand(a,z) $+ $rand(1,1000) 1 %timer.time /check_for_double_turn $1
-  halt
 }

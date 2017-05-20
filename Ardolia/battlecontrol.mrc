@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/09/17
+;;;; Last updated: 05/20/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -512,11 +512,6 @@ alias turn {
   while (%current.status.effect <= %number.of.statuseffects) { 
     var %current.statuseffect.name $ini($char($1), StatusEffects, %current.status.effect)
     var %current.statuseffect.turnsleft $readini($char($1), StatusEffects, %current.statuseffect.name)
-
-    echo -a status effect: %current.statuseffect.name
-    echo -a turns left: %current.statuseffect.turnsleft
-
-
     $perform.status.effect($1, %current.statuseffect.name)
     dec %current.statuseffect.turnsleft 1
     if (%current.statuseffect.turnsleft < 0) { remini $char($1) StatusEffects %current.statuseffect.name) }
@@ -675,9 +670,6 @@ alias battle.restoredead {
       writeini $char(%party.member.name) Battle HP 1
       writeini $char(%party.member.name) Battle Status Normal
     }
-
-    ; To be added: clearing statuses except buffs
-
 
     inc %current.party.member
   }
