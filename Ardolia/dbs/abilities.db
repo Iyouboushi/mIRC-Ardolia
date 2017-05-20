@@ -34,6 +34,7 @@ level=1
 Type=Attack
 AOE=false
 Info=
+Description=performs a heavy swing strike on $get_chr_name($3) $+ !
 Cooldown=2
 Cost=100
 Stat=str
