@@ -9,7 +9,7 @@ Once set up the game is entirely automatic and does not need anyone to run it.
 
 A full in-depth guide with commands and more in-depth information will eventually be listed on this game's wiki.
 
-Note: As of May 4, 2017 the game is still in heavy development and is not fully playable.
+Note: As of May 19, 2017 the game is still in heavy development and is not fully playable.
 
 
 ## SETUP
@@ -31,18 +31,16 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-* MAY 3 & MAY 4, 2017
+* MAY 19, 2017
 
-Over the last two days I have finished with the !jobs command and should be finished with all of the adventure party commands.  !open chest now works, !stamina now shows how much stamina (adventure actions) the party has left to complete the adventure, and the adventures can successfully reward items and XP at the end.  The only thing left to do with adventures is to introduce a party leader timer so that someone can't idle for hours and stall the game.
+With this update the buff spells/abilities now work properly.  Also status effect durations will decrease on each battle turn.  The code is already in place for the negative buffs, such as poison, to do their damage.  I just need to finish adding all the effects and decide how much damage they will do.  
 
-Also in these last two days I have expanded the !view-info command to allow players to see adventure information and armor/shield information.  
-
-I also fixed a minor issue with !armor
+The spell Protect should now work properly and can be used outside of battle.  The Warrior ability Foresight also works properly now though it only buffs the user.
 
 
 ## TO-DO
 
-In order to make this game fully playable there are still a huge amount of things to be done.  Up next will be adding some basic abilities for testing and creating an anti-idle party leader timer so that someone can't stall the game/bot for hours.  
+In order to make this game fully playable there are still a huge amount of things to be done.  Up next is to finish coding the ability and spell code.  Basically still have healing and AOEs to do.  
 
 ## THANKS
 
