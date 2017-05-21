@@ -1,0 +1,9 @@
+12::[!weapons ]::
+2!weapons is the command to check to see which weapons you currently own.  Note that this command can only show you the first 120 weapons of a certain type that you own.
+2Command: !weapons <weapontype>  
+
+12::[What Are Weapons?]::
+2Weapons is the primary way to increase your melee damage. All weapons have a damage rating, speed, can possibly increase your stats, and have an iLevel attached to them. Some weapons 
+
+12::[What Are The Weapon Types?]::
+2 $+ $readini($dbfile(weapons.db), weapontypes, Types)

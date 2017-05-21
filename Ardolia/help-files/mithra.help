@@ -1,0 +1,4 @@
+12::[Mithra]::
+2 $+ $readini($racefile(Mithra), BasicInfo, Description)
+12::[Starting Stats]::
+2STR:4 $readini($racefile(Mithra), StartingStats, STR) 2DEX:4 $readini($racefile(Mithra), StartingStats, DEX) 2VIT:4 $readini($racefile(Mithra), StartingStats, VIT) 2INT:4 $readini($racefile(Mithra), StartingStats, INT) 2MND:4 $readini($racefile(Mithra), StartingStats, MND) 2PIE:4 $readini($racefile(Mithra), StartingStats, PIE)

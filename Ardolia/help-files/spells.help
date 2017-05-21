@@ -1,0 +1,11 @@
+12::[Spells]::
+2Spells are magical actions that can be performed by casters for a MP cost. Most spells can only be used in battle though there are a few that can be outside. Spells are broken down into 3 types: Attack, Heal and Buff.
+12::[What Are Attack Spells?]::
+2These are spells that deal damage to an enemy target. These can only be used in battle and can only be used on monsters.
+12::[What Are Heal Spells?]::
+2These are spells that heal damage to an ally. Most of these can only be used in battle and can only be used on yourself or other party members.
+12::[What Are Buff Spells?]::
+2These are spells that will bestow a status effect to you or a party member. Most of these can only be used in battle though there are exceptions (such as Protect and Shell).
+12::[How do I cast a spell?]::
+2Syntax: 12/me casts <spell name> on <target>
+2This command will cause you to cast the spell on a target.  Be sure to remove the < > when you actually use it.

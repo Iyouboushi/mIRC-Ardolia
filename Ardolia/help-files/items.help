@@ -1,0 +1,14 @@
+12::[Items]::
+2Items are objects that you will collect by participating in adventures and purchasing from the shop. There are 8 types of items in this game:  Heal, RestoreMP, Revive, Crystal, Adventure, Crafting, Misc, Food
+2Heal items will restore HP.  These items can only be used inside of battle.
+2RestoreMP items will restore MP. These items can only be used inside of battle.
+2Revive items will restore a fallen party member back to life. These items can only be used inside of battle.
+2Crystal items are catalysts used for crafting. They are only used via crafting and cannot be used in or out of battle.
+2Adventure items are used to perform special adventure actions such as chopping down trees. 
+2Crafting items are items that can be used along with crystals to craft new items. They cannot be used in any other way.
+2Misc items are items that have no purpose other than to sell for money or to desynth for crafting points.
+2Food items are used to give yourself special stat boosts in adventures. They can only be used in adventures but outside of battle with the <!eat> command. Note that food will last for the entire duration of the adventure and you can only eat 1 food item per adventure.
+
+12::[How do use an item?]::
+2Syntax: 12!use <item name> on <target>
+2This command will cause you to use an item on a target if the item type can be used in this way.  Be sure to remove the < > when you actually use it.

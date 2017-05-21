@@ -1,0 +1,3 @@
+12::[!go]::
+2!go <exit> is a command used in <Adventures> to move from room to room. This command can only be used on the Exits shown via !look.  Note that some exits may be blocked until certain objectives have been achieved.
+2This command consumes 1 party stamina and can only be used by the party leader.

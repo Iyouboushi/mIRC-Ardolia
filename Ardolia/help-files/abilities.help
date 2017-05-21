@@ -1,0 +1,11 @@
+12::[Abilities]::
+2Abilities are special Job actions that can be performed by you for a TP cost. Most abilities can only be used in battle though there are a few that can be outside. Abilities are broken down into 3 types: Attack, Heal and Buff.
+12::[What Are Attack Abilities?]::
+2These are abilities that deal damage to an enemy target. These can only be used in battle and can only be used on monsters.
+12::[What Are Heal Abilities?]::
+2These are abilities that heal damage to an ally. Most of these can only be used in battle and can only be used on yourself or other party members.
+12::[What Are Buff Abilities?]::
+2These are abilities that will bestow a status effect to you or a party member. Most of these can only be used in battle and will typically only apply the buff to yourself, though there are exceptions.
+12::[How do use an ability?]::
+2Syntax: 12/me uses his/her <ability name> on <target>
+2This command will cause you to use the ability on a target.  Be sure to remove the < > when you actually use it.

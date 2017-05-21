@@ -1,0 +1,7 @@
+12::[Experience]::
+2Experience (xp) is used to measure how long a player has before he/she achieves the next level. 
+12::[How do I check my XP?]::
+2Syntax: 12!xp
+2This command will display how much XP you have in the format of current / amount needed to level
+12::[How do I increase my xp?]::
+2Xp can be earned by killing monsters and clearing adventures.  

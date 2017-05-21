@@ -1,0 +1,9 @@
+12::[!armor]::
+2!armor is the command to check to see which armor you currently own.  Note that this command can only show you the first 120 pieces of the armor type that you own.
+2Command: !armor <armortype>
+
+12::[What Is Armor?]::
+2Armor is the primary way to increase your stats and make your character more powerful. Aside from increasing stats, all armor has a defense and magical defense value. It also has an item level and rarity value.  Not all armor can be worn by all jobs and most armor has a level requirement that you will need to meet in order to equip.
+
+12::[What Are the Armor Types?]::
+2shield, head, body, legs, feet, hands, ears, neck, wrists and ring

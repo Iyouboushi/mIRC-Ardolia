@@ -1,0 +1,4 @@
+12::[TaruTaru]::
+2 $+ $readini($racefile(TaruTaru), BasicInfo, Description)
+12::[Starting Stats]::
+2STR:4 $readini($racefile(TaruTaru), StartingStats, STR) 2DEX:4 $readini($racefile(TaruTaru), StartingStats, DEX) 2VIT:4 $readini($racefile(TaruTaru), StartingStats, VIT) 2INT:4 $readini($racefile(TaruTaru), StartingStats, INT) 2MND:4 $readini($racefile(TaruTaru), StartingStats, MND) 2PIE:4 $readini($racefile(TaruTaru), StartingStats, PIE)

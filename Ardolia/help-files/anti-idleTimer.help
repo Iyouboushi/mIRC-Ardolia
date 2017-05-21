@@ -4,3 +4,5 @@
 2Should the anti-idle timer command trigger a second time, the party will begin losing stamina. If the stamina goes to 0 or below, the adventure will end as a failure. Stamina will continue to drain every time the command triggers.
 12::[Why is there an Anti-Idle Timer?]::
 2This timer is put into place so that players cannot idle and hog the game. Due to the way the game is designed, players who miss the !enter period will be unable to join the party and play until the current adventure is over.  Some of the adventures may have many actions/rooms available. In order to keep it fair, the adventure must keep going forward.
+12::[How Does the Timer Reset?]::
+2Using certain commands will cause the timer to reset. The commands are: !go, !rest, !chop tree, !open chest, or any that interact with objects. It does not reset when !look is used.  The timer is also stopped while inside of battle.

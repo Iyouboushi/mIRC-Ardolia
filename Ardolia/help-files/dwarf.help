@@ -1,0 +1,4 @@
+12::[Dwarf]::
+2 $+ $readini($racefile(Dwarf), BasicInfo, Description)
+12::[Starting Stats]::
+2STR:4 $readini($racefile(Dwarf), StartingStats, STR) 2DEX:4 $readini($racefile(Dwarf), StartingStats, DEX) 2VIT:4 $readini($racefile(Dwarf), StartingStats, VIT) 2INT:4 $readini($racefile(Dwarf), StartingStats, INT) 2MND:4 $readini($racefile(Dwarf), StartingStats, MND) 2PIE:4 $readini($racefile(Dwarf), StartingStats, PIE)

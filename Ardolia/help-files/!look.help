@@ -1,0 +1,4 @@
+12::[!look]::
+2!look is a command used in <Adventures> to display the current room's information. This command will show everyone the following:
+2Room Name, Room Description, Exit List, Objects in the room and Trees (if there are any in the room).
+2This command does not consume any party stamina and can be used by any party member.

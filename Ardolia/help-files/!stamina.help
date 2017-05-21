@@ -1,0 +1,4 @@
+12::[Stamina]::
+2Party Stamina is how many adventure actions can be taken by the party while inside of an adventure.  The total number of stamina points the party has is determined by the adventure undertaken by the party.
+12::[How do I check the party's stamina?]::
+2Syntax: 12!stamina
