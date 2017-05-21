@@ -1,0 +1,12 @@
+[BasicInfo]
+Name=Dwarf
+Description=Creatures that live underground in caves and mines, building great kingdoms and castles under the rock. They are generally smaller and more musclar than humans.
+
+[StartingStats]
+STR=23
+DEX=16
+VIT=21
+INT=19
+MND=21
+PIE=18
+DET=20

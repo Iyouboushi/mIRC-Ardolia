@@ -1,0 +1,12 @@
+[BasicInfo]
+Name=Mithra
+Description=Known by Miqo'te in their native language, the Mithra are a humanoid cat-like race. Although they are mostly human they have cat ears and a long cat tail. They are nimble and dexterous. They have a purrrrfect attitude! 
+
+[StartingStats]
+STR=19
+DEX=22
+VIT=20
+INT=18
+MND=18
+PIE=19
+DET=20

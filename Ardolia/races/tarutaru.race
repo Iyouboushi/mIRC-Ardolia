@@ -1,0 +1,12 @@
+[BasicInfo]
+Name=TaruTaru
+Description=These little creatures are among the smallest known races, hardly reaching more than a meter tall. In their own language they call themselves Lalafell. Although they are not as strong as the other races they make it up with their natural attunement to magic.
+
+[StartingStats]
+STR=18
+DEX=19
+VIT=16
+INT=23
+MND=23
+PIE=21
+DET=20
