@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/22/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -489,6 +489,15 @@ adventure.look {
 ; Reads a room desc if there is one
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.room.desc { return $readini($zonefile(adventure), %current.room, LookDesc) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns the clear status of a room
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+room.clear.status {
+  ; $1 = the room #
+  if ($readini($zonefile(adventure), $1, Clear) = $null) { return false }
+  else { return $readini($zonefile(adventure), $1, Clear) }
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Returns the # of trees in the room
