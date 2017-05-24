@@ -459,7 +459,7 @@ ShieldAbsorb=$chr(3) $+ 7 $+ %real.name $+ 's %left.hand.weapon has absorbed 
 LandsACriticalHit=$chr(3) $+ 4 $+ $get_chr_name($1) lands a critical hit! 
 
 
-NormalDodge=$chr(3) $+ 7 $+ $get_chr_name($3) $iif($rand(1,2) = 1, swiftly and gracefully dodges the attack!, has evaded the attack)
+NormalDodge=$chr(3) $+ 7 $+ $get_chr_name($2) $iif($rand(1,2) = 1, swiftly and gracefully dodges the attack!, has evaded the attack)
 ThirdEyeDodge=$chr(3) $+ 7 $+ %real.name predicts the attack and dodges it! 
 
 PerformsAMultiHitAttack=$chr(3) $+ 4 $+ %user performs a %number.of.hits $+ -hit $iif($4 = tech, attack!, $iif($readini($char($1), weapons, equippedLeft) != $null, attack against %enemy using two weapons!, attack against %enemy $+ !))

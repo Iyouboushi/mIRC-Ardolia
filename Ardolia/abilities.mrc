@@ -55,7 +55,6 @@ alias ability_cmd {
   ; Are we in an adventure?
   if (%adventureis = off) { halt }
 
-
   ; Can this ability be used outside of battle?
   if ($readini($dbfile(abilities.db), $2, CanUseOutsideBattle) != true) {  
     $check_for_battle($1) 
@@ -177,8 +176,6 @@ alias ability.attack {
   ; Decrease the action points
   $action.points($1, remove, 4)
 
-  var %tech.element $readini($dbfile(abilities.db), $2, element)
-
   if ($readini($dbfile(abilities.db), $2, absorb) = yes) { set %absorb absorb }
   else { set %absorb none }
 
@@ -242,12 +239,14 @@ alias calculate_damage_ability {
   ; $3 = target
   ; $4 = optional flag ("heal" or "aoe" or "suicide")
 
+  $calculate.accuracy($1, $3)
+  if (%guard.message != $null) { set %attack.damage 0 | return }
+
   if ($flag($1) = monster) { $formula.ability($1, $2, $3, $4) }
   else { $formula.ability($1, $2, $3, $4 }
 
-  unset %tech.howmany.hits |  unset %enemy.defense | set %multihit.message.on on
-  unset %attacker.level | unset %defender.level | unset %tech.count | unset %tech.power | unset %base.weapon
-  unset %capamount
+  unset %enemy.defense | set %multihit.message.on on
+  unset %attacker.level | unset %defender.level 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

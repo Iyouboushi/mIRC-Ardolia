@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/23/17
+;;;; Last updated: 05/24/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -154,21 +154,41 @@ calculate.evasion {
 calculate.accuracy {
   ; $1 = the person we need the accuracy for
   ; $2 = the target
-  ; $3 = melee or spell
 
-  var %accuracy $roll(2d6)
-
-  if ($get.level($1) < $get.level($2)) { var %accuracy $roll(1d6) }
-
-  if ($3 = melee) {
-    inc %accuracy $round($calc($current.dex($1) /2),0)
+  ; Monsters normally always hit
+  if ($flag($1) = monster) { 
+    ; TO-DO: Check for skills that let players dodge.  
+    return 
   }
 
-  if ($3 = spell) { 
-    inc %accuracy $current.pie($1)
+  ; Max accuracy is 95%, lowest accuracy is 5%
+  var %accuracy 90
+
+  ; If the player's level is equal or higher than the monster's then accuracy is 95%
+  if ($get.level($1) >= $get.level($2)) { var %accuracy 95 }
+
+  ; Otherwise, accuracy decreases.
+  if ($get.level($1) < $get.level($2)) { 
+    dec %accuracy $calc($get.level($2) - $get.level($1))
   }
 
-  return %accuracy
+  ; check for status effects that lower accuracy
+  if ($status.check($1, blind) != $null) { dec %accuracy $calc(%accuracy * .5) }
+
+  ; check for status effects that raise accuracy
+
+  ; We never want accuracy to be below 5%
+  if (%accuracy < 5) { var %accuracy 5 }
+
+  ; And we never want accuracy above 95
+  if (%accuracy > 95) { var %accuracy 95 }
+
+  var %hit.chance $roll(1d100)
+
+  ; Check to see if the player has hit the target
+  if (%hit.chance <= %accuracy) { return }
+  else { set %guard.message $translate(NormalDodge, $2) }
+
 }
 
 

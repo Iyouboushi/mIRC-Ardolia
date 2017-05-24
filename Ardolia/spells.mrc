@@ -195,12 +195,16 @@ alias spell.attack {
             inc %targets.hit 1
 
             ; Get the attack damage
-            set %attack.damage $calculate.spell.damage($1, $2)
+            $calculate.accuracy($1, $3)
+            if (%guard.message != $null) { set %attack.damage 0 }
+            else {    
+              set %attack.damage $calculate.spell.damage($1, $2)
 
-            ; Get the defense for the current
-            var %damage.defense.percent $calculate.defense(%battle.member.name, magical)
-            set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
-            if (%attack.damage <= 0) { set %attack.damage 1 }
+              ; Get the defense for the current
+              var %damage.defense.percent $calculate.defense(%battle.member.name, magical)
+              set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+              if (%attack.damage <= 0) { set %attack.damage 1 }
+            }
 
             ; Deal and display the damage
             $deal_damage($1, %battle.member.name, $2, %absorb, spell)
@@ -216,12 +220,16 @@ alias spell.attack {
     ; Not an AOE
 
     ; Get the attack amount
-    set %attack.damage $calculate.spell.damage($1, $2)
+    $calculate.accuracy($1, $3)
+    if (%guard.message != $null) { set %attack.damage 0 }
+    else {    
+      set %attack.damage $calculate.spell.damage($1, $2)
 
-    ; Get the defense for one person    
-    var %damage.defense.percent $calculate.defense($3, magical)
-    set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
-    if (%attack.damage <= 0) { set %attack.damage 1 }
+      ; Get the defense for one person    
+      var %damage.defense.percent $calculate.defense($3, magical)
+      set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+      if (%attack.damage <= 0) { set %attack.damage 1 }
+    }
 
     ; Deal and display the damage done
     $deal_damage($1, $3, $2, %absorb, spell)

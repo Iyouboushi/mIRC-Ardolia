@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/24/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -148,26 +148,7 @@ alias calculate_damage_weapon {
   ; $2 = weapon equipped
   ; $3 = target / %enemy 
 
-  ; Do I want to add the ability to dodge?? That's something to consider.
-
-  var %attacker.acc $calculate.accuracy($1, $3, melee)
-  var %defender.evasion $calculate.evasion($1, $3)
-
-  ;  var %to.hit.chance 50
-  ;  inc %to.hit.chance %attacker.acc
-  ;  dec %to.hit.chance %defender.evasion
-
-  ;  if (%to.hit.chance >= 100) { var %to.hit.chance 90 }
-  ;  if (%to.hit.chance < 10) { var %to.hit.chance 10 }
-
-  ;  var %hit.chance $roll(1d100)
-
-  var %hit.chance 1
-
-  ; Check to see if the target dodged it
-  ;  if (%attacker.acc < %defender.evasion) { set %guard.message $readini(translation.dat, battle, NormalDodge) }
-  ; if (%hit.chance > %to.hit.chance) { set %guard.message $readini(translation.dat, battle, NormalDodge) }
-
+  $calculate.accuracy($1, $3)
   if (%guard.message != $null) { set %attack.damage 0 | return }
 
   if ($flag($1) = monster) { $formula.melee.monster($1, $2, $3, $4) }

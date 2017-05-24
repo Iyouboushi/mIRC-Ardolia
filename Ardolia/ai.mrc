@@ -200,7 +200,6 @@ alias ai_abilitycheck {
 
   if (%ability.list = $null) { return false }
 
-
   ; Randomly picks an ability to use from the list
   set %total.abilities $numtok(%ability.list, 46)
   set %random.ability $rand(1,%total.abilities)
