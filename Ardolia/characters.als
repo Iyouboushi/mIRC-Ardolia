@@ -1161,6 +1161,11 @@ buff.check {
 
   if ($2 = speed) {
     if ($status.check($1, haste) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
+    if ($status.check($1, swiftsong) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 10)) }
+  }
+
+  if ($2 = CurePotency) {
+    if ($status.check($1, DivineSeal) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 30)) }
   }
 
   return %buff.increase
