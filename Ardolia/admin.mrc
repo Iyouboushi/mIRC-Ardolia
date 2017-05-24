@@ -240,8 +240,14 @@ on 50:TEXT:@adventure go:*: {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Bot owners can end the adventure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 50:TEXT:@adventure end*:*: {  $adventure.end($3) }
-on 50:TEXT:@end adventure*:*: {  $adventure.end($3) }
+on 50:TEXT:@adventure end*:*: { 
+  if (%battleis = on) { $battle.end($3) } 
+  $adventure.end($3) 
+}
+on 50:TEXT:@end adventure*:*: {  
+  if (%battleis = on) { $battle.end($3) } 
+  $adventure.end($3) 
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Bot owners can end the current battle
