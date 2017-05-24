@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; AI COMMANDS
-;;;; Last updated: 05/23/17
+;;;; Last updated: 05/24/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -156,6 +156,8 @@ alias ai_abilitycheck {
     if ($readini($char($1), info, ai_type) != abilityonly) { return }
   }
 
+  if ($status.check($1, amnesia) != $null) { return }
+
   var %number.of.abilities $ini($char($1), abilities, 0)
   if ((%number.of.abilities = 0) || (%number.of.abilities = $null)) { return }
 
@@ -223,6 +225,10 @@ alias ai_spellcheck {
   if ((no-spell isin %battleconditions) || (no-spells isin %battleconditions)) { 
     if ($readini($char($1), info, ai_type) != spellonly) { return }
   }
+
+  if ($status.check($1, amnesia) != $null) { return }
+  if ($status.check($1, mute) != $null) { return }
+  if ($status.check($1, silenced) != $null) { return }
 
   var %number.of.spells $ini($char($1), spells, 0)
   if ((%number.of.spells = 0) || (%number.of.spells = $null)) { return }
