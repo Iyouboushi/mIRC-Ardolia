@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/23/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; TO-DO: Status effects
 
@@ -57,6 +57,7 @@ alias spell_cmd {
     $no.turn.check($1,admin)
   }
 
+  if (%attack.target = $null) { set %attack.target $3 } 
 
   var %spell.type $readini($dbfile(spells.db), $2, Type) | $amnesia.check($1, spell) 
 
@@ -72,14 +73,16 @@ alias spell_cmd {
     if ($readini($char($2), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoIsDead, $1, $2),private) | unset %real.name | halt }
     if ($readini($char($2), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $2),private) | unset %real.name | halt } 
 
-    ; Can this job use this ability?
-    var %jobs.list $readini($dbfile(spells.db), $2, jobs)
-    if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseSpell, $1, $2) , private) | halt }
-  }
+    if ($flag($1) != monster) { 
+      ; Can this job use this ability?
+      var %jobs.list $readini($dbfile(spells.db), $2, jobs)
+      if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseSpell, $1, $2) , private) | halt }
+    }
 
-  ; Are we high enough level to use this spell?
-  var %spell.level $readini($dbfile(spells.db), $2, level)
-  if ($get.level($1) < %spell.level) { $display.message($translate(NotRightLevelForSpell, $1, $2),private) | halt }
+    ; Are we high enough level to use this spell?
+    var %spell.level $readini($dbfile(spells.db), $2, level)
+    if ($get.level($1) < %spell.level) { $display.message($translate(NotRightLevelForSpell, $1, $2),private) | halt }
+  }
 
   ; Can we use this spell again so soon?
   $cooldown.check($1, $2, spell)
@@ -237,6 +240,7 @@ alias spell.heal {
   ; $3 = the target
 
   set %heal.amount $calculate.spell.damage($1, $2)
+  inc %heal.amount $buff.check($1, CurePotency, %heal.amount)
 
   ; Is this spell an AOE?  If so, apply it to everyone
   if ($readini($dbfile(spells.db), $2, AOE) = true) {   

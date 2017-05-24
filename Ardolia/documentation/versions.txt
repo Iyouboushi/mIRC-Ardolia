@@ -1,6 +1,11 @@
 Ardolia Bot Changelog
 =========================
 
+05-23-2017
+- Added the ability for AI monsters to use abilities
+- Added the ability for AI monsters to use spells
+- Added the suicide type abilities for monsters to use
+
 05-20-2017
 - Added code for healing spells and abilities (including AOEs)
 - Added code for AOE attack abilities

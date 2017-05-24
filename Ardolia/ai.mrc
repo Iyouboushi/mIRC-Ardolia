@@ -1,9 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; AI COMMANDS
-;;;; Last updated: 05/20/17
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This file is seriously unfinished
-; TO-DO: let monsters pick spells and abilities and use them
+;;;; Last updated: 05/23/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -52,8 +49,8 @@ alias ai_turn {
   /.timerBattleNext 1 30 /next
 
   ; Clear some old variables
-  unset %ai.target | unset %ai.targetlist | unset %ai.tech | unset %opponent.flag | unset %ai.skill | unset %ai.skilllist | unset %ai.type | unset %ai.ignition
-  unset %ai.action
+  unset %ai.target | unset %ai.targetlist | unset %ai.ability | unset %ai.spell | unset %opponent.flag 
+  unset %ai.type | unset %ai.action
 
   set %ai.type $readini($char($1), info, ai_type) 
 
@@ -61,11 +58,11 @@ alias ai_turn {
   if ($flag($1) = monster) { set %opponent.flag player }
   if ($flag($1) = npc) { set %opponent.flag monster }
 
-  if ($readini($char($1), status, charmed) = yes) { 
-    if ($readini($char($1), info, flag) = monster) { set %opponent.flag monster } 
+  if ($status.check($1, charm) != $null) { 
+    if ($flag($1) = monster) { set %opponent.flag monster } 
     else { set %opponent.flag player }
   }
-  if ($readini($char($1), status, confuse) = yes) { 
+  if ($status.check($1, charm) != $null) { 
     var %random.target $rand(1,2)
     if (%random.target = 1) { set %opponent.flag monster }
     if (%random.target = 2) { set %opponent.flag player }
@@ -83,29 +80,34 @@ alias ai_turn {
 
   unset %total.actions |  unset %random.action 
 
-  if (($readini($char($1), info, ai_type) = PayToAttack) && (%ai.tech != $null)) { set %ai.action tech }
-
   ; do an action
-  set %ai.action attack
 
   if (%ai.action = $null) { set %ai.action attack | echo -a 4ERORR: AI ACTION WAS NULL!  }
   writeini $txtfile(battle2.txt) BattleInfo $1 $+ .lastactionbar %ai.action
 
-  if (%ai.action = tech) { 
+  ; AI action is ability
+  if (%ai.action = ability) { 
     $ai_gettarget($1)
-    if (%ai.target = $null) { echo -a target null! | set %ai.action $iif($readini($char($1), info, ai_type) = techonly, taunt, attack)  }
-    else { $tech_cmd($1, %ai.tech, %ai.target) | halt }
+    if (%ai.target = $null) { echo -a target null! | set %ai.action attack  }
+    else { $ability_cmd($1, %ai.ability, %ai.target) | halt }
   } 
 
+  ; AI action is spell
+  if (%ai.action = spell) { 
+    $ai_gettarget($1)
+    if (%ai.target = $null) { echo -a target null! | set %ai.action attack  }
+    else { $spell_cmd($1, %ai.spell, %ai.target) | halt }
+  } 
+
+  ; AI action is melee attack
   if (%ai.action = attack) { $ai_gettarget($1) 
-    if (%ai.target = $null) { echo -a target null | set %ai.action taunt }
+    if (%ai.target = $null) { echo -a target null | set %ai.action flee }
     else { $attack_cmd($1, %ai.target) | halt }
   }
 
-  if (%ai.action = taunt) { set %taunt.action true | $ai_gettarget($1) | $taunt($1 , %ai.target) | halt } 
+  ; AI action is fleeing the battle
   if (%ai.action = flee) { $ai.flee($1) | halt }
-  if (%ai.action = ability) { $ai_chooseability($1) | halt }
-  if (%ai.action = item) { $ai_gettarget($1) | $uses_item($1, %ai.item, on, %ai.target, $4) halt }
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -115,16 +117,12 @@ alias ai_turn {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias ai.buildactionbar {
   ; This alias builds a list of actions the user is able to do.
-  var %last.actionbar.action  $readini($txtfile(battle2.txt), Battleinfo, $1 $+ .lastactionbar)
+  var %last.actionbar.action $readini($txtfile(battle2.txt), Battleinfo, $1 $+ .lastactionbar)
 
   set %action.bar attack
 
   ; If the monster is under amnesia, just attack.
-  if ($readini($char($1), status, amnesia) = yes) { return }
-
-
-  ; Can the monster use an item?
-  if ($readini($char($1), info, CanUseItems) != false) { $ai_itemcheck($1) } 
+  if ($status.check($1, amnesia) != $null) { return } 
 
   ; can the monster flee?
   if ($readini($char($1), info, CanFlee) = true) { 
@@ -148,29 +146,6 @@ alias ai.buildactionbar {
   if (%last.actionbar.action != attack) {  %action.bar = %action.bar $+ .attack }
 }
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Checks to see if monsters can
-; use items
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-alias ai_itemcheck {
-  unset %ai.item | unset %items.list.ai
-  if ((no-item isin %battleconditions) || (no-items isin %battleconditions)) { return }
-  if ($readini($char($1), info, flag) = $null) { return }
-  if ($readini($char($1), info, clone) = yes) { return }
-
-  ; TO DO: build a list of items that the monster can use and pick from it.
-
-  if (%items.list.ai = $null) { return }
-
-  ; Get the item to be used
-  set %total.items.ai $numtok(%items.list.ai, 46)
-  set %random.item.ai $rand(1,%total.items.ai)
-
-  set %ai.item $gettok(%items.list.ai,%random.item.ai,46)
-  %action.bar = %action.bar $+ .item
-
-  unset %total.items.ai |  unset %random.item.ai
-}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Ability check
@@ -181,16 +156,40 @@ alias ai_abilitycheck {
     if ($readini($char($1), info, ai_type) != abilityonly) { return }
   }
 
+  var %number.of.abilities $ini($char($1), abilities, 0)
+  if ((%number.of.abilities = 0) || (%number.of.abilities = $null)) { return }
 
-  ; TO DO: cycle through [abilities] and find anything that is =1 or higher and add it to the list if the monster has enough TP
+  ; Look through the ability list and see if this monster can use this right now.
+  var %current.ability.counter 1
+  while (%current.ability.counter <= %number.of.abilities) {
+    var %ability.name $ini($char($1), abilities, %current.ability.counter)
+    var %ability.value $readini($char($1), abilities, %ability.name)
 
+    if ((%ability.value != $null) && (%ability.value >= 1)) { 
 
+      ; Does the monster have enough TP to use this?
+      var %ability.tp $readini($dbfile(abilities.db), %ability.name, cost)
+      if ($current.tp($1) >= %ability.tp)  {
 
+        ; Is the monster high enough level for this?
+        if ($get.level($1) >= $readini($dbfile(abilities.db), %ability.name, level)) { 
 
-  if (%abilities = $null) { return false }
+          ; Is the cooldown ready for this?
+          var %cooldown.turns $readini($dbfile(abilities.db), %ability.name, cooldown)
+          var %last.turn.used $readini($char($1), cooldowns, %ability.name)
 
-  if ($person_in_mech($1) = false) {  var %current.tp $readini($char($1), battle, tp) }
-  if ($person_in_mech($1) = true) { var %current.tp $readini($char($1), mech, energyCurrent) }
+          if (%last.turn.used = $null) { var %next.turn.can.use 0 }
+          else { var %next.turn.can.use $calc(%last.turn.used + %cooldown.turns) }
+
+          ; The monster has enough TP and the cooldown is ready, so let's add it so the monster can use it.
+          if (%true.turn >= %next.turn.can.use) { %ability.list = $addtok(%ability.list, %ability.name, 46) }
+        }
+      }
+
+    }
+
+    inc %current.ability.counter
+  }
 
   if ((%ability.list = $null) && (%ai.type = healer)) { 
     writeini $char($1) abilities FirstAid 10
@@ -199,14 +198,85 @@ alias ai_abilitycheck {
 
   if (%ability.list = $null) { return false }
 
-  $ai_chooseability
+
+  ; Randomly picks an ability to use from the list
+  set %total.abilities $numtok(%ability.list, 46)
+  set %random.ability $rand(1,%total.abilities)
+  set %ai.ability $gettok(%ability.list,%random.ability,46)
+
+  unset %total.abilities
+  unset %random.ability
 
   if (%ai.ability = $null) { return false }
 
-  unset %random.ability | unset %total.abilities | unset %weapon.equipped | unset %abilities | unset %number.of.abilities
+  unset %random.ability | unset %total.abilities | unset %number.of.abilities
 
   return true
 }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Spell check
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias ai_spellcheck {
+  unset %ai.spell | unset %spell.list | unset %spells | unset %number.of.spells
+  if ((no-spell isin %battleconditions) || (no-spells isin %battleconditions)) { 
+    if ($readini($char($1), info, ai_type) != spellonly) { return }
+  }
+
+  var %number.of.spells $ini($char($1), spells, 0)
+  if ((%number.of.spells = 0) || (%number.of.spells = $null)) { return }
+
+  ; Look through the spell list and see if this monster can use this right now.
+  var %current.spell.counter 1
+  while (%current.spell.counter <= %number.of.spells) {
+    var %spell.name $ini($char($1), spells, %current.spell.counter)
+    var %spell.value $readini($char($1), spells, %spell.name)
+
+    if ((%spell.value != $null) && (%spell.value >= 1)) { 
+
+      ; Does the monster have enough MP to use this?
+      var %spell.mp $readini($dbfile(spells.db), %spell.name, cost)
+      if ($current.mp($1) >= %spell.mp)  {
+
+        ; Is the monster high enough level for this?
+        if ($get.level($1) >= $readini($dbfile(spells.db), %spell.name, level)) { 
+
+          ; Is the cooldown ready for this?
+          var %cooldown.turns $readini($dbfile(spells.db), %spell.name, cooldown)
+          var %last.turn.used $readini($char($1), cooldowns, %spell.name)
+
+          if (%last.turn.used = $null) { var %next.turn.can.use 0 }
+          else { var %next.turn.can.use $calc(%last.turn.used + %cooldown.turns) }
+
+          ; The monster has enough MP and the cooldown is ready, so let's add it so the monster can use it.
+          if (%true.turn >= %next.turn.can.use) { %spell.list = $addtok(%spell.list, %spell.name, 46) }
+        }
+      }
+
+    }
+
+    inc %current.spell.counter
+  }
+
+  if (%spell.list = $null) { return false }
+
+  ; Randomly picks an spell to use from the list
+  set %total.spells $numtok(%spell.list, 46)
+  set %random.spell $rand(1,%total.spells)
+  set %ai.spell $gettok(%spell.list,%random.spell,46)
+
+  unset %total.spells
+  unset %random.spell
+
+  if (%ai.spell = $null) { return false }
+
+  unset %random.spell | unset %total.spells | unset %number.of.spells
+
+  return true
+}
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Monster attempts to flee from
@@ -228,6 +298,10 @@ alias ai.flee {
 ; to attack (via enmity)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias ai_gettarget {
+  ; If the monster is using a healing spell or ability, target itself.
+  if ((%ai.action = spell) && ($readini($dbfile(spells.db), %ai.spell, type) = heal)) { set %ai.target $1 | return }
+  if ((%ai.action = ability) && ($readini($dbfile(abilities.db), %ai.ability, type) = heal)) { set %ai.target $1 | return }
+
   ; Is the enmity list blank?  If so, pick a target at random.
   var %number.of.enmity.targets $ini($txtfile(battle2.txt), enmity, 0)
   if ((%number.of.enmity.targets = 0) || (%number.of.enmity.targets = $null)) { $ai_gettarget.random($1) | return }
@@ -263,14 +337,12 @@ alias ai_gettarget {
 ; Returns a target for the AI
 ; to attack (completely random)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This alias still needs to be cleaned up
-; as it is still pretty much the same from BA
 alias ai_gettarget.random {
   unset %ai.targetlist | unset %tech.type | unset %status.type
 
   if (%ai.action = ability) {  
-    set %tech.type $readini($dbfile(abilities.db), %ai.tech, type)  
-    var %status.type $readini($dbfile(abilities.db), %ai.tech, statusEffect)
+    set %tech.type $readini($dbfile(abilities.db), %ai.ability, type)  
+    var %status.type $readini($dbfile(abilities.db), %ai.ability, statusEffect)
   }
 
   if ((((%tech.type = heal) || (%tech.type = aoeheal) || (%tech.type = ClearStatusNegative) || (%tech.type = buff)))) {
@@ -288,7 +360,7 @@ alias ai_gettarget.random {
 
   if ((%opponent.flag = monster) && ($readini($char($1), info, flag) = npc)) {
     if ($is_confused($1) != true) {
-      if (%ai.action = tech) { var %element $readini($dbfile(abilities.db), %ai.tech, Element) }
+      if (%ai.action = tech) { var %element $readini($dbfile(abilities.db), %ai.ability, Element) }
       if (%ai.action = attack) { var %element $readini($dbfile(weapons.db), $readini($char($1), Weapons, Equipped), Element) }
 
       if ((%element = none) || (%element = $null)) { unset %element }
@@ -445,19 +517,6 @@ alias add_target {
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; AI choose tech
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This needs to be changed to work
-; with spells and abilities.
-alias ai_choosetech {
-  set %total.techs $numtok(%tech.list, 46)
-  set %random.tech $rand(1,%total.techs)
-  set %ai.tech $gettok(%tech.list,%random.tech,46)
-}
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Lets a monster summon other
 ; monsters
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -470,9 +529,7 @@ alias ai.monstersummon {
 
       if (($readini(system.dat, system, botType) = IRC) || ($readini(system.dat, system, botType) = TWITCH)) { 
         var %max.number.of.mons $readini(system.dat, system, MaxNumberOfMonsInBattle)
-        if (%max.number.of.mons = $null) { var %max.number.of.mons 6 }
-        if (%battle.type = dungeon) { inc %max.number.of.mons 4 }
-
+        if (%max.number.of.mons = $null) { var %max.number.of.mons 10 }
       }
 
       if ($readini(system.dat, system, botType) = DCCchat) { var %max.number.of.mons 50 }

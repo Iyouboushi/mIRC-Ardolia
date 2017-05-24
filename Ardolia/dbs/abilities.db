@@ -1,6 +1,6 @@
 ; [Name]
 ; Level= What level can the player use this ability at?
-; Type= attack/Buff/heal
+; Type= attack/Buff/heal/scriptonly
 ; AOE= true/false
 ; Info= Desc shown in !view-info
 ; Description= What shows when this is used in battle
@@ -12,6 +12,7 @@
 ; BuffLength= How many turns will the player(s) gain this buff?
 ; Job= which jobs can use this ability?
 ; StatusEffect= Which status effect is applied to the target?
+; CanUseOutsideBattle= true/false  If true then it can be used in adventures outside of battle
 
 =============================================
 WARRIOR
@@ -71,6 +72,8 @@ EnmityMultiplier=1.5
 Job=WAR
 
 
+
+
 =============================================
 PALADIN
 =============================================
@@ -114,11 +117,124 @@ Potency=$iif($rand(1,2) = 1, 300, 0)
 EnmityMultiplier=2
 Job=WHM
 
+[DivineSeal]
+level=40
+Type=Buff
+AOE=false
+Info=This ability will increase your cure spell amounts by 30% for 3 turns
+Description=prepares for the next few attacks!
+Cooldown=10
+Cost=100
+Stat=mnd
+Potency=30
+EnmityMultiplier=1.2
+Job=WHM
+BuffLength=3
+StatusEffect=DivineSeal
+
+[Tetragrammaton]
+Level=60
+Type=Heal
+AOE=false
+Info=
+Description=
+Cooldown=100
+Cost=500
+Stat=mnd
+Potency=700
+EnmityMultiplier=10
+Job=WHM
+
 
 =============================================
 BLM
 =============================================
 
+
+
 =============================================
 BRD
 =============================================
+
+[SwiftSong]
+level=22
+Type=Buff
+AOE=true
+Info=This ability will increase each party member's speed by 10% for 10 rounds
+Description=prepares for the next few attacks!
+Cooldown=5
+Cost=200
+Stat=str
+Potency=100
+EnmityMultiplier=1.2
+Job=BRD
+BuffLength=10
+StatusEffect=SwiftSong
+CanUseOutsideBattle=true
+
+
+
+=============================================
+TANK JOBS
+=============================================
+[Provoke]
+Level=22
+Type=scriptonly
+AOE=false
+Info=Doubles your current enmity to help draw the monster's attention towards yourself.
+Description=
+Cooldown=10
+Cost=500
+Stat=str
+Potency=100
+Job=$return.systemsetting(JobsTanks)
+Prescript=$enmity($1, add, $enmity($1, return))
+
+
+
+=============================================
+MONSTERS
+=============================================
+
+[FirstAid]
+Level=1
+Type=Heal
+AOE=true
+Info=
+Description=
+Cooldown=1
+Cost=100
+Stat=mnd
+Potency=100
+EnmityMultiplier=1
+Job=all
+
+[SharpSting]
+level=1
+Type=Attack
+AOE=false
+Info=
+Description=flies up above $get_chr_name($3) and comes down with a sharp sting!
+Cooldown=2
+Cost=100
+Stat=str
+Potency=150
+EnmityMultiplier=1.2
+Job=all
+
+[FinalSting]
+level=1
+Type=suicide
+AOE=false
+Info=
+Description=glows a bright yellow before ramming $gender($1) stinger into $get_chr_name($3) one last time, performing a final sting.
+Cooldown=10
+Cost=200
+Stat=str
+Potency=500
+EnmityMultiplier=1
+Job=all
+Stat=HP
+
+
+

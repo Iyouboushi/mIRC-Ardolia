@@ -437,6 +437,8 @@ CurrentPartyLeader=$chr(3) $+ 3The current party leader is: $2
 
 FoodEaten=$chr(3) $+ 3 $+ $get_chr_name($2) has eaten the $3 food item!  Nom nom nom!
 
+SuicideUseAllHP=$chr(3) $+ 4 $+ $get_chr_name($2) uses all of $gender($2) health to perform this ability!
+
 
 BatListTitleMessage=$chr(3) $+ 10 $+ -=BATTLE INFORMATION=-
 StepsUpFirst=$chr(3) $+ 2 $+ $get_chr_name($read($txtfile(battle.txt),1)) steps up first in the battle!

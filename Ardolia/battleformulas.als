@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/23/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -320,9 +320,9 @@ formula.melee.monster {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Attack Ability Formula for Players
+; Attack Ability Formula
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-formula.ability.player {
+formula.ability {
   ; $1 = the person we're checking
   ; $2 = the ability name
   ; $3 = the target
@@ -332,11 +332,4 @@ formula.ability.player {
 
   set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
   if (%attack.damage <= 0) { set %attack.damage 1 }
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Attack Ability Formula for Monsterss
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-formula.ability.monster {
-
 }

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/23/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; TO-DO: status effects
 
@@ -62,6 +62,8 @@ alias ability_cmd {
     $no.turn.check($1,admin)
   }
 
+  if (%attack.target = $null) { set %attack.target $3 } 
+
   var %ability.type $readini($dbfile(abilities.db), $2, Type) | $amnesia.check($1, ability) 
 
   if ($flag($1) != monster) {
@@ -87,14 +89,16 @@ alias ability_cmd {
       $no.turn.check($1,admin)
     }
 
-    ; Can this job use this ability?
-    var %jobs.list $readini($dbfile(abilities.db), $2, job)
-    if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseAbility, $1, $2) , private) | halt }
-  }
+    if ($flag($1) != monster) { 
+      ; Can this job use this ability?
+      var %jobs.list $readini($dbfile(abilities.db), $2, job)
+      if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseAbility, $1, $2) , private) | halt }
+    }
 
-  ; Are we high enough level to use this ability?
-  var %ability.level $readini($dbfile(abilities.db), $2, level)
-  if ($get.level($1) < %ability.level) { $display.message($translate(NotRightLevelForAbility, $1, $2),private) | halt }
+    ; Are we high enough level to use this ability?
+    var %ability.level $readini($dbfile(abilities.db), $2, level)
+    if ($get.level($1) < %ability.level) { $display.message($translate(NotRightLevelForAbility, $1, $2),private) | halt }
+  }
 
   ; Can we use this ability again so soon?
   $cooldown.check($1, $2, ability)
@@ -145,7 +149,14 @@ alias ability_cmd {
   if (%ability.type = attack) {  $ability.attack($1, $2, %attack.target, %tp.have )  }
   if (%ability.type = heal) { $ability.heal($1, $2, $3, %tp.have) }
   if (%ability.type = buff) { $ability.buff($1, $2, $3) }
-  if (%ability.type = suicide) { $ability.suicide($1, $2, %attack.target, %tp.have )  }
+  if (%ability.type = suicide) { 
+
+    $display.message($translate(SuicideUseAllHP, $1), battle)
+    $ability.attack($1, $2, %attack.target, suicide) 
+    writeini $char($1) Battle HP 0
+    writeini $char($1) Battle Status dead 
+    $add.monster.xp($1, $1)
+  }
 
   ; Check for a postcript
   if ($readini($dbfile(abilities.db), n, $2, PostScript) != $null) { $readini($dbfile(abilities.db), p, $2, PostScript) }
@@ -170,7 +181,6 @@ alias ability.attack {
 
   if ($readini($dbfile(abilities.db), $2, absorb) = yes) { set %absorb absorb }
   else { set %absorb none }
-
 
   ; Single target ability
   if ($readini($dbfile(abilities.db), $2, AOE) != true) {
@@ -230,11 +240,10 @@ alias calculate_damage_ability {
   ; $1 = user
   ; $2 = ability used
   ; $3 = target
-  ; $4 = optional flag ("heal" or "aoe")
-  ; $5 = the tp value at the time of use
+  ; $4 = optional flag ("heal" or "aoe" or "suicide")
 
-  if ($flag($1) = monster) { $formula.ability.monster($1, $2, $3, $4, $5) }
-  else { $formula.ability.player($1, $2, $3, $4, $5) }
+  if ($flag($1) = monster) { $formula.ability($1, $2, $3, $4) }
+  else { $formula.ability($1, $2, $3, $4 }
 
   unset %tech.howmany.hits |  unset %enemy.defense | set %multihit.message.on on
   unset %attacker.level | unset %defender.level | unset %tech.count | unset %tech.power | unset %base.weapon
