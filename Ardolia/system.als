@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/27/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1458,18 +1458,18 @@ hp_mech_hpcommand {
 ; $1 = person being restored
 ; $2 = amount
 restore_hp {
-  var %max.hp $readini($char($1), basestats, hp)
-  var %current.hp $readini($char($1), battle, hp)
+  var %max.hp $resting.hp($1)
+  var %current.hp $current.hp($1)
   inc %current.hp $2
 
   writeini $char($1) battle hp %current.hp 
 }
 
 restore_mp {
-  var %max.mp $readini($char($1), basestats, tp)
-  var %current.mp $readini($char($1), battle, tp)
+  var %max.mp $resting.mp($1) 
+  var %current.mp $current.mp($1)
   inc %current.mp $2
-  writeini $char($1) battle tp %current.tp 
+  writeini $char($1) battle mp %current.mp 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

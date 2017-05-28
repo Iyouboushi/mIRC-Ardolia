@@ -1168,6 +1168,16 @@ buff.check {
     if ($status.check($1, DivineSeal) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 30)) }
   }
 
+
+  ; Status effects that decrease the enmity multiplier
+  if ($2 = DecreaseEnmity) {
+    if ($status.check($1, QuellingStrikes) != $null) { inc %buff.increase .5 }
+  }
+
+  ; Status effects that increase the enmity multiplier
+  if ($2 = IncreaseEnmity) {
+  }
+
   return %buff.increase
 }
 

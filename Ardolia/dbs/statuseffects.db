@@ -1,0 +1,25 @@
+=============================================
+; This file is used to store the % chance
+; and length of the various status effects
+; in the game.  If you wish to adjust these
+; feel free.  
+;
+; 100 = 100% chance of inflicting before
+; monster modifiers.
+;
+; Length = how many turns the status effect
+; will last. These are "real turns" so even
+; if the battle ends the status effect will
+; still be on until the next battle continues
+; counting down the turns.
+=============================================
+
+
+[Poison]
+Chance=100
+Length=5
+
+[Blind]
+Chance=100
+Length=3
+

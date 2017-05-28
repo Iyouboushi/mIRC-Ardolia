@@ -591,21 +591,10 @@ BigSpender=$chr(3) $+ 10 $+ %real.name has unlocked the achievement: Big Spen
 Statuses
 =======================
 ; Negative status effects
-Frozen=$chr(3) $+ 4 $+ frozen
-Freezing=$chr(3) $+ 4 $+ frozen
-Shock=$chr(3) $+ 4 $+ shocked
-Burning=$chr(3) $+ 4 $+ burning
-Drowning=$chr(3) $+ 4 $+ drowning
-Earthquake=$chr(3) $+ 4 $+ shaking violently
-Tornado=$chr(3) $+ 4 $+ caught in a tornado
-Rage=$chr(3) $+ 4 $+ enraged
 Poison=$chr(3) $+ 4 $+ poisoned
-HeavyPoison=$chr(3) $+ 4 $+ poisoned heavily
 Blind=$chr(3) $+ 4 $+ blinded
 Silence=$chr(3) $+ 4 $+ silenced
 Intimidate=$chr(3) $+ 4 $+ intimidated
-Weight=$chr(3) $+ 4 $+ weighed down
-Charmed=$chr(3) $+ 4 $+ charmed by $readini($char($1), status, charmer) $+ 
 Amnesia=$chr(3) $+ 4 $+ under amnesia
 Paralysis=$chr(3) $+ 4 $+ paralyzed
 Drunk=$chr(3) $+ 4 $+ drunk
@@ -628,21 +617,14 @@ Staggered=$chr(3) $+ 4 $+ staggered
 ; Positive status effects
 Cocoon=$chr(3) $+ 12 $+ evolving
 Ethereal=$chr(3) $+ 12 $+ ethereal
-Revive=$chr(3) $+ 12 $+ will auto revive
-Reflect=$chr(3) $+ 12 $+ reflect
 Invincible=$chr(3) $+ 12 $+ invincible
-Zombieregenerating=$chr(3) $+ 12 $+ +HP regen
-Regenerating=$chr(3) $+ 12 $+ +HP regen
-TPRegenerating=$chr(3) $+ 12 $+ +TP regen
+Regen=$chr(3) $+ 12 $+ +HP regen
+MPRegen=$chr(3) $+ 12 $+ +MP regen
+TPRege=$chr(3) $+ 12 $+ +TP regen
 Auto-Regen=$chr(3) $+ 12 $+ +HP regen
 ConserveTP=$chr(3) $+ 12 $+ conserving TP
 DefenseUp=$chr(3) $+ 12 $+ +def
 SpeedUp=$chr(3) $+ 12 $+ +spd
 Shell=$chr(3) $+ 12 $+ shell
 Protect=$chr(3) $+ 12 $+ protect
-SpiritOftheHero=$chr(3) $+ 7 $+ Spirit of the Hero buff
-Ignition.on=$chr(3) $+ 7 $+ ignition boosted
-Boosted=$chr(3) $+ 7 $+ power boosted
-FinalGetsuga=$chr(3) $+ 6 $+ final getsuga
-
 

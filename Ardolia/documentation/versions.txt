@@ -1,6 +1,18 @@
 Ardolia Bot Changelog
 =========================
 
+05-27-2017
+- Added the ability for abilities and spells to inflict status effects upon a target.
+- Added a new db file: statuseffects.db   This file contains the % chance and length of status effects
+- Fixed the code for poison so that it will actually deal damage properly
+- Fixed the restore_mp code
+- Fixed an issue with enmity generation
+
+05-24-2017
+- Added accuracy into this bot. 95% is max, 5% is the lowest. Levels of players vs monsters plays a big part.
+- Added checks for amnesia and mute/silence for AIs
+- Fixed @adventure end so that it will also end battles if needed
+
 05-23-2017
 - Added the ability for AI monsters to use abilities
 - Added the ability for AI monsters to use spells

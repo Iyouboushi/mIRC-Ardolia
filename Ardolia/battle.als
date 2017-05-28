@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/27/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -363,14 +363,20 @@ deal_damage {
 
     ; Get the multiplier
     var %enmity.amount %attack.damage
-    if ($4 = melee) { var %enmity.multiplier 1 }
-    if ($4 = ability) { var %enmity.multiplier $readini($dbfile(abilities.db), $3, EnmityMultiplier) }
-    if ($4 = spell) { var %enmity.multiplier $readini($dbfile(abilities.db), $3, EnmityMultiplier) }
+    if ($5 = melee) { var %enmity.multiplier 1 }
+    if ($5 = ability) { var %enmity.multiplier $readini($dbfile(abilities.db), $3, EnmityMultiplier) }
+    if ($5 = spell) { var %enmity.multiplier $readini($dbfile(spells.db), $3, EnmityMultiplier) }
+
+    if (%enmity.multiplier = $null) { var %enmity.multiplier 1 }
 
     ; If the user has any enmity lowering abilities, calculate that here
+    dec %enmity.multiplier $buff.check($1, DecreaseEnmity, %enmity.multiplier)
+
+    ; If the user has any enmity lowering abilities, calculate that here
+    inc %enmity.multiplier $buff.check($1, IncreaseEnmity, %enmity.multiplier)
 
     ; Calculate total enemity gained
-    var %enmity.gained $calc(%enmity.multiplier * %attack.damage)
+    var %enmity.gained $calc(%enmity.multiplier * %enmity.amount)
 
     $enmity($1, add, %enmity.gained) 
 
@@ -461,14 +467,13 @@ display_damage {
     }
   }
 
-
   if (%element.desc != $null) {  $display.message(%element.desc, battle) }
 
   if (%target = $null) { set %target $2 }
   if (%attacker = $null) { set %attacker $1 }
 
   if (%statusmessage.display != $null) { 
-    if ($readini($char(%target), battle, hp) > 0) { $display.message(%statusmessage.display,battle) 
+    if ($current.hp(%target) > 0) { $display.message(%statusmessage.display,battle) 
       unset %statusmessage.display 
     }
   }
@@ -547,7 +552,6 @@ display_damage {
     ; check to see if a clone or summon needs to die with the target
     $check.clone.death(%target)
 
-
     ; increase the death tally of the target
     $increase_death_tally(%target)
     if ($readini($char($1), info, flag) = $null) {
@@ -560,16 +564,9 @@ display_damage {
   }
 
 
+
+
   unset %target | unset %attacker | unset %user | unset %enemy | unset %counterattack |  unset %statusmessage.display
-
-  if ($3 = weapon) {
-    if ($readini($char($1), battle, hp) > 0) {
-      set %inflict.user $1 | set %inflict.techwpn $4
-      $self.inflict_status(%inflict.user, %inflict.techwpn ,weapon)
-      if (%statusmessage.display != $null) { $display.message(%statusmessage.display, battle) | unset %statusmessage.display }
-    }
-  }  
-
   unset %hp.percent |  unset %attack.target |  unset %weapon.equipped*
   unset %inflict.user  |  unset %inflict.techwpn | unset %status.message
   unset %hstats | unset %status
@@ -762,8 +759,6 @@ add.monster.drop {
 
   }
 
-
-
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -795,12 +790,9 @@ perform.status.effect {
   ; $1 = the person
   ; $2 = the status effect
 
-  echo -a person: $1
-  echo -a status effect: $2
-
   ; Negative status effects
   if ($2 = poison) { 
-    var %poison.damage $floor($calc($max.hp($1) * .05))
+    var %poison.damage $floor($calc($resting.hp($1) * .05))
     var %current.hp $current.hp($1)
     dec %current.hp %poison.damage
     writeini $char($1) Battle Hp %current.hp
@@ -811,6 +803,79 @@ perform.status.effect {
 
   ; To-do: show that the status effect has happened
 
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Attempts to inflict a status effect
+; if the spell/ability causes one
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+inflict.status {
+  ; $1 = the user
+  ; $2 = the target
+  ; $3 = the ability/spell name
+  ; $4 = ability or spell (used to determine which db file)
+
+  ; Unset the status message (in case it wasn't cleared)
+  unset %statusmessage.display
+
+  ; Set the db file
+  if ($4 = ability) { var %db.file abilities.db }
+  if ($4 = spell) { var %db.file spells.db }
+
+  ; Check to see if this ability/spell inflicts a status effect onto a target
+  var %status.effect.list $readini($dbfile(%db.file), $3, StatusEffect)
+  if (%status.effect.list = $null) { return }
+
+  ; Let's cycle through each status effect
+  var %number.of.statuseffects $numtok(%status.effect.list, 46) 
+  var %current.statuseffect.num 1
+
+  while (%current.statuseffect.num <= %number.of.statuseffects) { 
+    var %status.effect $gettok(%status.effect.list, %current.statuseffect.num, 46)
+
+    ; Get the chance to inflict
+    var %status.chance $readini($dbfile(statuseffects.db), %status.effect, StatusChance)
+    if (%status.chance = $null) { var %status.chance 100 }
+
+    ; Check to see if the monster can reduce it
+    var %status.resist $readini($char($2), modifiers, %status.effect)
+    if (%status.resist = $null) { var %status.resist 0 }
+
+    ; If the monster is fully resistant, show a message and return
+    if (%status.resist >= 100) { 
+      if (%statusmessage.display != $null) { set %statusmessage.display %statusmessage.display ::4 $get_chr_name($2) is immune to the %status.effect status! }
+      if (%statusmessage.display = $null) { set %statusmessage.display 4 $+ $get_chr_name($2) is immune to the %status.effect status! }
+    }
+
+    else { 
+      ; If not, let's decrease the chance with the resist
+      dec %status.chance %status.resist
+
+      ; Roll the dice!
+      var %random.chance $roll(1d100)
+
+      ; If the random dice roll is under the status chance then success! Inflict the status.
+      if (%random.chance <= %status.chance) { 
+        if (%statusmessage.display != $null) { set %statusmessage.display %statusmessage.display ::4 $get_chr_name($2) is now $translate(%status.effect) $+ ! }
+        if (%statusmessage.display = $null) { set %statusmessage.display 4 $+ $get_chr_name($2) is now $translate(%status.effect) $+ ! }
+
+        var %status.length $readini($dbfile(statuseffects), %status.effect, Length)
+        if (%status.length = $null) { var %status.length 5 }
+
+        writeini $char($2) StatusEffects %status.effect %status.length
+      }
+      ; Else, failure.. let's report the failure.
+      else {
+        if (%statusmessage.display != $null) { set %statusmessage.display %statusmessage.display :: $get_chr_name($2) has resisted the %status.type status! }
+        if (%statusmessage.display = $null) { set %statusmessage.display 4 $+ $get_chr_name($2) has resisted the %status.type status! }
+      }
+    }
+
+    inc %current.statuseffect.num 1
+  }
+
+  ; And now we're done, so return.
+  return
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

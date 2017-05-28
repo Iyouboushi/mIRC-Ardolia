@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/24/17
+;;;; Last updated: 05/27/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -155,17 +155,16 @@ calculate.accuracy {
   ; $1 = the person we need the accuracy for
   ; $2 = the target
 
-  ; Monsters normally always hit
-  if ($flag($1) = monster) { 
-    ; TO-DO: Check for skills that let players dodge.  
-    return 
-  }
-
-  ; Max accuracy is 95%, lowest accuracy is 5%
+  ; For players the max accuracy is 95%, lowest accuracy is 5%
   var %accuracy 90
 
-  ; If the player's level is equal or higher than the monster's then accuracy is 95%
-  if ($get.level($1) >= $get.level($2)) { var %accuracy 95 }
+  ; Monsters have a higher max accuracy
+  if ($flag($1) = monster) { var %accuracy 175 }
+  else { 
+
+    ; If the attacker level is equal or higher than the target's then accuracy is 95% for players
+    if ($get.level($1) >= $get.level($2)) { var %accuracy 95 }
+  }
 
   ; Otherwise, accuracy decreases.
   if ($get.level($1) < $get.level($2)) { 
@@ -176,21 +175,22 @@ calculate.accuracy {
   if ($status.check($1, blind) != $null) { dec %accuracy $calc(%accuracy * .5) }
 
   ; check for status effects that raise accuracy
+  if ($status.check($1, Hawk'sEye) != $null) { inc %accuracy 25 }
+
 
   ; We never want accuracy to be below 5%
   if (%accuracy < 5) { var %accuracy 5 }
 
-  ; And we never want accuracy above 95
-  if (%accuracy > 95) { var %accuracy 95 }
+  ; And we never want accuracy above 95 for players
+  if ((%accuracy > 95) && ($flag($1) != monster)) { var %accuracy 95 }
 
+  ; Roll the dice!
   var %hit.chance $roll(1d100)
 
   ; Check to see if the player has hit the target
   if (%hit.chance <= %accuracy) { return }
   else { set %guard.message $translate(NormalDodge, $2) }
-
 }
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Calculates weapon power

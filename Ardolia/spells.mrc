@@ -1,8 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 05/24/17
+;;;; Last updated: 05/27/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; TO-DO: Status effects
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Spell Commands and code
@@ -189,6 +188,7 @@ alias spell.attack {
 
             ; Deal and display the damage
             $deal_damage($1, %battle.member.name, $2, %absorb, spell)
+            $inflict.status($1, %battle.member.name, $2, spell)
             $display_aoedamage($1, %battle.member.name, $2)
           }
           if ((%user.flag = $null) && ($flag(%battle.member.name) = monster)) { 
@@ -208,6 +208,7 @@ alias spell.attack {
 
             ; Deal and display the damage
             $deal_damage($1, %battle.member.name, $2, %absorb, spell)
+            $inflict.status($1, %battle.member.name, $2, spell)
             $display_aoedamage($1, %battle.member.name, $2)
           }
         }
@@ -233,6 +234,7 @@ alias spell.attack {
 
     ; Deal and display the damage done
     $deal_damage($1, $3, $2, %absorb, spell)
+    $inflict.status($1, $3, $2, spell)
     $display_damage($1, $3, spell, $2, %absorb)
   }
 

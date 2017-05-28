@@ -1,8 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 05/24/17
+;;;; Last updated: 05/27/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; TO-DO: status effects
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Ability Commands and code
@@ -170,7 +169,7 @@ alias ability_cmd {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias ability.attack {
   ; $1 = user
-  ; $2 = tech name
+  ; $2 = ability name
   ; $3 = target
 
   ; Decrease the action points
@@ -183,6 +182,7 @@ alias ability.attack {
   if ($readini($dbfile(abilities.db), $2, AOE) != true) {
     $calculate_damage_ability($1, $2, $3, $4)
     $deal_damage($1, $3, $2, %absorb, ability)
+    $inflict.status($1, $3, $2, ability)
     $display_damage($1, $3, ability, $2, %absorb)
   }
 
@@ -211,12 +211,14 @@ alias ability.attack {
             inc %targets.hit 1
             $calculate_damage_ability($1, $2, %battle.member.name, $4)
             $deal_damage($1, %battle.member.name, $2, %absorb, ability)
+            $inflict.status($1, %battle.member.name, $2, ability)
             $display_aoedamage($1, %battle.member.name, $2)
           }
           if ((%user.flag = $null) && ($flag(%battle.member.name) = monster)) { 
             inc %targets.hit 1
             $calculate_damage_ability($1, $2, %battle.member.name, $4)
             $deal_damage($1, %battle.member.name, $2, %absorb, ability)
+            $inflict.status($1, %battle.member.name, $2, ability)
             $display_aoedamage($1, %battle.member.name, $2)
           }
         }
