@@ -8,12 +8,12 @@
 ; Cost=how much does it cost to use?
 ; Potency= the potency amount for attack type, the buff amount for buffs
 ; EnmityMultiplier= Does the spell generate extra enmity on top of what it already does?
-; StatusEffect= What status effect does this spell apply?
-; BuffLength= How many turns will the player(s) gain this buff?
 ; Element= what element is this spell?
 ; Stat= what stat does the spell use? (will default to int if this is empty)
 ; CanUseOutsideBattle= true/false  If true then it can be used in adventures outside of battle
 ; Jobs= which job codes can actually cast this spell?
+; StatusEffect= does it apply a status effect to the target?
+
 
 =============================================
 HEALING
@@ -23,7 +23,7 @@ Level=1
 Type=Heal
 AOE=false
 Info=This spell heals light wounds on a single target
-Description=
+Description=casts a healing spell on $get_chr_name($3) $+ !  $get_chr_name($3) is bathed in a refreshing white light.
 Cooldown=2
 Cost=150
 Potency=$iif($current.job($1) = WHM, 400, 150)
@@ -32,6 +32,9 @@ BuffLength=0
 Element=light
 Stat=mnd
 Jobs=whm.pld
+
+
+
 
 
 =============================================
@@ -49,7 +52,7 @@ Potency=150
 EnmityMultiplier=1
 BuffLength=0
 Element=light
-Stat=int
+Stat=mnd
 Jobs=whm
 
 =============================================
@@ -66,7 +69,6 @@ Cost=500
 Potency=100
 Enmity=0
 StatusEffect=Protect
-BuffLength=10
 Stat=mnd
 CanUseOutsideBattle=true
 Jobs=whm
@@ -83,11 +85,27 @@ Cost=500
 Potency=100
 Enmity=0
 StatusEffect=Shell
-BuffLength=10
 Stat=mnd
 CanUseOutsideBattle=true
 Jobs=whm
 EnmityMultiplier=1.2
+
+[Regen]
+Level=35
+Type=Buff
+AOE=false
+Info=This spell will add allow a target to regenerate HP each turn
+Description=
+Cooldown=2
+Cost=319
+Potency=100
+EnmityMultiplier=5
+Element=light
+Stat=mnd
+Jobs=WHM
+CanUseOutsideBattle=false
+StatusEffect=regen
+
 
 =============================================
 SONGS

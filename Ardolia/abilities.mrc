@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 05/27/17
+;;;; Last updated: 05/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -263,7 +263,7 @@ alias ability.buff {
 
   ; Which buff is being applied?
   var %buff.name $readini($dbfile(abilities.db), $2, StatusEffect)
-  var %buff.length $readini($dbfile(abilities.db), $2, BuffLength)
+  var %buff.length $readini($dbfile(statuseffects.db), %buff.name, Length)
 
   ; Is this buff a single or AOE target?  If single, just apply it and move on.  Else, cycle through
 

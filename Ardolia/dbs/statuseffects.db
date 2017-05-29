@@ -4,8 +4,9 @@
 ; in the game.  If you wish to adjust these
 ; feel free.  
 ;
-; 100 = 100% chance of inflicting before
-; monster modifiers.
+; Chance = what chance do negative status effects
+; have of affecting the target. 100 = 100% chance 
+; of inflicting before modifiers.
 ;
 ; Length = how many turns the status effect
 ; will last. These are "real turns" so even
@@ -14,6 +15,38 @@
 ; counting down the turns.
 =============================================
 
+=============================================
+BUFFS (positive status effects)
+=============================================
+
+[Protect]
+Chance=100
+Length=10
+
+[Shell]
+Chance=100
+Length=10
+
+[Regen]
+Chance=100
+Length=5
+
+[Foresight]
+Chance=100
+Length=3
+
+[DivineSeal]
+Chance=100
+Length=3
+
+[SwiftSong]
+Chance=100
+Length=10
+
+
+=============================================
+Negative status effects
+=============================================
 
 [Poison]
 Chance=100

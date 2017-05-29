@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/27/17
+;;;; Last updated: 05/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -859,7 +859,7 @@ inflict.status {
         if (%statusmessage.display != $null) { set %statusmessage.display %statusmessage.display ::4 $get_chr_name($2) is now $translate(%status.effect) $+ ! }
         if (%statusmessage.display = $null) { set %statusmessage.display 4 $+ $get_chr_name($2) is now $translate(%status.effect) $+ ! }
 
-        var %status.length $readini($dbfile(statuseffects), %status.effect, Length)
+        var %status.length $readini($dbfile(statuseffects.db), %status.effect, Length)
         if (%status.length = $null) { var %status.length 5 }
 
         writeini $char($2) StatusEffects %status.effect %status.length

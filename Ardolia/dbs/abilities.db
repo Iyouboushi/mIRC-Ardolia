@@ -9,7 +9,6 @@
 ; Potency= the potency amount for attack type
 ; Stat= What stat does this ability check when calculating damage?
 ; EnmityMultiplier=How much enmity will this ability generate? For example 2 = 2*damage, 5 = 5*damage
-; BuffLength= How many turns will the player(s) gain this buff?
 ; Job= which jobs can use this ability?
 ; StatusEffect= Which status effect is applied to the target?
 ; CanUseOutsideBattle= true/false  If true then it can be used in adventures outside of battle
@@ -55,7 +54,6 @@ Stat=str
 Potency=150
 EnmityMultiplier=1.2
 Job=WAR
-BuffLength=3
 StatusEffect=Foresight
 
 [SkullSunder]
@@ -129,7 +127,6 @@ Stat=mnd
 Potency=30
 EnmityMultiplier=1.2
 Job=WHM
-BuffLength=3
 StatusEffect=DivineSeal
 
 [Tetragrammaton]
@@ -168,7 +165,6 @@ Stat=str
 Potency=100
 EnmityMultiplier=1.2
 Job=BRD
-BuffLength=10
 StatusEffect=SwiftSong
 CanUseOutsideBattle=true
 
