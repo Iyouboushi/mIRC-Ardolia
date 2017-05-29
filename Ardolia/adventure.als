@@ -856,7 +856,16 @@ adventure.party.show {
   $display.message($translate(ShowParty, %curparty), global)
   $display.message($translate(CurrentPartyLeader, $adventure.party.leader), global)
 
-  ; To-Do:  Show how many tanks, dps and healers we have
+  ; Show how many tanks, dps and healers we have
+  var %tanks $readini($txtfile(adventure.txt), BattleInfo, Tank)
+  var %healers  $readini($txtfile(adventure.txt), BattleInfo, Healer)
+  var %dps  $readini($txtfile(adventure.txt), BattleInfo, DPS)
+
+  if (%tanks = $null) { var %tanks 0 }
+  if (%healers = $null) { var %healers 0 }
+  if (%dps = $null) { var %dps 0 }
+
+  $display.message($translate(ShowPartyJobs, %tanks, %healers, %dps), global)
 
 }
 
@@ -932,6 +941,16 @@ adventure.party.addmember {
   $fulls($1, yes)
 
   writeini $char($1) Info NeedsFull yes
+
+  ; Get the player's job role and increase a tally
+  var %job.role $readini($jobfile($current.job($1)), BasicInfo, Role)
+
+  var %current.role.count $readini($txtfile(adventure.txt), BattleInfo, %job.role)
+  if (%current.role.count = $null) { var %current.role.count 0 }
+  inc %current.role.count 1
+  writeini $txtfile(adventure.txt) BattleInfo %job.role %current.role.count
+
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
