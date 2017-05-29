@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 05/19/17
+;;;; Last updated: 05/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -469,30 +469,28 @@ on 2:TEXT:!armor*:?:{
 ; View your inventory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!items*:#:{ 
-  ; To be re-added
-  halt
-
   if ($2 != $null) { $checkchar($2) | $items.list($2) | $readitems($2, channel) }
   else {  $items.list($nick) | $readitems($nick, channel) }
 }
 on 2:TEXT:!inventory*:#:{ 
-  ; to be re-added
-  halt
-
   if ($2 != $null) { $checkchar($2) | $items.list($2) | $readitems($2, channel) }
   else {  $items.list($nick) | $readitems($nick, channel) }
 }
 on 2:TEXT:!spoils*:#:{ 
-  ; to be re-added
-  halt
-  if ($3 != $null) { $checkchar($3) | $miscitems.list($3) | $readmiscitems($3, channel) }
-  else {  $miscitems.list($nick) | $readmiscitems($nick, channel) }
+  if ($3 != $null) { $checkchar($3) | $spoils.list($3) | $readspoils($3, channel) }
+  else {  $spoils.list($nick) | $readspoils($nick, channel) }
 }
 on 2:TEXT:!spoils*:?:{ 
-  ; to be re-added
-  half
-  if ($3 != $null) { $checkchar($3) | $miscitems.list($3) | $readmiscitems($3, private) }
-  else {  $miscitems.list($nick) | $readmiscitems($nick, private) }
+  if ($3 != $null) { $checkchar($3) | $spoils.list($3) | $readspoils($3, private) }
+  else {  $spoils.list($nick) | $readspoils($nick, private) }
+}
+on 2:TEXT:!food*:#:{ 
+  if ($2 != $null) { $checkchar($2) | $food.list($2) | $readfood($2, channel) }
+  else {  $food.list($nick) | $readfood($nick, channel) }
+}
+on 2:TEXT:!food*:?:{ 
+  if ($2 != $null) { $checkchar($2) | $food.list($2) | $readfood($2, private) }
+  else {  $food.list($nick) | $readfood($nick, private) }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -186,24 +186,17 @@ HasNoAbilities=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently knows no abilit
 HasNoSpells=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently knows no spells.
 
 ; items
-ViewItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following items: %items.list
-ViewFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following food items: %food.items.list 
-ViewMiscItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following misc items: %misc.items.list 
-ViewSealItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following seals: %seals.items.list 
-ViewCrystalItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) has the following crystals: %crystal.items.list 
+ViewItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following items: %items.list
+ViewFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following food items: %items.list 
+ViewSpoils=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following spoils: %spoils.items.list 
+ViewCrystalItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following crystals: %crystal.items.list 
 
-ViewSongs=$chr(3) $+ 3 $+  $+ $get_chr_name($1) knows how to perform the following songs: %songs.list
-HasNoItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no items. 
-HasNoKeys=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no keys.
-HasNoPortals=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no portal items.
-HasNoMiscItems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no misc items.
-HasNoTradingCards=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no trading cards.
-HasNoGems=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no gems.
-HasNoSeals=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no seals.
+HasNoItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no items. 
+HasNoFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no food. 
+HasNoSpoils=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no battle spoils.
 HasNoAmmo=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no ammo.
 
 NeedToSayWhichArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which armor to search for: Shield, Head, Body, Legs, Feet, Hands, Ears, Neck, Wrists, Ring
-
 
 NeedToSayWhichWeaponType=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which weapon type to search for: HandToHand, Sword, Gun, Bow, GreatAxe
 

@@ -1001,9 +1001,9 @@ readweapons {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 readitems { 
   if (%items.list != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewItems),private) }
-    if ($2 = private) { $display.private.message($translate(ViewItems)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewItems)) }
+    if ($2 = channel) { $display.message($translate(ViewItems, $1),private) }
+    if ($2 = private) { $display.private.message($translate(ViewItems, $1)) }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewItems, $1)) }
   }
   if (%items.list2 != $null) { 
     if ($2 = channel) { $display.message( $+ %items.list2,private) }
@@ -1012,52 +1012,89 @@ readitems {
   }
 
   if (%crystal.items.list != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewCrystalItems),private) }
-    if ($2 = private) {  $display.private.message($translate(ViewCrystalItems)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewCrystalItems)) }
+    if ($2 = channel) { $display.message($translate(ViewCrystalItems, $1),private) }
+    if ($2 = private) {  $display.private.message($translate(ViewCrystalItems, $1)) }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewCrystalItems, $1)) }
   }
 
-  if (%food.items.list != $null) { 
-    if ($2 = channel) { $display.message($translate(ViewFoodItems),private) }
-    if ($2 = private) {  $display.private.message($translate(ViewFoodItems)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewFoodItems)) }
-  }
-
-  if ((((%items.list = $null) && (%food.items.list = $null) && (%crystal.items.list = $null) && (%misc.items.list = $null)))) { 
+  if (((%items.list = $null) && (%crystal.items.list = $null) && (%misc.items.list = $null))) { 
     var %items.empty true 
 
-    if ($2 = channel) { $display.message($translate(HasNoItems),private) }
-    if ($2 = private) {  $display.private.message($translate(HasNoItems)) }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoItems)) }
+    if ($2 = channel) { $display.message($translate(HasNoItems, $1),private) }
+    if ($2 = private) {  $display.private.message($translate(HasNoItems, $1)) }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(HasNoItems, $1)) }
   }    
 
   ; Display commands for other inventory items
   if (%items.empty != true) { 
-    if ($2 = channel) { $display.message(3Other item commands:5 !misc items,private) }
-    if ($2 = private) {  $display.private.message(3Other item commands:5 !misc items) }
-    if ($2 = dcc) { $dcc.private.message($nick, 3Other item commands:5 !misc items) }
+    if ($2 = channel) { $display.message(3Other item commands:5 !spoils $+ 3 $+ $chr(44) 10!food,private) }
+    if ($2 = private) {  $display.private.message(3Other item commands:5 !spoils $+ 3 $+ $chr(44) 10!food) }
+    if ($2 = dcc) { $dcc.private.message($nick, 3Other item commands:5 !spoils $+ 3 $+ $chr(44) 10!food) }
   }
 
   unset %*.items.lis* | unset %items.lis*
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Displays a char's misc items
+; Displays a char's food items
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-readmiscitems {
-  if (%misc.items.list != $null) {
-    if ($2 = channel) { $display.message($translate(ViewMiscItems),private) | if (%misc.items.list2 != $null) { $display.message( $+ %misc.items.list2,private) } |  if (%misc.items.list3 != $null) { $display.message( $+ %misc.items.list3,private) } | if (%misc.items.list4 != $null) { $display.message( $+ %misc.items.list4,private) }  }
-    if ($2 = private) { $display.private.message($translate(ViewMiscItems)) | if (%misc.items.list2 != $null) { $display.private.message(5 $+ %misc.items.list2) } | if (%misc.items.list3 != $null) { $display.private.message( $+ %misc.items.list3) } | if (%misc.items.list4 != $null) { $display.private.message( $+ %misc.items.list4) } }
-    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewMiscItems)) | if (%misc.items.list2 != $null) {  $dcc.private.message($nick,  $+ %misc.items.list2) } | if (%misc.items.list3 != $null) { $dcc.private.message($nick,  $+ %misc.items.list3) } | if (%misc.items.list4 != $null) { $dcc.private.message($nick,  $+ %misc.items.list4) } }
+readfood {
+
+  if (%items.list != $null) { 
+    if ($2 = channel) { $display.message($translate(ViewFoodItems, $1),private) }
+    if ($2 = private) {  $display.private.message($translate(ViewFoodItems, $1)) }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewFoodItems, $1)) }
   }
 
-  if (%misc.items.list = $null) { 
-    if ($2 = channel) { $display.message($translate(HasNoMiscItems),private) }
-    if ($2 = private) { $display.private.message($translate(HasNoMiscItems)) }
-    if ($2 = dcc) {  $dcc.private.message($nick, $translate(HasNoMiscItems)) }
+  if (%items.list2 != $null) { 
+    if ($2 = channel) { $display.message(10 $+ %items.list2,private) }
+    if ($2 = private) { $display.private.message(10 $+ %items.list2) }
+    if ($2 = dcc) { $dcc.private.message($nick,10  $+ %items.list2) }
+  }
+
+  if (%items.list = $null) { 
+    if ($2 = channel) { $display.message($translate(HasNoFoodItems, $1),private) }
+    if ($2 = private) { $display.private.message($translate(HasNoFoodItems, $1)) }
+    if ($2 = dcc) {  $dcc.private.message($nick, $translate(HasNoFoodItems, $1)) }
   }    
 
-  unset %miscitems.items.*
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Displays a char's misc items
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+readspoils {
+  if (%spoils.items.list != $null) {
+    if ($2 = channel) { $display.message($translate(ViewSpoils, $1),private) 
+      if (%spoils.items.list2 != $null) { $display.message( $+ %spoils.items.list2,private) } 
+      if (%spoils.items.list3 != $null) { $display.message( $+ %spoils.items.list3,private) } 
+      if (%spoils.items.list4 != $null) { $display.message( $+ %spoils.items.list4,private) }  
+      if (%spoils.items.list5 != $null) { $display.message( $+ %spoils.items.list5,private) }    
+      if (%spoils.items.list6 != $null) { $display.message( $+ %spoils.items.list6,private) }  
+    }
+    if ($2 = private) { $display.private.message($translate(ViewSpoils, $1)) 
+      if (%spoils.items.list2 != $null) { $display.private.message(5 $+ %spoils.items.list2) } 
+      if (%spoils.items.list3 != $null) { $display.private.message( $+ %spoils.items.list3) } 
+      if (%spoils.items.list4 != $null) { $display.private.message( $+ %spoils.items.list4) } 
+      if (%spoils.items.list5 != $null) { $display.private.message( $+ %spoils.items.list5) } 
+      if (%spoils.items.list6 != $null) { $display.private.message( $+ %spoils.items.list6) } 
+    }
+    if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewSpoils, $1)) 
+      if (%spoils.items.list2 != $null) {  $dcc.private.message($nick,  $+ %spoils.items.list2) } 
+      if (%spoils.items.list3 != $null) { $dcc.private.message($nick,  $+ %spoils.items.list3) } 
+      if (%spoils.items.list4 != $null) { $dcc.private.message($nick,  $+ %spoils.items.list4) } 
+      if (%spoils.items.list5 != $null) { $dcc.private.message($nick,  $+ %spoils.items.list5) } 
+      if (%spoils.items.list6 != $null) { $dcc.private.message($nick,  $+ %spoils.items.list6) } 
+    }
+  }
+
+  if (%spoils.items.list = $null) { 
+    if ($2 = channel) { $display.message($translate(HasNoSpoils, $1),private) }
+    if ($2 = private) { $display.private.message($translate(HasNoSpoils, $1)) }
+    if ($2 = dcc) {  $dcc.private.message($nick, $translate(HasNoSpoils, $1)) }
+  }    
+
+  unset %*.items.lis* | unset %items.lis* 
 }
 
 

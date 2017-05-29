@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/27/17
+;;;; Last updated: 05/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1115,77 +1115,6 @@ trusts.get.list {
   return %trust.items.list
 }
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Builds the Ingredients list
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-ingredients.list {
-  unset %ingredients.items.list
-  set %ingredients.items.list $ingredients.get.list($1)
-
-  if ($1 = return) { return %ingredients.items.list }
-
-  ; CLEAN UP THE LIST
-  set %replacechar $chr(044) $chr(032)
-  %ingredients.items.list = $replace(%ingredients.items.list, $chr(046), %replacechar)
-
-  unset %value | unset %replacechar
-
-  return
-}
-ingredients.get.list {
-  ; CHECKING POTION INGREDIENT ITEMS
-  var %value 1 | var %items.lines $lines($lstfile(items_potioningredient.lst))
-
-  while (%value <= %items.lines) {
-    set %item.name $read -l $+ %value $lstfile(items_potioningredient.lst)
-    set %item_amount $readini($char($1), item_amount, %item.name)
-    if (%item_amount <= 0) { remini $char($1) item_amount %item.name }
-
-    if ((%item_amount != $null) && (%item_amount >= 1)) {  %ingredients.items.list = $addtok(%ingredients.items.list, 5 $+ %item.name $+ $chr(040) $+ %item_amount $+ $chr(041), 46)  }
-
-    unset %item.name | unset %item_amount
-    inc %value 1 
-  }
-  unset %item.name | unset %item_amount
-
-  return %ingredients.items.list
-}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Builds the Songs list
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-songs.list {
-  unset %songs.list
-  set %songs.list $songs.get.list($1)
-
-  if ($1 = return) { return %songs.list }
-
-  ; CLEAN UP THE LIST
-  set %replacechar $chr(044) $chr(032)
-  %songs.list = $replace(%songs.list, $chr(046), %replacechar)
-
-  unset %value | unset %replacechar
-
-  return
-}
-songs.get.list { 
-  unset %songs.list | unset %songs.list2 | unset %songs | unset %number.of.songs
-
-  var %value 1 | var %items.lines $lines($lstfile(songs.lst))
-  while (%value <= %items.lines) {
-    set %item.name $read -l $+ %value $lstfile(songs.lst)
-    set %item_amount $readini($char($1), songs, %item.name)
-
-    if ((%item_amount = 0) && ($readini($char($1), info, flag) = $null)) { remini $char($1) songs %item.name }
-    if ((%item_amount != $null) && (%item_amount >= 1)) { 
-      %songs.list = $addtok(%songs.list, %item.name, 46) 
-    }
-
-    unset %item.name | unset %item_amount
-    inc %value 1 
-  }
-  return %songs.list
-}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Builds the Items list
@@ -1208,6 +1137,21 @@ items.list {
     inc %value 1 
   }
 
+  ; CHECKING ADVENTURE ITEMS
+  var %value 1 | var %items.lines $lines($lstfile(items_adventure.lst))
+
+  while (%value <= %items.lines) {
+    var %item.name $read -l $+ %value $lstfile(items_adventure.lst)
+    var %item_amount $inventory.amount($1, %item.name) 
+
+    if ((%item_amount != $null) && (%item_amount >= 1)) { 
+      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 6 $+ %item.name 3x $+ %item_amount, 46) }
+      else { %items.list2 = $addtok(%items.list2, 6 $+ %item.name 3x $+ %item_amount, 46) }
+    }
+    unset %item.name | unset %item_amount
+    inc %value 1 
+  }
+
   ; CHECKING CRYSTALS
   var %value 1 | var %items.lines $lines($lstfile(items_crystals.lst))
 
@@ -1222,9 +1166,6 @@ items.list {
     inc %value 1 
   }
 
-  ; Check for misc items
-  $miscitems.list($1)
-
   ; CLEAN UP THE LISTS
   var %replacechar $chr(044) $chr(032)
   %items.list = $replace(%items.list, $chr(046), %replacechar)
@@ -1236,29 +1177,93 @@ items.list {
   return
 }
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Builds the Instrument list
+; Builds the Food Items list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-instruments.list {
-  ; CHECKING INSTRUMENT ITEMS
-  var %value 1 | var %items.lines $lines($lstfile(items_instruments.lst))
+food.list {
+  unset %*.items.lis* | unset %items.lis*
+
+  ; CHECKING FOOD ITEMS
+  var %value 1 | var %items.lines $lines($lstfile(items_food.lst))
 
   while (%value <= %items.lines) {
-    set %item.name $read -l $+ %value $lstfile(items_instruments.lst)
-    set %item_amount $readini($char($1), item_amount, %item.name)
-    if (%item_amount <= 0) { remini $char($1) item_amount %item.name }
+    var %item.name $read -l $+ %value $lstfile(items_food.lst)
+    var %item_amount $inventory.amount($1, %item.name) 
 
     if ((%item_amount != $null) && (%item_amount >= 1)) { 
-    %instruments.items.list = $addtok(%instruments.items.list, 6 $+ %item.name $+ $chr(040) $+ %item_amount $+ $chr(041), 46) }
-
+      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 10 $+ %item.name 3x $+ %item_amount, 46) }
+      else { %items.list2 = $addtok(%items.list2, 10 $+ %item.name 3x $+ %item_amount, 46) }
+    }
     unset %item.name | unset %item_amount
     inc %value 1 
   }
 
-  if (%instruments.items.list != $null) {
-    set %replacechar $chr(044) $chr(032)
-    %instruments.items.list = $replace(%instruments.items.list, $chr(046), %replacechar)
+  ; CLEAN UP THE LISTS
+  var %replacechar $chr(044) $chr(032)
+  %items.list = $replace(%items.list, $chr(046), %replacechar)
+  %items.list2 = $replace(%items.list2, $chr(046), %replacechar)
+
+  unset %item.name | unset %item_amount | unset %number.of.items | unset %value | unset %food.items | unset %consume.items
+  unset %replacechar
+  return
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Builds the spoils list 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+spoils.list {
+  unset %*.items.lis* | unset %items.lis* | unset %token.count.spoils
+
+  var %value 1 | var %items.lines $lines($lstfile(items_spoils.lst))
+
+  ; CHECKING SPOILS
+
+  while (%value <= %items.lines) {
+
+    var %item.name $read -l $+ %value $lstfile(items_spoils.lst)
+    var %item_amount $inventory.amount($1, %item.name) 
+
+    if ((%item_amount != $null) && (%item_amount >= 1)) { 
+
+      ; Add it to the list
+      inc %token.count.spoils 1
+
+      if (%token.count.spoils <= 20) { 
+        %spoils.items.list = $addtok(%spoils.items.list, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list = $clean.list(%spoils.items.list)  
+      }
+
+      if ((%token.count.spoils > 20) && ( %token.count.spoils <= 40)) { 
+        %spoils.items.list2 = $addtok(%spoils.items.list2, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list2 = $clean.list(%spoils.items2.list)  
+      }
+
+      if ((%token.count.spoils > 40) && ( %token.count.spoils <= 60)) { 
+        %spoils.items.list3 = $addtok(%spoils.items.list3, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list3 = $clean.list(%spoils.items3.list)  
+      }
+
+      if ((%token.count.spoils > 60) && ( %token.count.spoils <= 80)) { 
+        %spoils.items.list4 = $addtok(%spoils.items.list4, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list4 = $clean.list(%spoils.items.list4)  
+      }
+
+      if ((%token.count.spoils > 80) && ( %token.count.spoils <= 100)) { 
+        %spoils.items.list5 = $addtok(%spoils.items.list5, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list5 = $clean.list(%spoils.items.list5)  
+      }
+
+      if ((%token.count.spoils > 100) && ( %token.count.spoils <= 120)) { 
+        %spoils.items.list6 = $addtok(%spoils.items.list6, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list6 = $clean.list(%spoils.items.list6)  
+      }
+    }
+
+    inc %value 1
   }
+
+  unset %token.count.spoils
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1484,6 +1489,7 @@ clear_variables {
   unset %current.room | unset %file | unset %total.targets | unset %random.target | unset %damage.display.color
   unset %true.turn | unset %adventureisopen
   unset %adventure.open 
+  unset %stat.str | unset %target.hp | unset %ability.list
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
