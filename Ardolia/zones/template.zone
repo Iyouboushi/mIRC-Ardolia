@@ -14,6 +14,8 @@
                  $return_percentofvalue($xp.to.level(%party.member.name), percentnumberhere)) 
                  ex: $return_percentofvalue($xp.to.level(%party.member.name), 5)) will return 5% of the player's TNL
 ; FameRewarded= How much fame will the players receive if this dungeon is cleared?
+; Month= an optional flag if you want adventures to only appear in certain months. Use two digits for the month (like 06 for June)
+; Day= an optional flag if you want adventures to only appear on a certain day of the month. Use two digits (like 02, 12, 22, etc)
 
 [Info]
 Name=
