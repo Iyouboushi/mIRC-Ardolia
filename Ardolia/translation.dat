@@ -443,7 +443,7 @@ PartyRests=$chr(3) $+ 7* $+ 12 $adventure.party.leader 2decides that the par
 
 ShowParty=$chr(3) $+ 3The current adventure party is made up of: $2
 CurrentPartyLeader=$chr(3) $+ 3The current party leader is: $2
-ShowPartyJobs=$chr(3) $+ 3The current party roles:2Tanks $2 $+ 3,2 Healers: $3 $+ 3,2 DPS: $4
+ShowPartyJobs=$chr(3) $+ 2 $+ $chr(91) $+ Tanks3 $2 $+ 2 $+ $chr(93) $chr(91) $+ Healers3 $3 $+ 2 $+ $chr(93) $chr(91) $+ DPS3 $4 $+ 2 $+ $chr(93)
 
 FoodEaten=$chr(3) $+ 3 $+ $get_chr_name($2) has eaten the $3 food item!  Nom nom nom!
 
