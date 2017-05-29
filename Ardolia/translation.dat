@@ -396,6 +396,15 @@ NotHighEnoughiLevelToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start 
 
 NotHighEnoughiLevelToEnter=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as $gender($2) ilevel is too low!
  
+NotRightMonthToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start this adventure party as this adventure is not open this month!
+
+NotRightDayToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start this adventure party as this adventure is not open today!
+
+Haven'tDonePreReqToStart=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot start this adventure party as $gender3($2) has not done the pre-req adventure first. $get_chr_name($2) must first complete $readini($zonefile($3), Info, Name) first!
+
+Haven'tDonePreReqToEnter=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot enter this adventure party as $gender3($2) has not done the pre-req adventure first. $get_chr_name($2) must first complete $readini($zonefile($3), Info, Name) first!
+
+
 Can'tStartAdventure=$chr(3) $+ 4 $+ Error: $2 cannot start an adventure party because there is already an adventure in progress!
 
 NoAdventureByThatName=$chr(3) $+ 4 $+ Error: There is no adventure by that name!

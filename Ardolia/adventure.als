@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/22/17
+;;;; Last updated: 05/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -8,31 +8,67 @@
 ; that are available to the player
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.list {
-  ; [adventurename] Adventure Full Name - # of players - Level Range
-
   ; Check the filename and see if the dungeon is available (pre-req required or hoilday dungeon)
 
-  set %zone.name $remove($2,.zone)
-  set %zone.name $nopath(%zone.name)
-  var %show.zone false
+  var %zone.name $remove($2,.zone)
+  var %zone.name $nopath(%zone.name)
+  var %show.zone true
 
+  ; If it's the current adventure or template, return
+  if (%zone.name = adventure) { return }
+  if (%zone.name = template) { return }
 
   ; Check for month. If not the right month, return
+  var %zone.month $readini($zonefile(%zone.name), Info, Month)
+  if (%zone.month = $null) { var %zone.month $left($adate,2) }
+  if ($left($adate, 2) != %zone.month) { return }
 
-  ; Check for pre-req. 
+  ;  check for a specific day
+  var %zone.day $readini($zonefile(%zone.name), Info, Day)
+  if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
+  if ($right($left($adate,5),2) != %zone.day) { return }
 
-  ; Check for min level requirement
-
+  ; Check for pre-req.
+  var %zone.prereq $readini($zonefile(%zone.name), Info, Prereq)
+  if ((%zone.prereq != $null) && ($readini($char($1), AdventuresCleared, %zone.prereq) != true)) { return }
 
   ; Check for iLevel requirement
-
+  var %zone.iLevel $readini($zonefile(%zone.name), Info, iLevel)
+  if (%zone.iLevel = $null) { var %zone.iLevel 1 }
+  if ($character.ilevel($1) < %zone.iLevel) { return }
 
   ; Write the line that will be shown
-  if (%show.zone = true) { }
+  if (%show.zone = true) {
 
+    var %adventure.name $readini($zonefile(%zone.name), Info, Name)
+    var %zone.minplayers $readini($zonefile(%zone.name), Info, MinimumPlayers)
+    var %zone.levelrange $readini($zonefile(%zone.name), Info, LevelRange)
+
+    write $txtfile(adventurelist_ $+ $1 $+ .txt) 3 $+ %adventure.name  $+ $chr(91) $+ Adventure Code2 %zone.name $+ 3 $+ $chr(93) $chr(91) $+ Min $chr(35) of Players:2 %zone.minplayers $+ 3 $+ $chr(93) $chr(91) $+ Recommended Level2 %zone.levelrange $+ 3 $+ $chr(93)  $chr(91) $+ Min iLevel Required:2 %zone.iLevel $+ 3 $+ $chr(93)
+  }
 
   unset %zone.name
 
+}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Displays the adventure list
+; to the player
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.list.display {
+  ; $1 = the person we're displaying to
+  ; $2 = the text file we're reading from
+
+  if (($lines($txtfile($2)) != $null) && ($lines($txtfile($2)) > 0)) { 
+
+    write $txtfile($2) 3To start any of these adventures use !start adventure 2adventurecode
+
+    if ($readini(system.dat, system, botType) = IRC) {  /.play $1 $txtfile($2) }
+    if ($readini(system.dat, system, botType) = TWITCH) {  /.play %battlechan $txtfile($2) }
+    if ($readini(system.dat, system, botType) = DCCchat) { /.play $1 $2 }
+
+    /.remove $txtfile($2)
+    /.timerReturnFromStatus $+ $rand(a,z) 1 2 /return 
+  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -52,11 +88,19 @@ adventure.start {
   ; Does the adventure file exist?
   if ($isfile($zonefile($2)) = $false) { $display.message($translate(NoAdventureByThatName), global) | halt }
 
-  ; Is there a pre-req that needs to be done before this one may be started?
-  ; to be added
-
   ; Is this dungeon only available on a certain month (i.e. holiday dungeons)?   If so, is it the right month?
-  ; to be added
+  var %zone.month $readini($zonefile($2), Info, Month)
+  if (%zone.month = $null) { var %zone.month $left($adate,2) }
+  if ($left($adate, 2) != %zone.month) { $display.message($translate(NotRightMonthToStart, $1), private) | halt }
+
+  ; Is this dungeon only available on a certain day of a month?   If so, is it the right day?
+  var %zone.day $readini($zonefile($2), Info, Day)
+  if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
+  if ($right($left($adate,5),2) != %zone.day) { $display.message($translate(NotRightDayToStart, $1), private) | halt }
+
+  ; Is there a pre-req that needs to be done before this one may be started?
+  var %zone.prereq $readini($zonefile($2), Info, Prereq)
+  if ((%zone.prereq != $null) && ($readini($char($1), AdventuresCleared, %zone.prereq) != true)) { $display.message($translate(Haven'tDonePreReqToStart, $1, %zone.prereq), private) | halt }
 
   ; Is there a minimum item level to start this adventure?
   if ($readini($zonefile($2), info, iLevel) > $character.iLevel($1)) { $display.message($translate(NotHighEnoughiLevelToStart, $1), private) | halt }
@@ -125,6 +169,11 @@ adventure.join {
   if ($readini($zonefile(adventure), Info, MaximumPlayers) != $null) { 
     if ($adventure.party.count = $readini($zonefile(adventure), info, MaximumPlayers) { $display.message($translate(PartyIsFull), global) | halt }
   }
+
+  ; Is there a pre-req that needs to be done before this one may be started?
+  var %zone.prereq $readini($zonefile(adventure), Info, Prereq)
+  if ((%zone.prereq != $null) && ($readini($char($1), AdventuresCleared, %zone.prereq) != true)) { $display.message($translate(Haven'tDonePreReqToEnter, $1, %zone.prereq), private) | halt }
+
 
   $adventure.party.addmember($1)
 
@@ -221,7 +270,7 @@ adventure.end {
 
   ; Kill the files and variables
   set %adventureis off | set %adventure.open false 
-  unset %clear.flag | unset %chest.time
+  unset %clear.flag
   if ($lines($txtfile(temp_status.txt)) != $null) { .remove $txtfile(temp_status.txt) }
 
   ; Clear variables
@@ -448,6 +497,8 @@ adventure.actions.checkforzero {
 adventure.look {
   ; [Objects Here] [Chests here]
   ; [Trees]
+
+  unset %object.list
 
   ; are we in an adventure?
   if (%adventureis != on) { $display.message($translate(NotCurrentlyInAdventure), global) | halt }

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -8,8 +8,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Get a list of dungeons
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!dungeon list:#: { $adventure.list($nick) }
-on 2:TEXT:!adventure list:?: { $adventure.list($nick)) }
+on 2:TEXT:!adventure list:#: { 
+  var %adventurelist.file adventurelist_ $+ $nick $+ .txt
+
+  ; Remove any previous list that may have been missed
+  /.remove $txtfile(%adventurelist.file)
+
+  ; Cycle through
+  .echo -q $findfile( $zone_path , *.zone, 0 , 0, adventure.list $nick $1-)
+
+  ; Display
+  if (($lines($txtfile(%adventurelist.file)) != $null) && ($lines($txtfile(%adventurelist.file)) > 0)) { 
+    /.timerThrottle $+ $rand(a,z) $+ $rand(1,1000) $+ $rand(a,z) 1 1 /adventure.list.display $nick %adventurelist.file
+  } 
+}
+on 2:TEXT:!adventure list:?: {
+  var %adventurelist.file adventurelist_ $+ $nick $+ .txt
+
+  ; Remove any previous list that may have been missed
+  /.remove $txtfile(%adventurelist.file)
+
+  ; Cycle through
+  .echo -q $findfile( $zone_path , *.zone, 0 , 0, adventure.list $nick $1-)
+
+  ; Display
+  if (($lines($txtfile(%adventurelist.file)) != $null) && ($lines($txtfile(%adventurelist.file)) > 0)) { 
+    /.timerThrottle $+ $rand(a,z) $+ $rand(1,1000) $+ $rand(a,z) 1 1 /adventure.list.display $nick %adventurelist.file 
+  }
+}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Start an adventure to a dungeon
