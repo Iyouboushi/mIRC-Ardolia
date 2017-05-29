@@ -9,7 +9,7 @@ Once set up the game is entirely automatic and does not need anyone to run it.
 
 A full in-depth guide with commands and more in-depth information will eventually be listed on this game's wiki.
 
-Note: As of May 20, 2017 the game is still in heavy development and is not fully playable.
+Note: As of May 28, 2017 the game is still in heavy development and is not fully playable.
 
 
 ## SETUP
@@ -31,15 +31,25 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-* MAY 20, 2017
+* MAY 28, 2017
 
-With today's update the spell and ability coding for attack, healing and buffing (both single target and AOE) should be finished.  The only thing left unfinished with these is inflicting status effects on the target (such as poison).
+Over the last few updates the game is getting closer to being in a playable state. With today's update I have added the !adventure list command so that players can see which adventures are available and open to them (it won't show adventures that they cannot start themselves).  !items, !food and !spoils have been added to help display what non-armor/weapon items a player has on hand.  I've also changed the !party command so that it shows how many tanks/healers/DPS are in the current party.
 
-I also fixed a bug with the damage formulas that was causing both healing and damage to not be right.  It should be better now.
+With the update before this one status effects can now be inflicted upon targets and enmity generation was fixed.
 
 ## TO-DO
 
-In order to make this game fully playable there are still a huge amount of things to be done.  Up next is to make it so status effects can be inflicted and then working on the monster AI so they can use abilities and spells. 
+In order to make this game fully playable there are still a huge amount of things to be done.  Here's basically the list of things left that I want to have done before I would consider the game "playable"
+
+* !Fame
+
+* !shop commands (buying, selling, listing)
+
+* Adding armors and weapons for both WAR and WHM up to level 10 (to start)
+
+* Creating several adventures for people to play up to level 10 (to start)
+
+* A crafting system (though this isn't necessary for the game to be considered playable and can come later)
 
 ## THANKS
 

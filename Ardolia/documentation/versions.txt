@@ -1,6 +1,14 @@
 Ardolia Bot Changelog
 =========================
 
+05-28-2017
+- Added the code for !adventure list   This command will cycle through all adventures and list which ones that the player can enter
+- Added the !items (and !inventory) command to display healing items, adventure items, and crystal items on hand
+- Added the !food command to display the food items a player has on hand
+- Added the !spoils command to display the adventure spoils a player has on hand
+- Changed buff durations to be in statuseffects.db rather than ability and spell db files.
+- Changed !party to show the # of tanks, healers and DPS the party is made up of.
+
 05-27-2017
 - Added the ability for abilities and spells to inflict status effects upon a target.
 - Added a new db file: statuseffects.db   This file contains the % chance and length of status effects
