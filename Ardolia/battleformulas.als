@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/27/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -189,7 +189,14 @@ calculate.accuracy {
 
   ; Check to see if the player has hit the target
   if (%hit.chance <= %accuracy) { return }
-  else { set %guard.message $translate(NormalDodge, $2) }
+  else { 
+
+    set %guard.message $translate(NormalDodge, $2) 
+
+    ; Increase the total number of times this target has dodged
+    $miscstats($2, add, TimesDodged, 1)
+
+  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

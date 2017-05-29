@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -379,6 +379,33 @@ currency.add {
   var %currency.amount $currency.amount($1, $2)
   inc %currency.amount $3
   writeini $char($1) currencies $2 %currency.amount
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns the level of fame
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+character.fame {
+  ; $1 = the person we're checking
+
+  var %famepoints $character.famepoints($1)
+
+  if (%famepoints < 20) { return 1 }
+  if ((%famepoints >= 20) && (%famepoints < 100)) { return 2 }
+  if ((%famepoints >= 100) && (%famepoints < 300)) { return 3 }
+  if ((%famepoints >= 400) && (%famepoints < 400)) { return 4 }
+  if ((%famepoints >= 500) && (%famepoints < 500)) { return 5 }
+  if ((%famepoints >= 500) && (%famepoints < 700)) { return 6 }
+  if ((%famepoints >= 700) && (%famepoints < 900)) { return 7 }
+  if ((%famepoints >= 900) && (%famepoints < 1000)) { return 8 }
+  if ((%famepoints >= 1000) && (%famepoints < 1500)) { return 9 }
+  if (%famepoints >= 1500)  { return 10 }
+
+}
+
+character.famepoints {
+  var %fame $readini($char($1), Info, Fame)
+  if (%fame = $null) { return 0 }
+  else { return %fame }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -995,7 +1022,6 @@ readweapons {
   unset %weapons.list*
 }
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Displays a char's items
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1057,6 +1083,8 @@ readfood {
     if ($2 = private) { $display.private.message($translate(HasNoFoodItems, $1)) }
     if ($2 = dcc) {  $dcc.private.message($nick, $translate(HasNoFoodItems, $1)) }
   }    
+
+  unset %*.items.lis* | unset %items.lis* 
 
 }
 

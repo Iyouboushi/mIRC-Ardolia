@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/20/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -39,6 +39,9 @@ alias battle.generate {
   while (%current.partymember <= %number.of.partymembers) { 
 
     var %partymember.name $gettok(%partymember.list, %current.partymember, 46)
+
+    ; Increase that this party member has been in a battle
+    $miscstats(%partymember.name, add, TotalBattles, 1)
 
     write $txtfile(battle.txt) %partymember.name  
     set %battlelist.toadd $readini($txtfile(battle2.txt), Battle, List) | %battlelist.toadd = $addtok(%battlelist.toadd,%partymember.name,46) | writeini $txtfile(battle2.txt) Battle List %battlelist.toadd | unset %battlelist.toadd
@@ -370,7 +373,7 @@ alias next {
   unset %skip.ai | unset %file.to.read.lines | unset %user.gets.second.turn
 
   ; Reset the Next timer.
-  var %nextTimer $readini(system.dat, system, TimeForIdle)
+  var %nextTimer $readini(system.dat, system, BattleIdleTime)
   if (%nextTimer = $null) { var %nextTimer 180 }
   /.timerBattleNext 1 %nextTimer /next ForcedTurn
 

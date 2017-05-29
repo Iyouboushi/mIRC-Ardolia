@@ -9,8 +9,8 @@ botType=IRC
 AllowColors=true
 AllowBold=true
 aisystem=on
-TimeForIdle=180
 TimeToEnter=120
+BattleIdleTime=180
 PartyIdleTime=180
 EnablePartyIdleTimer=true
 MaxNumberOfMonsInBattle=10
@@ -27,4 +27,4 @@ JobsTanks=WAR.PLD
 
 
 [version]
-SystemDatVersion=043017
+SystemDatVersion=052917

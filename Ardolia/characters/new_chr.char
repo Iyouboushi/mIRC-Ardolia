@@ -1,12 +1,3 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; This file is an extremely early 
-; prototype based on another bot. 
-; It will change drastically between now
-; and when the bot is finally ready to
-; play.  Keep that in mind.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 [StartingStats]
 Str=
 Dex=
@@ -66,34 +57,27 @@ LoginPoints=0
 
 
 [MiscStats]
-EnhancementPointsSpent=0
 TotalDeaths=0
 MonsterKills=0
 ItemsSold=0
 TimesFled=0
 ItemsGiven=0
 ChestsOpened=0
-TotalNumberOfKeys=0
 RevivedTimes=0
 TotalBattles=0
+TotalAdventures=0
 ChestsOpened=0
-NumberOfResets=0
-LightSpellsCasted=0
-DarkSpellsCasted=0
-EarthSpellsCasted=0
-FireSpellsCasted=0
-WindSpellsCasted=0
-WaterSpellsCasted=0
-IceSpellsCasted=0
-LightningSpellsCasted=0
-TimesParried=0
-TimesBlocked=0
-TotalDmg.Melee=0
+TreesChopped=0
+TimesDodged=0
 MeleeHits=0
-TotalDmg.Ability=0
+SpellHits=0
 AbilityHits=0
-TotalDmg.Spells=0
 SpellsCast=0
+AbilitiesUsed=0
+TotalDmg.Melee=0
+TotalDmg.Ability=0
+TotalDmg.Spell=0
+DamageHealed=0
 TotalXPGained=0
 TotalStatPointsSpent=0
 

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/28/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -367,6 +367,9 @@ adventure.rewards {
   while (%current.party.member <= $adventure.party.count) { 
     var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
 
+    ; Increase that this party member has been in the adventure
+    $miscstats(%party.member.name, add, TotalAdventures, 1)
+
     var %xp.to.reward $readini($txtfile(adventure.txt), Rewards, XP)
     if (%xp.to.reward = $null) { var %xp.to.reward 0 }
 
@@ -419,6 +422,9 @@ adventure.rewards {
 
       inc %current.xp %xp.to.reward
       writeini $char(%party.member.name) exp $current.job(%party.member.name) %current.xp
+
+      ; Increase the total amount of xp the player has earned
+      $miscstats(%party.member.name, add, TotalXPGained, %xp.to.reward)
 
       ; Add the player and the xp amount to the list to be shown 
       %winners.xp = $addtok(%winners.xp, $+ %party.member.name $+  $+ $chr(91) $+ $chr(43) $+ $bytes(%xp.to.reward,b) $+ $chr(93),46)
@@ -747,6 +753,9 @@ adventure.choptree {
 
   unset %log.list | unset %log.reward
 
+  ; Increase the total number of times this player has chopped a tree down
+  $miscstats($1, add, TreesChopped, 1)
+
   ; Check to see if the party has run out of actions to use.  
   $adventure.actions.checkforzero
 
@@ -827,6 +836,9 @@ adventure.chest {
   writeini $zonefile(adventure) %current.room Chest.Open true
 
   unset %object.list
+
+  ; Increase the total number of times this player has opened a chest
+  $miscstats($1, add, ChestsOpened, 1)
 
   ; remove 1 adventure action
   $adventure.actions.decrease(1)

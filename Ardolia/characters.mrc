@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 05/28/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -314,6 +314,8 @@ on 2:TEXT:!craftingpoints:#: { $display.message($translate(ViewMycraftingpoints)
 on 2:TEXT:!craftingpoints:?: { $display.private.message($translate(ViewMycraftingpoints)) }
 on 2:TEXT:!crafting points:#: { $display.message($translate(ViewMycraftingpoints), private) }
 on 2:TEXT:!crafting points:?: { $display.private.message($translate(ViewMycraftingpoints)) }
+on 2:TEXT:!cp:#: { $display.message($translate(ViewMycraftingpoints), private) }
+on 2:TEXT:!cp:?: { $display.private.message($translate(ViewMycraftingpoints)) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; View your guildpoints

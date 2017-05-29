@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/28/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -395,7 +395,7 @@ total.player.deaths {
     if ((%name = new_chr) || (%name = $null)) { inc %value 1 } 
     if (($readini($char(%name), info, flag) = npc) || ($readini($char(%name), info, flag) = monster)) { inc %value 1 }
     else { 
-      var %temp.playerdeaths $readini($char(%name), Stuff, TotalDeaths)
+      var %temp.playerdeaths $readini($char(%name), MiscStats, TotalDeaths)
       if (%temp.playerdeaths = $null) { var %temp.playerdeaths 0 }
 
       inc %player.deaths %temp.playerdeaths
@@ -1672,10 +1672,9 @@ increase.death.tally {
 ; Increases monster kills
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 inc_monster_kills {
-  var %monster.kills $readini($char($1), stuff, MonsterKills)
-  if (%monster.kills = $null) { var %monster.kills 0 }
-  inc %monster.kills 1 
-  writeini $char($1) stuff MonsterKills %monster.kills
+  ; Increase the total number of times this player has killed a monster
+  $miscstats($1, add, MonsterKills, 1)
+
   $achievement_check($1, MonsterSlayer)
 }
 
@@ -1685,10 +1684,9 @@ inc_monster_kills {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 increase_death_tally {
   if ($readini($char($1), info, flag) = npc) { return }
-  var %deaths $readini($char($1), stuff, TotalDeaths)
-  if (%deaths = $null) { var %deaths 0 } 
-  inc %deaths 1
-  writeini $char($1) stuff TotalDeaths %deaths
+
+  ; Increase the total number of times this player has died
+  $miscstats($1, add, TotalDeaths, 1)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,6 +1,11 @@
 Ardolia Bot Changelog
 =========================
 
+05-29-2017
+- Added !fame and the resulting messages
+- Added the ability for the bot to keep track of several different misc stats (such as total damage done, times dodged, etc)
+- Changed the system setting TimeForIdle to BattleIdleTimer for clarity
+
 05-28-2017
 - Added the code for !adventure list   This command will cycle through all adventures and list which ones that the player can enter
 - Added the !items (and !inventory) command to display healing items, adventure items, and crystal items on hand
@@ -12,6 +17,7 @@ Ardolia Bot Changelog
 05-27-2017
 - Added the ability for abilities and spells to inflict status effects upon a target.
 - Added a new db file: statuseffects.db   This file contains the % chance and length of status effects
+- Changed accuracy so that monsters can miss if blinded
 - Fixed the code for poison so that it will actually deal damage properly
 - Fixed the restore_mp code
 - Fixed an issue with enmity generation

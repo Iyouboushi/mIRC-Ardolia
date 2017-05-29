@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 05/28/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -139,6 +139,9 @@ alias spell_cmd {
 
   ; Check for a postcript
   if ($readini($dbfile(spells.db), n, $2, PostScript) != $null) { $readini($dbfile(spells.db), p, $2, PostScript) }
+
+  ; Increase the total number of times this player has cast a spell
+  $miscstats($1, add, SpellsCast, 1)
 
   ; Time to go to the next turn
   if (%battleis = on)  {  $check_for_double_turn($1) | halt }

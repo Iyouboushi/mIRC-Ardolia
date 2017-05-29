@@ -107,6 +107,9 @@ alias attack_cmd {
     ; Display the damage done
     $display_damage($1, $2, weapon, %weapon.equipped)
 
+    ; Increase the total number of times this player has done a melee hit
+    $miscstats($1, add, MeleeHits, 1)
+
     unset %attack.damage |  unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage4 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %attack.damage.total
     unset %drainsamba.on | unset %absorb |  unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone
     unset %techincrease.check |  unset %double.attack | unset %triple.attack | unset %fourhit.attack | unset %fivehit.attack | unset %sixhit.attack | unset %sevenhit.attack | unset %eighthit.attack
@@ -116,6 +119,8 @@ alias attack_cmd {
     if (%battleis = on)  { $check_for_double_turn($1) | halt }
   }
 
+
+  ; Melee AOEs are unfinished at the moment. This is code left over from BattleArena.
   if ($readini($dbfile(weapons.db), %weapon.equipped, target) = aoe) {
 
     if ($is_charmed($1) = true) { 

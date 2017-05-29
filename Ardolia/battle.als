@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/28/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -340,21 +340,16 @@ deal_damage {
   $ai.learncheck($2, $3)
 
   ; Increase total damage that we're keeping track of
-  if ((($4 = ability) || ($4 = melee) || ($4 = spell))) {
-    if (($person_in_mech($1) = false) && (%guard.message = $null)) {
-      if (($3 = ability) { var %totalstat ability }
-      if ($3 = spell) { var %totalstat spell } 
-      else { var %totalstat melee }
+  if ((($5 = ability) || ($4 = melee) || ($5 = spell))) {
+    if (($person_in_mech($1) != true) && (%guard.message = $null)) {
 
-      var %current.totaldamage $readini($char($1), MiscStats, totalDmg. $+ %totalstat) 
-      var %current.totalhits $readini($char($1), MiscStats, %totalstat $+ Hits)
-      if (%current.totaldamage = $null) { var %current.damage 0 }
-      if (%current.totalhits = $null) { var %current.totalhits 0 }
-      inc %current.totalhits 1
-      inc %current.totaldamage %attack.damage
+      if ($5 = ability) { var %totalstat ability }
+      if ($5 = spell) { var %totalstat spell } 
+      if ($4 = melee) { var %totalstat melee }
 
-      writeini $char($1) MiscStats totalDmg. $+ %totalstat %current.totaldamage
-      writeini $char($1) MiscStats %totalstat $+ Hits %current.totalhits
+      ; Increase the misc stats
+      $miscstats($1, add, %totalstat $+ Hits, 1)
+      $miscstats($1, add, TotalDmg. $+ %totalstat, %attack.damage)
     } 
   }
 
@@ -395,6 +390,9 @@ heal_damage {
 
   ; Increase enmity
   if ($flag($1) != monster) { $enmity($1, add, $calc(%attack.damage * 2)) }
+
+  ; Increase the total amount that the player has healed
+  $miscstats($1, add, DamageHealed, %attack.damage)
 
   $restore_hp($2, %attack.damage)
 }
@@ -562,9 +560,6 @@ display_damage {
     $spawn_after_death(%target)
     unset %number.of.hits
   }
-
-
-
 
   unset %target | unset %attacker | unset %user | unset %enemy | unset %counterattack |  unset %statusmessage.display
   unset %hp.percent |  unset %attack.target |  unset %weapon.equipped*

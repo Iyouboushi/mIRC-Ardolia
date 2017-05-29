@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; admin.mrc
-;;;; Last updated: 05/01/17
+;;;; Last updated: 05/29/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 on 2:TEXT:!bot admin*:*: {  $bot.admin(list) }
@@ -183,6 +183,9 @@ on 50:TEXT:@add *:*:{
     if (%level.cap = null) { var %level.cap 60 }
 
     if ($current.level($2) >= %level.cap) { echo -a can't do this }
+
+    ; Increase the total amount of xp the player has earned
+    $miscstats($2, add, TotalXPGained, $4)
 
     writeini $char($2) exp $current.job($2) %current.xp | $display.message(7* 2 $+ $get_chr_name($2) has gained $4 experience points) 
 

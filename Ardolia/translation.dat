@@ -53,6 +53,10 @@ ViewMyLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently a level $get.le
 ; View iLevel
 ViewMyiLevel=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently ilevel $character.ilevel($nick) $+ .
 
+; View fame
+ViewMyFame=$chr(3) $+ 3 $+ $get_chr_name($nick) is currently fame level $character.fame($nick) $+ . $readini(translation.dat, translation, fame $+ $character.fame($nick))
+
+
 ; View My EnhancementPoints
 ViewOthersEnhancementPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has2 $bytes($current.enhancementpoints($2),b) 3enhancement $iif($current.enhancementpoints($2) = 1, point, points) $+ .  
 ViewMyEnhancementPoints=$chr(3) $+ 3 $+  $+ $get_chr_name($nick) has2 $bytes($current.enhancementpoints($nick),b) 3unassigned enhancement $iif($current.enhancementpoints($nick) = 1, point, points) with2 $bytes($current.enhancementpoints.spent($nick),b) 3 $+ $iif($current.enhancementpoints.spent($nick) = 1, point, points) spent total on $current.job($nick)
@@ -193,7 +197,7 @@ ViewCrystalItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following cryst
 
 HasNoItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no items. 
 HasNoFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no food. 
-HasNoSpoils=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no battle spoils.
+HasNoSpoils=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no adventure spoils.
 HasNoAmmo=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no ammo.
 
 NeedToSayWhichArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which armor to search for: Shield, Head, Body, Legs, Feet, Hands, Ears, Neck, Wrists, Ring
@@ -479,6 +483,23 @@ Show rewards
 ShowXPRewards=$chr(3) $+ 3 $+ Players have been rewarded with experience points $+ : %winners.xp
 ShowSpoilRewards=$chr(3) $+ 3 $+ The following players have found spoils from this adventure $+ : %winners.spoils
 ShowClearRewards=$chr(3) $+ 3 $+ The following adventure clear rewards have been given: %winners.clearrewards
+
+
+
+=======================
+Fame Levels
+=======================
+Fame1=$chr(3) $+ 2 $+ $get_chr_name($nick) $+ ? Is that kind of snail? Oh that's your name. You must be a rookie right? 
+Fame2=$chr(3) $+ 2 $+ $get_chr_name($nick) $+ ? Hmm...sounds familiar. Who was it again? Oh. Well, uh...not many people know who you are, but if you work hard enough, word will get around about your good deeds. 
+Fame3=$chr(3) $+ 2 $+ Oh you're $get_chr_name($nick) $+ ! Yeah, you're not doing bad for an adventurer.
+Fame4=$chr(3) $+ 2 $+ Quite a few people are talking about the things you've done for Ardolia. You're becoming quite famous. Keep on doing whatever you're doing! 
+Fame5=$chr(3) $+ 2 $+ A lot of people know about what you've done for Ardolia. People are saying good things about you. Keep up the good work!
+Fame6=$chr(3) $+ 2 $+ Most everyone in this country knows your name by now, $get_chr_name($nick) $+ ! People are saying great things about you. You don't know how proud that makes us feel.
+Fame7=$chr(3) $+ 2 $+ Practically all of the kingdom has heard of you now. What's more, your reputation is stellar. We look forward to even greater things from you! 
+Fame8=$chr(3) $+ 2 $+ People are talking about you! Every infant in his cradle knows your name! And they hold you in highest regard! 
+Fame9=$chr(3) $+ 2 $+ There isn't a soul in the kingdom that doesn't consider you a hero! We humbly ask you to continue your efforts for the good of the country. 
+Fame10=$chr(3) $+ 2 $+ You have emerged as a hero to the people of Ardolia. Just the sound of your name strikes courage in their hearts. The help you've afforded the community had been of immeasurable value.   
+
 
 =======================
 Status Related Messages
