@@ -1,0 +1,25 @@
+[BasicInfo]
+Name=White Mage
+Description=
+Role=Healer
+
+[StatInfo]
+HPperVIT=4
+MPperPIE=10
+DamageStat=Int
+BaseSpeed=7
+
+
+[LevelUpInfo]
+STR=3
+DEX=3
+VIT=4
+INT=7
+MND=8
+PIE=7
+DET=5
+
+
+
+
+

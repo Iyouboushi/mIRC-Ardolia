@@ -1,12 +1,14 @@
 [BasicInfo]
 Name=Warrior
 Description=Specializing in the arts of battle, Warriors (WAR) are masters of all aspects of melee combat. 
+Role=Tank
 
 [StatInfo]
 HPperVIT=6.5
 MPperPIE=0
 DamageStat=Str
 BaseSpeed=10
+
 
 [LevelUpInfo]
 STR=5
