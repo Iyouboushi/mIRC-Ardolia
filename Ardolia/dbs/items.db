@@ -13,6 +13,7 @@ UseDesc=pulls out a small bottle of tonic and gives it to %enemy who drinks it a
 HealAmount=25
 Cooldown=3
 Exclusive=yes
+FameLevel=1
 
 =========================
 MP RESTORE ITEMS
@@ -27,6 +28,7 @@ UseDesc=pulls out a small bottle of ether and gives it to %enemy who drinks it a
 HealAmount=25
 Cooldown=3
 Exclusive=yes
+FameLevel=1
 
 =========================
 REVIVE ITEMS
@@ -41,6 +43,7 @@ UseDesc=pulls out a bottled fairy and opens it. After a moment the fairy flies o
 ReviveAmount=.35
 Exclusive=yes
 Cooldown=5
+FameLevel=2
 
 [PhoenixDown]
 Type=Revive
@@ -52,13 +55,38 @@ ReviveAmount=.50
 Level=50
 Exclusive=yes
 Cooldown=5
+FameLevel=5
 
 =========================
 CRYSTALS
 =========================
+[EarthCrystal]
+Type=crystal
+ItemDesc=A small crystal with the color of earth inside
+Cost=0
+SellPrice=1
+Exclusive=no
+Level=1
+
 [FireCrystal]
 Type=crystal
 ItemDesc=A small crystal with the color of fire inside
+Cost=0
+SellPrice=1
+Exclusive=no
+Level=1
+
+[WindCrystal]
+Type=crystal
+ItemDesc=A small crystal with the color of wind inside
+Cost=0
+SellPrice=1
+Exclusive=no
+Level=1
+
+[WaterCrystal]
+Type=crystal
+ItemDesc=A small crystal with the color of water inside
 Cost=0
 SellPrice=1
 Exclusive=no
@@ -75,6 +103,7 @@ SellPrice=1
 Exclusive=yes
 Level=1
 BreakChance=65
+FameLevel=1
 
 =========================
 MISC/CRAFTING ITEMS

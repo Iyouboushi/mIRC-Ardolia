@@ -1,14 +1,26 @@
-===================================================================
-This file is just to store the stats and augments of the equipment. 
-The actual list of equipment is split up into .lst files. There's
-armor_head.lst, armor_body.lst, armor_legs.lst, armor_feet.lst
-and armor_hands.lst.  If you add new equipment make sure you put
-the name of the piece in the appropriate .lst file.
+========
+Template
+========
 
-Valid EquipLocations are: Shield, Head, Body, Legs, Feet, Hands
-                          Ears, Neck, Wrists, Ring
-====================================================================
-
+; [Name]
+; Name= the name of the armor piece
+; EquipLocation= shield, head, body, legs, feet, hands, ears, neck, wrists or ring
+; str= what str bonus does this give?
+; dex= what dex bonus does this give?
+; vit= what vit bonus does this give?
+; int= what int bonus does this give?
+; mnd= what mnd bonus does this give?
+; pie= what pie bonus does this give?
+; PDefense= what physical defense is this armor?
+; MDefense= what magical defense is this armor?
+; ItemLevel= what item level is this armor?
+; PlayerLevel= what level does the player need to be to equip this?
+; Rarity= From 1-5 how rare is this? 1 is basic, 5 is the most rare/legendary
+; Cost= how much does this item cost at a shop, if it's available for sale?
+; SellPrice= how much will the shop keeper buy this item for?
+; CraftingPointValue= How many crafting points will the player receive for desynthing this armor?
+; FameLevel= what level of fame does the player need to buy this in a shop? default is 1
+; Jobs= what jobs can wear this? Use job codes or ALL.  For example: WHM.BLM or WAR.PLD or WAR or ALL
 
 
 ========
@@ -23,6 +35,7 @@ BODY
 
 [BasicTunic]
 Name=Basic Tunic
+EquipLocation=body
 Str=0
 Dex=0
 Vit=0
@@ -34,13 +47,15 @@ MDefense=13
 ItemLevel=1
 PlayerLevel=1
 Rarity=1
-EquipLocation=body
 cost=5
-SellPrice=0
+SellPrice=1
+FameLevel=1
 Jobs=all
+CraftingPointValue=0
 
 [BronzeHaubergeon]
 Name=Bronze Haubergeon
+EquipLocation=body
 Str=1
 Dex=0
 Vit=0
@@ -52,37 +67,126 @@ MDefense=12
 ItemLevel=8
 PlayerLevel=5
 Rarity=1
-EquipLocation=body
-cost=5
-SellPrice=0
-Jobs=WAR
+cost=50
+SellPrice=10
+FameLevel=1
+Jobs=$return.systemsetting(JobsTanks)
+CraftingPointValue=10
 
 
 ========
 LEGS
 ========
 
+[BasicLeggings]
+Name=Basic Leggings
+EquipLocation=legs
+Str=0
+Dex=0
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=7
+MDefense=15
+ItemLevel=1
+PlayerLevel=1
+Rarity=1
+cost=5
+SellPrice=1
+FameLevel=1
+Jobs=all
+CraftingPointValue=0
 
 
 ========
 FEET
 ========
-
-
+[BasicBoots]
+Name=Basic Boots
+EquipLocation=feet
+Str=0
+Dex=0
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=5
+MDefense=10
+ItemLevel=1
+PlayerLevel=1
+Rarity=1
+cost=5
+SellPrice=1
+Jobs=all
+FameLevel=1
+CraftingPointValue=0
 
 
 ========
 HANDS
 ========
+[BasicGloves]
+Name=Basic Gloves
+EquipLocation=hands
+Str=0
+Dex=0
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=5
+MDefense=10
+ItemLevel=1
+PlayerLevel=1
+Rarity=1
+cost=5
+SellPrice=1
+Jobs=all
+FameLevel=1
+CraftingPointValue=0
 
 ========
 EARS
 ========
 
+
+========
+NECK
+========
+
+
 ========
 WRISTS
 ========
 
+
 ========
 RINGS
 ========
+
+========
+SHIELDS
+========
+[SquareMapleShield]
+Name=Square Maple Shield
+EquipLocation=shield
+Str=0
+Dex=0
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=3
+MDefense=3
+ItemLevel=1
+PlayerLevel=1
+Rarity=1
+Jobs=all
+CraftingPointValue=1
+cost=10
+FameLevel=1
+SellPrice=1
+
+
+

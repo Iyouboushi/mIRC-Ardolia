@@ -1,6 +1,7 @@
 ; Weapons.db is used to store the weapon information.  Shields should be listed in equipment.db
 
-
+[weapontypes]
+Types=HandToHand, Sword, GreatSword, Bow, Whip, Gun, Axe, Hammer, Dagger, Katana, Wand, Stave, Spear, Scythe
 
 
 ============================================
@@ -17,6 +18,10 @@ WeaponLevel= What level is the weapon considered?
 PlayerLevel= What level does the player need to be to use it?
 Damage= Base damage with the weapon
 Speed= Weapon speed (used to help determine init)
+Cost= How much does this cost to buy in the shop?
+SellPrice= How much can you sell this for in the shop? 0 means you can't sell it.
+CraftingPointValue= How many crafting points do you get for desynthing this item?
+FameLevel= What level of fame does the player need to buy this in a shop? Default is 1
 
 str=
 dex=
@@ -53,19 +58,45 @@ pie=0
 det=0
 pdefense=0
 mdefense=0
+Cost=0
+SellPrice=0
+CraftingPointValue=0
 
 
 =============================================
 SWORDS
 =============================================
+[WeatheredSword]
+Type=sword
+Info=A sword that has seen better days.
+Jobs=WAR.PLD
+Stat=str
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=5
+Speed=4
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=0
+cost=5
+SellPrice=1
+
 [BronzeSword]
 Type=sword
 Info=A basic sword made of bronze.
 Jobs=WAR.PLD
 Stat=str
 Element=none
-ItemLevel=1
-PlayerLevel=1
+ItemLevel=5
+PlayerLevel=5
 Damage=6
 Speed=4
 str=0
@@ -77,6 +108,9 @@ pie=0
 det=0
 pdefense=0
 mdefense=0
+CraftingPointValue=1
+cost=50
+SellPrice=10
 
 [VikingSword]
 Type=sword
@@ -84,8 +118,8 @@ Info=A sword made for Vikings
 Jobs=WAR.PLD
 Stat=str
 Element=none
-ItemLevel=5
-PlayerLevel=5
+ItemLevel=7
+PlayerLevel=7
 Damage=7
 Speed=4
 str=1
@@ -97,6 +131,10 @@ pie=0
 det=0
 pdefense=0
 mdefense=0
+CraftingPointValue=10
+cost=70
+SellPrice=10
+FameLevel=2
 
 [BlazefireSaber]
 Type=sword
@@ -117,6 +155,10 @@ pie=0
 det=1
 pdefense=0
 mdefense=0
+CraftingPointValue=20
+cost=0
+SellPrice=20
+
 
 [BronzeSpatha]
 Type=sword
@@ -137,6 +179,10 @@ pie=0
 det=0
 pdefense=0
 mdefense=0
+CraftingPointValue=20
+cost=0
+SellPrice=20
+
 
 [AetherialVikingSword]
 Type=sword
@@ -158,6 +204,10 @@ det=0
 pdefense=0
 mdefense=0
 rarity=2
+CraftingPointValue=35
+cost=0
+SellPrice=30
+
 
 =============================================
 GREAT SWORDS
@@ -200,8 +250,268 @@ KATANAS
 
 
 =============================================
-WANDS & STAVES
+WHM WANDS & STAVES
 =============================================
+[WeatheredCane]
+Type=stave
+Info=A basic staff that has seen better days.
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=5
+Speed=3
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=0
+cost=5
+SellPrice=1
+
+[MapleWand]
+Type=wand
+Info=A light wand made out of maple.
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=5
+PlayerLevel=5
+Damage=6
+Speed=4
+str=0
+dex=0
+vit=0
+int=0
+mnd=1
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=10
+cost=50
+SellPrice=10
+
+[MapleCane]
+Type=stave
+Info=A basic staff made out of maple.
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=6
+PlayerLevel=6
+Damage=6
+Speed=3
+str=0
+dex=0
+vit=0
+int=0
+mnd=1
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=10
+cost=55
+SellPrice=10
+
+[WhisperingMapleWand]
+Type=wand
+Info=A light wand made of maple.
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=8
+PlayerLevel=8
+Damage=7
+Speed=4
+str=0
+dex=0
+vit=0
+int=0
+mnd=1
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=10
+cost=70
+SellPrice=10
+FameLevel=2
+
+[BuddingMapleWand]
+Type=wand
+Info=A maple wand that is covered in small budding leaves
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=11
+PlayerLevel=11
+Damage=9
+Speed=4
+str=0
+dex=0
+vit=1
+int=0
+mnd=1
+pie=1
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=20
+cost=0
+SellPrice=20
+
+
+[AetherialAshCane]
+Type=staff
+Info=A staff made of ash that is infused with aether
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=14
+PlayerLevel=14
+Damage=11
+Speed=4
+str=0
+dex=0
+vit=2
+int=0
+mnd=3
+pie=1
+det=0
+pdefense=0
+mdefense=0
+rarity=2
+CraftingPointValue=35
+cost=0
+SellPrice=30
+
+[AetherialAshWand]
+Type=wand
+Info=A wand made of ash that is infused with aether
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=16
+PlayerLevel=15
+Damage=12
+Speed=5
+str=0
+dex=0
+vit=1
+int=0
+mnd=3
+pie=2
+det=0
+pdefense=0
+mdefense=0
+rarity=2
+CraftingPointValue=35
+cost=0
+SellPrice=30
+
+[AshWand]
+Type=wand
+Info=A wand made of ash
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=16
+PlayerLevel=16
+Damage=11
+Speed=4
+str=0
+dex=0
+vit=1
+int=0
+mnd=2
+pie=1
+det=0
+pdefense=0
+mdefense=0
+rarity=1
+CraftingPointValue=30
+cost=0
+SellPrice=25
+
+[ElmCane]
+Type=stave
+Info=A basic staff made out of elm.
+Jobs=WHM
+Stat=mnd
+Element=none
+ItemLevel=17
+PlayerLevel=17
+Damage=12
+Speed=3
+str=0
+dex=0
+vit=2
+int=0
+mnd=3
+pie=0
+det=2
+pdefense=0
+mdefense=0
+CraftingPointValue=30
+cost=0
+SellPrice=25
+
+=============================================
+BLM WANDS & STAVES
+=============================================
+[WeatheredScepter]
+Type=stave
+Info=A basic staff that has seen better days.
+Jobs=BLM
+Stat=int
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=5
+Speed=3
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=0
+cost=5
+SellPrice=1
+
+[BoneStaff]
+Type=stave
+Info=A staff made from bone
+Jobs=BLM
+Stat=int
+Element=none
+ItemLevel=5
+PlayerLevel=5
+Damage=6
+Speed=3
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=1
+cost=50
+SellPrice=10
 
 
 =============================================
