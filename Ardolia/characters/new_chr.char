@@ -37,13 +37,14 @@ Name=
 Race=
 Gender=his
 Gender2=him
+Fame=0
 password=+8F%T=&QE87)E;F$`
 passhurt=0
 LastSeen=N/a
 LastIP=N/a
 Created=N/a
 Version=1.0
-Fame=0
+
 
 [Descriptions]
 Char=needs to set a desc by typing !desc set character <desc here>
@@ -93,6 +94,9 @@ WAR=0
 [Inventory]
 fists=1
 BasicTunic=1
+BasicLeggings=1
+BasicBoots=1
+BasicGloves=1
 
 
 [scoreboard]
@@ -103,9 +107,9 @@ Weapon=fists
 Shield=nothing
 Head=nothing
 Body=BasicTunic
-Legs=nothing
-Feet=nothing
-Hands=nothing
+Legs=BasicLeggings
+Feet=BasicBoots
+Hands=BasicGloves
 Ears=nothing
 Neck=nothing
 Wrists=nothing
