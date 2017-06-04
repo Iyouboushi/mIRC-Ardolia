@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 05/28/17
+;;;; Last updated: 06/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -21,6 +21,8 @@ on 2:TEXT:!adventure list:#: {
   if (($lines($txtfile(%adventurelist.file)) != $null) && ($lines($txtfile(%adventurelist.file)) > 0)) { 
     /.timerThrottle $+ $rand(a,z) $+ $rand(1,1000) $+ $rand(a,z) 1 1 /adventure.list.display $nick %adventurelist.file
   } 
+  if (($lines($txtfile(%adventurelist.file)) = $null) || ($lines($txtfile(%adventurelist.file)) = 0)) { $display.private.message($translate(NoAdventuresAvailable)) | halt }
+
 }
 on 2:TEXT:!adventure list:?: {
   var %adventurelist.file adventurelist_ $+ $nick $+ .txt
@@ -35,6 +37,9 @@ on 2:TEXT:!adventure list:?: {
   if (($lines($txtfile(%adventurelist.file)) != $null) && ($lines($txtfile(%adventurelist.file)) > 0)) { 
     /.timerThrottle $+ $rand(a,z) $+ $rand(1,1000) $+ $rand(a,z) 1 1 /adventure.list.display $nick %adventurelist.file 
   }
+
+  if (($lines($txtfile(%adventurelist.file)) = $null) || ($lines($txtfile(%adventurelist.file)) = 0)) { $display.private.message($translate(NoAdventuresAvailable)) | halt }
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -26,7 +26,7 @@ adventure.list {
   ;  check for a specific day
   var %zone.day $readini($zonefile(%zone.name), Info, Day)
   if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
-  if ($right($left($adate,5),2) != %zone.day) { return }
+  if (($right($left($adate,5),2) != %zone.day) || ($left($fulldate, 3) != %zone.day)) { return }
 
   ; Check for pre-req.
   var %zone.prereq $readini($zonefile(%zone.name), Info, Prereq)
@@ -96,7 +96,7 @@ adventure.start {
   ; Is this dungeon only available on a certain day of a month?   If so, is it the right day?
   var %zone.day $readini($zonefile($2), Info, Day)
   if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
-  if ($right($left($adate,5),2) != %zone.day) { $display.message($translate(NotRightDayToStart, $1), private) | halt }
+  if (($right($left($adate,5),2) != %zone.day) || ($left($fulldate, 3) != %zone.day)) { $display.message($translate(NotRightDayToStart, $1), private) | halt }
 
   ; Is there a pre-req that needs to be done before this one may be started?
   var %zone.prereq $readini($zonefile($2), Info, Prereq)
