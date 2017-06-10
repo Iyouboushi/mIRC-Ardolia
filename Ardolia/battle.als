@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/10/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -797,6 +797,10 @@ perform.status.effect {
 
 
   ; To-do: show that the status effect has happened
+
+
+  ; Check for HP that is below 1 and set it to 1 if so.
+  if ($current.hp($1) <= 0) { writeini $char($1) Battle HP 1 }
 
 }
 
