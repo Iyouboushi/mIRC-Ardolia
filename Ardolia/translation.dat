@@ -450,8 +450,12 @@ SuicideUseAllHP=$chr(3) $+ 4 $+ $get_chr_name($2) uses all of $gender($2) healt
 
 
 BatListTitleMessage=$chr(3) $+ 10 $+ -=BATTLE INFORMATION=-
+
 StepsUpFirst=$chr(3) $+ 2 $+ $get_chr_name($read($txtfile(battle.txt),1)) steps up first in the battle!
 TurnMessage=$chr(3) $+ 3 $+ It is $get_chr_name($2) $+ 's turn [Health Status: $strip(%hstats,b) $+ 3]
+TurnStatusEffects=$chr(3) $+ 3 $+ Active Effects: %status.effects
+TurnStatusBuffs=$chr(3) $+ 3 $+ Active Buffs: %status.buffs
+StatusNormal==$chr(3) $+ 3 $+ $get_chr_name($2) has no active buffs or effects
 
 
 EnemyDefeated=$chr(3) $+ 4 $+ %enemy $+  $iif($readini($char(%target), descriptions, DeathMessage) = $null, has been defeated by %user $+ !, $readini($char(%target), p, descriptions, DeathMessage))  %overkill
@@ -618,6 +622,7 @@ Statuses
 =======================
 ; Negative status effects
 Poison=$chr(3) $+ 4 $+ poisoned
+Bleed=$chr(3) $+ 4 $+ bleeding
 Blind=$chr(3) $+ 4 $+ blinded
 Silence=$chr(3) $+ 4 $+ silenced
 Intimidate=$chr(3) $+ 4 $+ intimidated
@@ -646,11 +651,15 @@ Ethereal=$chr(3) $+ 12 $+ ethereal
 Invincible=$chr(3) $+ 12 $+ invincible
 Regen=$chr(3) $+ 12 $+ +HP regen
 MPRegen=$chr(3) $+ 12 $+ +MP regen
-TPRege=$chr(3) $+ 12 $+ +TP regen
+TPRegen=$chr(3) $+ 12 $+ +TP regen
 Auto-Regen=$chr(3) $+ 12 $+ +HP regen
 ConserveTP=$chr(3) $+ 12 $+ conserving TP
-DefenseUp=$chr(3) $+ 12 $+ +def
-SpeedUp=$chr(3) $+ 12 $+ +spd
-Shell=$chr(3) $+ 12 $+ shell
-Protect=$chr(3) $+ 12 $+ protect
-
+DefenseUp=$chr(3) $+ 12 $+ +def
+SpeedUp=$chr(3) $+ 12 $+ +spd
+Shell=$chr(3) $+ 12 $+ shell
+Protect=$chr(3) $+ 12 $+ protect
+Haste=$chr(3) $+ 12 $+ haste
+SwiftSong=$chr(3) $+ 12 $+ swift song
+ForeSight=$chr(3) $+ 12 $+ foresight
+DivineSeal=$chr(3) $+ 12 $+ divineseal
+

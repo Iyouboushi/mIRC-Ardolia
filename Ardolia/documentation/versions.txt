@@ -1,6 +1,19 @@
 Ardolia Bot Changelog
 =========================
 
+06-10-2017
+- Added the ability for the bot to display active buffs and status effects on the turn
+- Added several buffs/effects to the bot
+- Added the !status command that can be used to see which buffs and effects are active on your character
+- Changed status effects so that the effects themselves cannot kill a target/player. They will only ever leave 1 hp
+- Fixed an issue where MP was not being restored each round
+- Fixed an issue where the day of the week was not working right if left blank
+
+06-03-2017
+- Changed the Day flag in adventures so that the three letter abbreviation for the day of the week can be used instead of the full
+  calandar day. So you can use Sun, Mon, Tues, Wed, Thrs, Fri, and Sat instead of 05, 15, 22, etc.  Either/or can be used but not
+  both at the same time.
+
 05-29-2017
 - Added !fame and the resulting messages
 - Added the ability for the bot to keep track of several different misc stats (such as total damage done, times dodged, etc)

@@ -22,26 +22,32 @@ BUFFS (positive status effects)
 [Protect]
 Chance=100
 Length=10
+Type=buff
 
 [Shell]
 Chance=100
 Length=10
+Type=buff
 
 [Regen]
 Chance=100
 Length=5
+Type=buff
 
 [Foresight]
 Chance=100
 Length=3
+Type=buff
 
 [DivineSeal]
 Chance=100
 Length=3
+Type=buff
 
 [SwiftSong]
 Chance=100
 Length=10
+Type=buff
 
 
 =============================================
@@ -51,8 +57,10 @@ Negative status effects
 [Poison]
 Chance=100
 Length=5
+Type=effect
 
 [Blind]
 Chance=100
 Length=3
+Type=effect
 

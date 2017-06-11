@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/10/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -1251,3 +1251,30 @@ buff.check {
 ; effect amount if it's on
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 status.check { return $readini($char($1), StatusEffects, $2) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Cycles through status effects
+; and displays them
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+character.showstatus {
+  ; Cycle through the Status Effects and add them to the list
+  var %number.of.statuseffects $ini($char($1), StatusEffects, 0) | var %current.status.effect 1
+  while (%current.status.effect <= %number.of.statuseffects) { 
+    var %current.statuseffect.name $ini($char($1), StatusEffects, %current.status.effect)
+
+    var %effect.type $readini($dbfile(statuseffects.db), %current.statuseffect.name, type)
+    if (%effect.type = buff) { %status.buffs = $addtok(%status.buffs, $translate(%current.statuseffect.name), 46) } 
+    if (%effect.type = effect) { %status.effects = $addtok(%status.effects, $translate(%current.statuseffect.name), 46) } 
+
+    inc %current.status.effect
+  }
+
+  if (%status.effects = $null) && (%status.buffs = $null) { $display.message($translate(StatusNormal, $1)) | halt }
+
+  if (%status.buffs != $null) { %status.buffs = $clean.list(%status.buffs) | $display.message.delay($translate(TurnStatusBuffs, $1), battle, 1) | unset %status.buffs }
+  if (%status.effects != $null) { %status.effects = $clean.list(%status.effects) | $display.message.delay($translate(TurnStatusEffects, $1), battle, 1) | unset %status.effects }
+
+  unset %status.effects
+  unset %status.buffs
+
+}

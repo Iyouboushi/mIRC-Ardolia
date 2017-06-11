@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/10/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -477,7 +477,7 @@ alias turn {
   unset %all_status | unset %status.message
   unset %attack.damage | unset %attack.damage1 | unset %attack.damage2 | unset %attack.damage3 | unset %attack.damage4 | unset %attack.damage5 | unset %attack.damage6 | unset %attack.damage7 | unset %attack.damage8 | unset %drainsamba.on | unset %absorb
   unset %element.desc | unset %spell.element | unset %real.name  |  unset %user.flag | unset %target.flag | unset %trickster.dodged | unset %covering.someone | unset %double.attack 
-  unset %damage.display.color
+  unset %damage.display.color | unset %status.buffs |  unset %status.effect
 
   set %status $readini($char($1), Battle, Status)
   if ((%status = dead) || (%status = runaway)) { unset %status | $next | halt }
@@ -505,9 +505,9 @@ alias turn {
 
   ; Restore 10% of the person's MP
   var %current.mp $current.mp($1)
-  var %mp.to.refill $return_percentofvalue($max.mp, 10)
+  var %mp.to.refill $return_percentofvalue($resting.mp($1), 10)
   inc %current.mp %mp.to.refill
-  if (%current.mp > $max.mp) { var %current.mp $max.mp }
+  if (%current.mp > $resting.mp($1)) { var %current.mp $resting.mp($1) }
   writeini $char($1) Battle MP %current.mp
 
   ; Cycle through the Status Effects and perform the status effect
@@ -523,7 +523,6 @@ alias turn {
     inc %current.status.effect
   }
 
-
   $turn.statuscheck($1) 
 
   $hp_status($1) | $set_chr_name($1)
@@ -537,14 +536,8 @@ alias turn {
 
   $display.message.delay(%status.message, battle, 1)
 
-  if (($lines($txtfile(temp_status.txt)) != $null) && ($lines($txtfile(temp_status.txt)) > 0)) { 
-    /.timerThrottle $+ $rand(a,z) $+ $rand(1,1000) $+ $rand(a,z) 1 1 /display.statusmessages $1 
-  } 
-
-  if ($lines($txtfile(temp_status.txt)) != $null) { 
-    set %file.to.read.lines $lines($txtfile(temp_status.txt))
-    inc %file.to.read.lines 2
-  }
+  if (%status.buffs != $null) { %status.buffs = $clean.list(%status.buffs) | $display.message.delay($translate(TurnStatusBuffs, $1), battle, 1) | unset %status.buffs }
+  if (%status.effects != $null) { %status.effects = $clean.list(%status.effects) | $display.message.delay($translate(TurnStatusEffects, $1), battle, 1) | unset %status.effects }
 
   ; Decrease item timers
   $item.cooldowns.decrease($1)
@@ -556,12 +549,11 @@ alias turn {
   if (($return.systemsetting(TurnType) = action) && ($action.points($1, check) <= 0)) { /.timerThrottle $+ $rand(a,z) $+ $rand(1,100) $+ $rand(a,z) 1 %file.to.read.lines /next | halt }
   unset %real.name
 
-
   if (%skip.ai != on) {
     ; Check for AI
     if (%file.to.read.lines > 0) { 
-      /.timerSlowYouDown $+ $rand(a,z) $+ $rand(1,100) 1 %file.to.read.lines /set %wait.your.turn off 
-      /.timerSlowYouDown2 $+ $rand(a,z) $+ $rand(1,100) 1 %file.to.read.lines /aicheck $1 | halt
+      /.timerSlowYouDown $+ $rand(a,z) $+ $rand(1,100) 1 3 /set %wait.your.turn off 
+      /.timerSlowYouDown2 $+ $rand(a,z) $+ $rand(1,100) 1 3 /aicheck $1 | halt
     }
     else { set %wait.your.turn off | $aicheck($1) | halt }
   }
