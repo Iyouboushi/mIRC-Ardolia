@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 06/10/17
+;;;; Last updated: 06/21/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -791,8 +791,6 @@ perform.status.effect {
     var %current.hp $current.hp($1)
     dec %current.hp %poison.damage
     writeini $char($1) Battle Hp %current.hp
-
-    %status.effects = $addtok(%status.effects, $translate(Poison), 46)
   } 
 
   if ($2 = bleed) { 
@@ -800,20 +798,10 @@ perform.status.effect {
     var %current.hp $current.hp($1)
     dec %current.hp %bleed.damage
     writeini $char($1) Battle Hp %current.hp
-
-    %status.effects = $addtok(%status.effects, $translate(Bleed), 46)
   }
 
-  if ($2 = blind) {  %status.effects = $addtok(%status.effects, $translate(Blind), 46) } 
 
-
-  ; Positive status effects
-  if ($2 = protect) {  %status.buffs = $addtok(%status.buffs, $translate(Protect), 46) } 
-  if ($2 = shell) {  %status.buffs = $addtok(%status.buffs, $translate(Shell), 46) } 
-  if ($2 = haste) {  %status.buffs = $addtok(%status.buffs, $translate(Haste), 46) } 
-  if ($2 = SwiftSong) {  %status.buffs = $addtok(%status.buffs, $translate(SwiftSong), 46) } 
-  if ($2 = Foresight) {  %status.buffs = $addtok(%status.buffs, $translate(Foresight), 46) } 
-  if ($2 = DivineSeal) {  %status.buffs = $addtok(%status.buffs, $translate(DivineSeal), 46) } 
+  ; Buffs / Positive Status Effects
 
   if ($2 = regen) { 
     var %regen.hp $floor($calc($resting.hp($1) * .10))
@@ -821,11 +809,12 @@ perform.status.effect {
     inc %current.hp %regen.hp
     if (%current.hp >= $resting.hp($1)) { var %current.hp $resting.hp($1) }
     writeini $char($1) Battle Hp %current.hp
-
-    %status.buffs = $addtok(%status.effects, $translate(Regen), 46)
   } 
 
 
+  ; Add the status effect/buff to the correct list
+  if ($readini($dbfile(statuseffects.db), $2, type) = buff) { %status.buffs = $addtok(%status.buffs, $translate($2), 46) }
+  else { %status.effects = $addtok(%status.effects, $translate($2), 46) }
 
   ; Check for HP that is below 1 and set it to 1 if so.
   if ($current.hp($1) <= 0) { writeini $char($1) Battle HP 1 }
