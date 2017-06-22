@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 06/10/17
+;;;; Last updated: 06/21/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -854,7 +854,7 @@ wear.armor {
 
   ; Equip the armor and tell the world
   writeini $char($1) equipment %item.location $2
-  $display.message($translate(EquippedArmor), global)
+  $display.message($translate(EquippedArmor, $1, $2), global)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
