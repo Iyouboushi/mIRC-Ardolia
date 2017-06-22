@@ -21,7 +21,7 @@ Level=1
 Type=Attack
 AOE=false
 Info=
-Description=
+Description=unleashes the full power of $gender($1) weapon and performs a powerful mighty strike that delivers a devastating blow upon $get_chr_name($3) $+ !
 Cooldown=100
 Cost=300
 Stat=str
@@ -201,6 +201,18 @@ Description=
 Cooldown=1
 Cost=100
 Stat=mnd
+Potency=100
+EnmityMultiplier=1
+Job=all
+
+[LoudBleat]
+level=1
+Type=attack
+AOE=false
+Info=A sheep's bleat
+Description=runs towards $get_chr_name($3) and bleats loudly before doing a small headbutt. 
+Cost=120
+Stat=str
 Potency=100
 EnmityMultiplier=1
 Job=all

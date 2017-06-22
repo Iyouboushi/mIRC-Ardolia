@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 06/10/17
+;;;; Last updated: 06/21/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -197,12 +197,14 @@ on 2:TEXT:!job change *:*: {
   ; Make a current copy of the stats of the old job and clear the equipment
   if ($current.job($nick) != none) {  
     $copyini($nick, BaseStats, Stats- $+ $current.job($nick)) 
+    $gearset.set($nick, $current.job($nick))
     $equipment.reset($nick)
   }
 
   ; Do we need to restore a back up of the job's stats?
   if ($readini($char($nick), Stats- $+ $3, str) != $null) {  
     $copyini($nick, Stats- $+ $3, BaseStats) 
+    $gearset.equip($nick, $3)
   }
 
   ; If a back up is not found then it means it's the first time we're switching to this job. Time to do some stuff.
@@ -589,4 +591,96 @@ on 2:TEXT:!roll *:#: {
 on 2:TEXT:!roll *:?: { 
   if (d !isin $2) { $display.private.message(4!roll #d#(+#)  - example: !roll 1d10 or !roll 1d6+3) | halt }
   $display.private.message(7* 2Result for $2 $+ : $roll($2))
+}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Gearset code for when
+; you change jobs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Copies the current gear to a 'set' for easy swapping back later
+alias gearset.set {
+  ; $1 = the person we're setting a gearset for
+  ; $2 = the gearset name
+
+  ; copy the INI of the current [equipment] section to a gearset 
+  $copyini($1, equipment, gearset $+ $2)
+}
+
+; Swaps back the gear and unequips anything the player no longer owns
+alias gearset.equip {
+  ; $1 = the person
+  ; $2 = the gearset name
+
+  ; Check to see if the gearset number exists
+  if ($readini($char($1), Gearset $+ $2, body) = $null) { return }
+
+  ; Check each armor piece to make sure the person still owns it. 
+  ; If the armor is not found, set it to "nothing"
+  var %armor.not.found false
+
+  ; Set the variables for the armor we're swapping into
+  var %head.armor $readini($char($1), Gearset $+ $2, head)
+  var %body.armor $readini($char($1), Gearset $+ $2, body)
+  var %legs.armor $readini($char($1), Gearset $+ $2, legs)
+  var %feet.armor $readini($char($1), Gearset $+ $2, feet)
+  var %hands.armor $readini($char($1), Gearset $+ $2, hands)
+  var %ears.armor $readini($char($1), Gearset $+ $2, ears)
+  var %wrists.armor $readini($char($1), Gearset $+ $2, wrists)
+  var %neck.armor $readini($char($1), Gearset $+ $2, neck)
+  var %ring.armor $readini($char($1), Gearset $+ $2, ring)
+  var %shield.armor $readini($char($1), Gearset $+ $2, shield)
+  var %gear.weapon $readini($char($1), Gearset $+ $2, weapon)
+
+
+  if ((%head.armor != nothing) && (%head.armor != $null)) { 
+    if ($inventory.amount($1, %head.armor) <= 0) { var %armor.not.found true | var %head.armor nothing }
+  }
+  if ((%body.armor != nothing) && (%body.armor != $null)) { 
+    if ($inventory.amount($1, %body.armor) <= 0) { var %armor.not.found true | var %body.armor nothing }
+  } 
+  if ((%legs.armor != nothing) && (%legs.armor != $null)) { 
+    if ($inventory.amount($1, %legs.armor) <= 0) { var %armor.not.found true | var %legs.armor nothing }
+  }
+  if ((%feet.armor != nothing) && (%feet.armor != $null)) { 
+    if ($inventory.amount($1, %feet.armor) <= 0) { var %armor.not.found true | var %feet.armor nothing }
+  }
+  if ((%hands.armor != nothing) && (%hands.armor != $null)) { 
+    if ($inventory.amount($1, %hands.armor) <= 0) { var %armor.not.found true | var %hands.armor nothing }
+  }
+  if ((%ears.armor != nothing) && (%ears.armor != $null)) { 
+    if ($inventory.amount($1, %ears.armor) <= 0) { var %armor.not.found true | var %ears.armor nothing }
+  }
+  if ((%wrists.armor != nothing) && (%wrists.armor != $null)) { 
+    if ($inventory.amount($1, %wrists.armor) <= 0) { var %armor.not.found true | var %wrists.armor nothing }
+  }  
+  if ((%neck.armor != nothing) && (%neck.armor != $null)) { 
+    if ($inventory.amount($1, %neck.armor) <= 0) { var %armor.not.found true | var %neck.armor nothing }
+  }  
+  if ((%ring.armor != nothing) && (%ring.armor != $null)) { 
+    if ($inventory.amount($1, %ring.armor) <= 0) { var %armor.not.found true | var %ring.armor nothing }
+  }
+  if ((%shield.armor != nothing) && (%shield.armor != $null)) { 
+    if ($inventory.amount($1, %shield.armor) <= 0) { var %armor.not.found true | var %shield.armor nothing }
+  }
+  if ((%gear.weapon != nothing) && (%gear.weapon != $null)) { 
+    if ($inventory.amount($1, %gear.weapon) <= 0) { var %armor.not.found true | var %gear.weapon fists }
+  }
+
+  ; Silently equip armor 
+  writeini $char($1) equipment head %head.armor
+  writeini $char($1) equipment body %body.armor
+  writeini $char($1) equipment legs %legs.armor
+  writeini $char($1) equipment feet %feet.armor
+  writeini $char($1) equipment hands %hands.armor
+  writeini $char($1) equipment ears %ears.armor
+  writeini $char($1) equipment wrists %wrists.armor
+  writeini $char($1) equipment neck %neck.armor
+  writeini $char($1) equipment ring %ring.armor
+  writeini $char($1) equipment shield %shield.armor
+  writeini $char($1) equipment weapon %gear.weapon
+
+  ; Display message.  If armor was changed display a different message
+  if (%armor.not.found = true) { $display.private.message2($1, $translate(GearsetEquippedWithMissing)) }
+  else {  $display.private.message2($1, $translate(GearsetEquipped, $2)) }
 }

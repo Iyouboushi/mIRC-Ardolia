@@ -117,6 +117,14 @@ SellPrice=10
 Exclusive=yes
 Level=1
 
+[SheepSkin]
+Type=crafting
+ItemDesc=The skin from a sheep
+Cost=0
+SellPrice=5
+Exclusive=yes
+Level=1
+
 =========================
 FOOD
 =========================

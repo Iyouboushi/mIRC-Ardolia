@@ -109,6 +109,14 @@ ViewAbilities=$chr(3) $+ 3 $+  $+ $get_chr_name($2) knows the following abilit
 ViewSpells=$chr(3) $+ 3 $+ $get_chr_name($2) knows the following spells: %spells.list
 
 
+; Gearset
+GearsetSuccessful=$chr(3) $+ 3 $+ You have successfully copied your current equipment into gear set $2 $+ . 
+GearsetEquipped=$chr(3) $+ 3 $+ Your previous $2 gear has been re-equipped successfully. 
+GearsetEquippedWithMissing=$chr(3) $+ 3 $+ Your previous gear has been equipped $2 4however some pieces of equipment were unable to be worn due to no longer having them in your inventory.
+GearsetView=$chr(3) $+ 3 $+ Gear Set number $2 $+ : [Head $rarity.color.check(%head.armor) $+ %head.armor $+  3] [Body $rarity.color.check(%body.armor) $+ %body.armor $+ 3] [Legs $rarity.color.check(%legs.armor) $+ %legs.armor $+  3] [Feet $rarity.color.check(%feet.armor) $+ %feet.armor $+  3] [Hands $rarity.color.check(%hands.armor) $+ %hands.armor $+  3] [Ears $rarity.color.check(%ears.armor) $+ %ears.armor $+  3] [Neck $rarity.color.check(%neck.armor) $+ %neck.armor $+  3] [Wrists $rarity.color.check(%wrists.armor) $+ %wrists.armor $+  3] [Ring $rarity.color.check(%ring.armor) $+ %ring.armor $+  3] [Weapon $rarity.color.check(%gear.weapon) $+ %gear.weapon $+  3] [Shield $rarity.color.check(%shield.armor) $+ %shield.armor $+  3]
+GearsetError=$chr(3) $+ 4 $+ Error: To set a gear set use !gearset set [1-5] or to equip a gear set use !gearset equip [1-5] and to view what you have set use !gearset view [1-3] and remember to remove the [] around the number.
+GearsetNumberDoesNotExist=$chr(3) $+ 4 $+ Error: That gear set number does not exist and cannot be equipped.
+
 HereIsYourCurrentStats=$chr(3) $+ 3 $+ Here are your current stats:
 HereIsOtherCurrentStats=$chr(3) $+ 3 $+ Here are the current stats for $2 $+ :
 ViewStatus=$chr(3) $+ 3 $+  $+ %real.name $+ 's status effects:4 %all_status 3[Active Skills:4 %all_skills $+ 3] $iif($return.potioneffect($nick) != none, [Potion Effect:12 $return.potioneffect($nick) $+ 3])

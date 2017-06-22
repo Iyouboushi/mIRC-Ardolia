@@ -1,6 +1,12 @@
 Ardolia Bot Changelog
 =========================
 
+06-21-2017
+- Added the first FATE: Lambs on the Run. Borrowed from FFXIV, this is a short two-room adventure where you fight sheep for xp.
+- Added the ability for the game to remember what your previously equipped weapons and armor were when switching between jobs.
+- Fixed a display error for !equip
+- Fixed a bug that was preventing adventures from showing up in !adventure list
+
 06-10-2017
 - Added the ability for the bot to display active buffs and status effects on the turn
 - Added several buffs/effects to the bot

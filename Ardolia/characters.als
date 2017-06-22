@@ -834,6 +834,7 @@ character.wieldweapon {
 wear.armor {
   ; $1 = the person
   ; $2 = the armor we're going to equip
+  ; $3 = ignore if you want to ignore the equip message
 
   if (%adventureis = on) { $display.message($translate(CanOnlySwitchOutsideAdventure), private) | halt }
 
@@ -854,7 +855,7 @@ wear.armor {
 
   ; Equip the armor and tell the world
   writeini $char($1) equipment %item.location $2
-  $display.message($translate(EquippedArmor, $1, $2), global)
+  if ($3 != ignore) { $display.message($translate(EquippedArmor, $1, $2), global) }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

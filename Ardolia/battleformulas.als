@@ -218,7 +218,7 @@ calculate.wpn.damage {
 
   var %current.det $current.det($1)
 
-  var %base.melee.damage $abs($calc((%weapon.damage *.2714745 + %current.stat *.1006032 + (%current.det -202)*.0241327 + %weapon.damage * %current.stat *.0036167 + %weapon.damage * (%weapon.det - 202)*.0022597 - 1) * (%weapon.speed / 3)))
+  var %base.melee.damage $abs($calc((%weapon.damage * .2714745 + %current.stat * .1006032 + (%current.det -202) * .0241327 + %weapon.damage * %current.stat * .0036167 + %weapon.damage * (%weapon.det - 202) * .0022597 - 1) * (%weapon.speed / 3)))
   inc %base.melee.damage $rand(1,2)
 
   return $round(%base.melee.damage,0)
@@ -245,10 +245,11 @@ calculate.ability.damage {
 
   var %current.det $current.det($1)
 
-  var %base.ability.damage $abs($calc((%weapon.damage *.2714745 + %current.stat *.1006032 + (%current.det -202)*.0241327 + %weapon.damage * %current.stat *.0036167 + %weapon.damage * (%current.det - 202)*.0022597 - 1)))
+  var %det.calculation $calc(%current.det - 202)
+  var %base.ability.damage $abs($calc((%weapon.damage *.2714745 + %current.stat * .1006032 + %det.calculation * .0241327 + %weapon.damage * %current.stat * .0036167 + %weapon.damage * %det.calculation *.0022597 - 1)))
   var %base.ability.damage $abs($calc((%potency / 100) * %base.ability.damage))
 
-  inc %base.ability.damage $rand(1,2)
+  inc %base.ability.damage $roll(1d3)
 
   return $round(%base.ability.damage,0)
 }

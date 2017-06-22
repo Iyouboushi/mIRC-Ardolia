@@ -1,0 +1,61 @@
+; [Info] stores information about the adventure
+; Name = The name of the dungeon
+; OriginalFile= the file name (minus the .zone) -- This is needed because this file is copied to adventure.zone when active
+; LevelRange= A general level range of the dungeon necessary to successfully win
+; MinimumPlayers= How many players must be in the party to go into this adventure?
+; MaximumPlayers= Is there a max amount of players who can join this adventure?
+; PreReq=If the dungeon requires the clear of another dungeon first, list it here. The name here has to match the .zone file
+; ilevel= if you want the dungeon to have a certain minimum level of armor/weapon iLevel to be able to start/enter
+; AdventureActions= How many actions does a party get before they're kicked out of the dungeon?
+; ClearRoom= The room number that says the dungeon is beat when the players clear it. The dungeon will end when this room is clear
+; ClearReward.List=A list file in \lsts\ that has a list of available items. One will be given out at random to every player
+                   if the party clears the adventure
+; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. Can be a static # or 
+                 $return_percentofvalue($xp.to.level(%party.member.name), percentnumberhere)) 
+                 ex: $return_percentofvalue($xp.to.level(%party.member.name), 5)) will return 5% of the player's TNL
+; FameRewarded= How much fame will the players receive if this dungeon is cleared?
+; Month= an optional flag if you want adventures to only appear in certain months. Use two digits for the month (like 06 for June)
+; Day= an optional flag if you want adventures to only appear on a certain day of the month. 
+;      Use two digits (like 02, 12, 22, etc) or 3 letters of the day (Sun, Mon, Tues, Wed, Thrs, Fri, Sat)
+
+[Info]
+Name=FATE: On the Lamb
+OriginalFile=fate-lamb
+Desc=A flock of sheep bitten by diseased bats has grown frenzied and is charging at full speed towards the Ardolia Gate. The infected creatures cannot be allowed to enter the city, so they must be put down. 
+LevelRange=1-2
+MinimumPlayers=1
+MaximumPlayers=4
+PreReq=
+iLevel=1
+AdventureActions=5
+ClearRoom=1
+ClearReward.List=
+ClearReward.XP=20
+FameRewarded=1
+AdventureClearMessage=The party returns to Ardolia ready to celebrate their victory!
+
+[0]
+Name=The Ardolian Gates
+Clear=true
+EnterDesc=The party exits the city and stands at the gates of Ardolia looking out onto the fields around the city.  Ahead they can see a number of diseased sheep coming towards the gates.
+LookDesc=The party stands at the gates of Ardolia looking out onto the fields around the city. Ahead they can see a number of diseased sheep coming towards the gates.
+
+; Combat Info
+Combat=false
+
+; Exits
+ExitList=North
+North=1
+
+
+[1]
+Name=The Fields of Ardolia
+EnterDesc=The party walks towards the group of diseased sheep, ready to put an end to the threat.
+LookDesc=The party is standing in the fields of Ardolia
+
+; Combat Info
+Combat=true
+Monsters=Diseased_Sheep
+Monsters.Needed=$iif($adventure.party.count < 2, 2, 4)
+CombatDesc=A pack of diseased sheep charge the party!
+CombatEndDesc=Upon defeating the diseased pack, the others bleat and run away to regroup and return later. The party has defended the city..for now. 
