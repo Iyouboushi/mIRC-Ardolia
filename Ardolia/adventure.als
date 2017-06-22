@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 06/10/17
+;;;; Last updated: 06/21/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -26,7 +26,7 @@ adventure.list {
   ;  check for a specific day
   var %zone.day $readini($zonefile(%zone.name), Info, Day)
   if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
-  if (($right($left($adate,5),2) != %zone.day) || ($left($fulldate, 3) != %zone.day)) { return }
+  if (($right($left($adate,5),2) != %zone.day) && ($left($fulldate, 3) != %zone.day)) { return }
 
   ; Check for pre-req.
   var %zone.prereq $readini($zonefile(%zone.name), Info, Prereq)
@@ -457,7 +457,11 @@ adventure.rewards {
   if (%winners.xp != $null) { %winners.xp = $clean.list(%winners.xp) | $display.message($translate(ShowXPRewards), global) }
   if (%winners.spoils != $null) {  $display.message($translate(ShowSpoilRewards), global) }
 
-  if ($1 = victory) { %winners.clearrewards = $clean.list(%winners.clearrewards) | $display.message($translate(ShowClearRewards), global) }
+  if ($1 = victory) { 
+    if (%winners.clearrewards != $null) { 
+      %winners.clearrewards = $clean.list(%winners.clearrewards) | $display.message($translate(ShowClearRewards), global) 
+    }
+  }
 
   ; Unset variables
   unset %winners.xp

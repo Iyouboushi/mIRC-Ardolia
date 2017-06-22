@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/21/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -248,7 +248,7 @@ alias calculate_damage_ability {
   if (%guard.message != $null) { set %attack.damage 0 | return }
 
   if ($flag($1) = monster) { $formula.ability($1, $2, $3, $4) }
-  else { $formula.ability($1, $2, $3, $4 }
+  else { $formula.ability($1, $2, $3, $4) }
 
   unset %enemy.defense | set %multihit.message.on on
   unset %attacker.level | unset %defender.level 
