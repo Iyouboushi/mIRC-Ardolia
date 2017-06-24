@@ -125,6 +125,14 @@ SellPrice=5
 Exclusive=yes
 Level=1
 
+[ArdolianCarrot]
+Type=crafting
+ItemDesc=A bright orange carrot. Often used to make carrot juice.
+Cost=0
+SellPrice=2
+Exclusive=yes
+Level=1
+
 =========================
 FOOD
 =========================
@@ -142,4 +150,19 @@ vit=1
 int=0
 mnd=0
 pie=0
+det=0
+
+[CarrotJuice]
+type=food
+ItemDesc=a vial of carrot juice.
+Cost=0
+SellPrice=10
+Exclusive=yes
+Level=1
+str=0
+dex=0
+vit=0
+int=1
+mnd=0
+pie=2
 det=0

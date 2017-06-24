@@ -1,0 +1,62 @@
+; [Info] stores information about the adventure
+; Name = The name of the dungeon
+; OriginalFile= the file name (minus the .zone) -- This is needed because this file is copied to adventure.zone when active
+; LevelRange= A general level range of the dungeon necessary to successfully win
+; MinimumPlayers= How many players must be in the party to go into this adventure?
+; MaximumPlayers= Is there a max amount of players who can join this adventure?
+; PreReq=If the dungeon requires the clear of another dungeon first, list it here. The name here has to match the .zone file
+; ilevel= if you want the dungeon to have a certain minimum level of armor/weapon iLevel to be able to start/enter
+; AdventureActions= How many actions does a party get before they're kicked out of the dungeon?
+; ClearRoom= The room number that says the dungeon is beat when the players clear it. The dungeon will end when this room is clear
+; ClearReward.List=A list file in \lsts\ that has a list of available items. One will be given out at random to every player
+                   if the party clears the adventure
+; ClearReward.XP=Amount of bonus XP given if the dungeon is cleared. Can be a static # or 
+                 $return_percentofvalue($xp.to.level(%party.member.name), percentnumberhere)) 
+                 ex: $return_percentofvalue($xp.to.level(%party.member.name), 5)) will return 5% of the player's TNL
+; FameRewarded= How much fame will the players receive if this dungeon is cleared?
+; Month= an optional flag if you want adventures to only appear in certain months. Use two digits for the month (like 06 for June)
+; Day= an optional flag if you want adventures to only appear on a certain day of the month. 
+;      Use two digits (like 02, 12, 22, etc) or 3 letters of the day (Sun, Mon, Tues, Wed, Thrs, Fri, Sat)
+
+[Info]
+Name=FATE: Wasky Wabbits!
+OriginalFile=fate-rabbit
+Desc=The Carrot Farms of Ardolia are being overrun by hungry rabbits seeking to eat all of the Ardolian carrots! Please put a stop to them before it's too late!
+LevelRange=1-2
+MinimumPlayers=1
+MaximumPlayers=4
+PreReq=
+iLevel=1
+AdventureActions=5
+ClearRoom=1
+ClearReward.List=reward_fate-rabbit.lst
+ClearReward.XP=10
+FameRewarded=1
+AdventureClearMessage=The party has saved the carrot farm of Ardolia from being overrun! The farmers thank the party for a job well done.
+Day=Fri
+
+[0]
+Name=The Ardolian Carrot Farm (Gate)
+Clear=true
+EnterDesc=The party stands at the gate of the Ardolian Carrot Farm. 
+LookDesc=The party stands at the gate of the Ardolian Carrot Farm. Beyond the gate they can hear farmers trying to shoo away the pesky rabbits.
+
+; Combat Info
+Combat=false
+
+; Exits
+ExitList=Gate
+Gate=1
+
+
+[1]
+Name=The Ardolian Carrot Farm
+EnterDesc=The party walks into the farm and sees rabbits. Most are gnawing on the carrots. The farmers are begging the party to help with this problem.
+LookDesc=The party is standing in the Ardolian carrot farm.
+
+; Combat Info
+Combat=true
+Monsters=Hungry_Rabbit
+Monsters.Needed=$iif($adventure.party.count < 2, 3, 5)
+CombatDesc=A pack of hungry rabbits take notice of the party and bounce towards you!
+CombatEndDesc=Upon defeating the rabbits, the party shoos the rest of the rabbits away. Reluctantly they bounce back off into the treeline. You have a feeling they will be back soon though.

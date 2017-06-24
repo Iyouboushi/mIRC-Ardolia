@@ -217,6 +217,18 @@ Potency=100
 EnmityMultiplier=1
 Job=all
 
+[CuteHop]
+level=1
+Type=attack
+AOE=false
+Info=The hop of a bunny
+Description=hops towards $get_chr_name($3) and jumps up and does a small kick 
+Cost=120
+Stat=str
+Potency=100
+EnmityMultiplier=1
+Job=all
+
 [SharpSting]
 level=1
 Type=Attack
