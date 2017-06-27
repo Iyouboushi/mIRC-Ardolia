@@ -370,7 +370,7 @@ SellPrice=20
 
 
 [AetherialAshCane]
-Type=staff
+Type=stave
 Info=A staff made of ash that is infused with aether
 Jobs=WHM
 Stat=mnd
