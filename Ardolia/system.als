@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/28/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -30,8 +30,7 @@ charfile.version {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; The bot's quit message
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-quitmsg { return Battle Arena version $game.version written by James  "Iyouboushi" }
-
+quitmsg { return Ardolia version $game.version written by James  "Iyouboushi" - Open Source: https://github.com/Iyouboushi/mIRC-Ardolia }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Paths
@@ -76,8 +75,8 @@ system_defaults_check {
     if ($readini(system.dat, system, AllowColors) = $null) { writeini system.dat system AllowColors true }
     if ($readini(system.dat, system, AllowBold) = $null) { writeini system.dat system AllowBold true }
     if ($readini(system.dat, system, aisystem) = $null) { writeini system.dat system aisystem on } 
-    if ($readini(system.dat, system, TimeForIdle) = $null) { writeini system.dat system TimeForIdle 180 }
     if ($readini(system.dat, system, TimeToEnter) = $null) { writeini system.dat system TimeToEnter 120 }
+    if ($readini(system.dat, system, BattleIdleTime) = $null) { writeini system.dat system BattleIdleTime 180 }
     if ($readini(system.dat, system, PartyIdleTime) = $null) { writeini system.dat system PartyIdleTime 180 }
     if ($readini(system.dat, System, EnablePartyIdleTimer) = $null) { writeini system.dat system EnablePartyIdleTimer true }
     if ($readini(system.dat, system, MaxNumberOfMonsInBattle) = $null) { writeini system.dat system MaxNumberOfMonsInBattle 10 }
@@ -1467,6 +1466,8 @@ restore_hp {
   var %current.hp $current.hp($1)
   inc %current.hp $2
 
+  if (%current.hp > %max.hp) { var %current.hp %max.hp }
+
   writeini $char($1) battle hp %current.hp 
 }
 
@@ -1474,6 +1475,10 @@ restore_mp {
   var %max.mp $resting.mp($1) 
   var %current.mp $current.mp($1)
   inc %current.mp $2
+
+  if (%current.mp > %max.mp) { var %current.mp %max.mp }
+
+
   writeini $char($1) battle mp %current.mp 
 }
 
