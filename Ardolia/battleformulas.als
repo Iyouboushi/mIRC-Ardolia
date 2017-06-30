@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -292,6 +292,10 @@ calculate.defense {
 
   var %defense.percent 100
 
+  ; If the monster is a "metal" monster such as a metal slime, it will always deal 1 damage.
+  if ($readini($char($1), Battle, MetalDefense) = true) { return 0 }
+
+  ; If not, we need to calculate
   if ($2 = physical) { var %defense $current.defense($1) }
   if (($2 = spell) || ($2 = magical)) { var %defense $current.mdefense($1) }
 
