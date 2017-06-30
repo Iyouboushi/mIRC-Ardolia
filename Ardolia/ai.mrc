@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; AI COMMANDS
-;;;; Last updated: 05/29/17
+;;;; Last updated: 06/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -290,12 +290,13 @@ alias ai_spellcheck {
 ; battle.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 alias ai.flee {
-  var %flee.chance $rand(1,100)
-  if (%flee.chance <= 50) { $flee($1) | halt }
-  if (%flee.chance > 60) {  
+  var %flee.random.chance $rand(1,100)
+  var %monster.flee.chance $readini($char($1), Info, FleeChance)
+  if (%monster.flee.chance = $null) { var %monster.flee.chance 50 } 
 
+  if (%flee.random.chance <= %monster.flee.chance) { $flee($1) | halt }
+  else {
     $display.message($translate(CannotFleeBattle, $1), battle)
-
     /.timerCheckForDoubleTurnWait 1 1 /check_for_double_turn $1 | halt 
   }
 }
