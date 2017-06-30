@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 06/10/17
+;;;; Last updated: 06/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -29,6 +29,10 @@ alias battle.generate {
 
   while (%monsters.added < %monsters.needed) {
     $battle.generatemonster(%monsters.list)
+
+    ; set the monster list again so certain adventures work right
+    var %monsters.list $readini($zonefile(adventure), %current.room, monsters)
+
     inc %monsters.added 1
   }
 
@@ -668,5 +672,14 @@ alias battle.restoredead {
 
     inc %current.party.member
   }
+}
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Flee the battle
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+alias flee {
+  writeini $char($1) battle status runaway
+  $set_chr_name($1) | $display.message($translate(FleeBattle, $1), battle)
+  $next
 }

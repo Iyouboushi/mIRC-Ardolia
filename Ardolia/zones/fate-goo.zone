@@ -1,0 +1,78 @@
+[Info]
+Name=FATE: Fields of Goo
+OriginalFile=fate-goo
+Desc=An abnormal amount of blue slimes are advancing across the open fields towards Ardolia! Get out there and put an end to them!
+LevelRange=1-2
+MinimumPlayers=1
+MaximumPlayers=5
+PreReq=
+iLevel=1
+AdventureActions=10
+ClearRoom=3
+ClearReward.List=reward_fate-goo.lst
+ClearReward.XP=25
+FameRewarded=1
+AdventureClearMessage=The party returns to Ardolia covered in blue goo and ready for a bath but victorious.
+Day=Sat
+
+[0]
+Name=The Ardolian Gates
+Clear=true
+EnterDesc=The party exits the city and stands at the gates of Ardolia looking out onto the fields around the city.  Ahead they can see blue slimes bouncing their way towards the city.
+LookDesc=The party stands at the gates of Ardolia looking out onto the fields around the city. Ahead they can see a number of blue slimes bouncing towards the gates.
+
+; Combat Info
+Combat=false
+
+; Exits
+ExitList=North
+North=1
+
+
+[1]
+Name=The Fields of Ardolia
+EnterDesc=The party walks towards the first group of blue slimes.
+LookDesc=The party is standing in the fields of Ardolia.
+
+; Combat Info
+Combat=true
+Monsters=Blue_Slime
+Monsters.Needed=$iif($adventure.party.count < 2, 4, 6)
+CombatDesc=Blue Slimes draw near!
+CombatEndDesc=This pack of blue slimes may have fallen but there are more where that came from!
+
+; Exits
+ExitList=Forward
+Forward=2
+
+[2]
+Name=The Fields of Ardolia
+EnterDesc=The party advances forward towards the next group of slimes.
+LookDesc=The party is standing in the fields of Ardolia.
+
+; Combat Info
+Combat=true
+Monsters=$iif($rand(1,100) <= 10, Metal_Slime, Blue_Slime)
+Monsters.Needed=$iif($adventure.party.count < 2, 4, 6)
+CombatDesc=More Slimes draw near!
+CombatEndDesc=Great work! This pack of slimes are dealt with. Only one more remain. Press forward quickly and put an end to their advance. 
+
+; Exits
+ExitList=Forward
+Forward=3
+
+
+[3]
+Name=The Fields of Ardolia
+EnterDesc=The party advances forward towards the next group of slimes.
+LookDesc=The party is standing in the fields of Ardolia.
+
+; Combat Info
+Combat=true
+Monsters=Blue_Slime
+Monsters.Needed=$iif($adventure.party.count < 2, 4, 6)
+CombatDesc=More Slimes draw near!
+CombatEndDesc=The remaining slimes begin to flee, sluring something about telling on you to their king--whatever that means. The fields quiet down.
+
+
+

@@ -466,6 +466,9 @@ TurnStatusBuffs=$chr(3) $+ 3 $+ Active Buffs: %status.buffs
 StatusNormal==$chr(3) $+ 3 $+ $get_chr_name($2) has no active buffs or effects
 
 
+CannotFleeBattle=$chr(3) $+ 4 $+ $get_chr_name($2) attempts to flee the battle but fails.
+FleeBattle=$chr(3) $+ 4 $+ $get_chr_name($2) has fled the battle!
+
 EnemyDefeated=$chr(3) $+ 4 $+ %enemy $+  $iif($readini($char(%target), descriptions, DeathMessage) = $null, has been defeated by %user $+ !, $readini($char(%target), p, descriptions, DeathMessage))  %overkill
 AttackDidDamage=The attack did4 $bytes(%attack.damage,b) damage 
 DisplayAOEDamage=The attack did $+ %damage.display.color $+  $bytes(%attack.damage,b) damage to %enemy $+ ! %statusmessage.display
