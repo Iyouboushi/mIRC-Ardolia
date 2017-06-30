@@ -1,6 +1,12 @@
 Ardolia Bot Changelog
 =========================
 
+06-30-2017
+- Added "Metal Defense" as a flag for monsters. In [Battle] put MetalDefense=true.  Metal monsters will only ever take 1 damage 
+  from abilities, spells and melee attacks. Potency does no matter.
+- Changed the way the flee works so that monsters can have individual flee chances inside their files under [info] FleeChance=
+  Default (if it's missing) is 50%  Note that monsters still must have CanFlee=true in order for them to flee.
+
 06-21-2017
 - Added the first FATE: Lambs on the Run. Borrowed from FFXIV, this is a short two-room adventure where you fight sheep for xp.
 - Added the ability for the game to remember what your previously equipped weapons and armor were when switching between jobs.
