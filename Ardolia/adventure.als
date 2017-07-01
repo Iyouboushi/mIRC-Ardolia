@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 06/21/17
+;;;; Last updated: 06/30/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -373,6 +373,9 @@ adventure.rewards {
     var %xp.to.reward $readini($txtfile(adventure.txt), Rewards, XP)
     if (%xp.to.reward = $null) { var %xp.to.reward 0 }
 
+    var %money.to.reward $readini($txtfile(adventure.txt), Rewards, money)
+    if (%money.to.reward = $null) { var %money.to.reward 0 }
+
     if ($1 = victory) { 
 
       ; Write that we've cleared this adventure
@@ -432,6 +435,16 @@ adventure.rewards {
 
     ; We're done with this party member. Move onto the next (if there are any more)
     inc %current.party.member
+  }
+
+  ; Reward money if it's not 0
+  if ((%money.to.reward != $null) && (%money.to.reward > 0)) { 
+    var %current.money $currency.amount(%party.member.name, money)
+    inc %current.money %money.to.reward
+    writeini $char(%party.member.name) Currencies Money %current.money
+
+    ; Increase the total amount of money the player has earned
+    $miscstats(%party.member.name, add, TotalMoneyGained, %money.to.reward)
   }
 
   ; Reward spoils (if there are any) -- This is given out randomly while there's rewards left to give. Some players may end up with more than one.

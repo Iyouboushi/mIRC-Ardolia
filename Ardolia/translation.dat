@@ -66,7 +66,7 @@ ViewMyXP=$chr(3) $+ 3 $+ $get_chr_name($nick) currently has2 $current.xp($nick
 
 ; View Currencies
 ViewMyStatPoints=$chr(3) $+ 3 $+ You currently have $statpoints($nick) stat point $+ $iif($statpoints($nick) = 0 || $statpoints($nick) > 1, s)
-ViewMyMoney=$chr(3) $+ 3 $+ $get_chr_name($nick) currently has $bytes($currency.amount($nick, gil),b)  $+ $readini(system.dat, system, currency)
+ViewMyMoney=$chr(3) $+ 3 $+ $get_chr_name($nick) currently has $bytes($currency.amount($nick, money),b)  $+ $readini(system.dat, system, currency)
 ViewMyCraftingPoints=$chr(3) $+ 3 $+ $get_chr_name($nick) currently has $bytes($currency.amount($nick, craftingpoints),b) Crafting Points
 ViewMyGuildPoints=$chr(3) $+ 3 $+ $get_chr_name($nick) currently has $bytes($currency.amount($nick, guildpoints),b) Guild Points
 ViewMyLoginPoints=$chr(3) $+ 3 $+ $get_chr_name($nick) currently has $bytes($currency.amount($nick, loginpoints),b) Login Points
