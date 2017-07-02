@@ -163,7 +163,17 @@ alias ability_cmd {
   $miscstats($1, add, AbilitiesUsed, 1)
 
   ; Time to go to the next turn
-  if (%battleis = on)  {  $check_for_double_turn($1) | halt }
+  if ($readini($dbfile(abilities.db), $2, Instant) != true) {   
+    if (%battleis = on)  {  $check_for_double_turn($1) | halt }
+  }
+  else {
+    ; Reset the Next timer.
+    var %nextTimer $readini(system.dat, system, BattleIdleTime)
+    if (%nextTimer = $null) { var %nextTimer 180 }
+    /.timerBattleNext 1 %nextTimer /next ForcedTurn
+
+    $display.message($translate(AnotherActionThisTurn, $1), battle)
+  }
 }
 
 

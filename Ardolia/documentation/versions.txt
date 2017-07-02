@@ -1,6 +1,10 @@
 Ardolia Bot Changelog
 =========================
 
+07-01-2017
+- Added the ability for abilities to be considered "instant" and not consume the turn
+- Fixed a few issues with status effects still showing as being active when they're not
+
 06-30-2017
 - Added "Metal Defense" as a flag for monsters. In [Battle] put MetalDefense=true.  Metal monsters will only ever take 1 damage 
   from abilities, spells and melee attacks. Potency does no matter.

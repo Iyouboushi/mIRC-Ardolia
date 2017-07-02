@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 06/21/17
+;;;; Last updated: 07/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -811,10 +811,11 @@ perform.status.effect {
     writeini $char($1) Battle Hp %current.hp
   } 
 
-
   ; Add the status effect/buff to the correct list
-  if ($readini($dbfile(statuseffects.db), $2, type) = buff) { %status.buffs = $addtok(%status.buffs, $translate($2), 46) }
-  else { %status.effects = $addtok(%status.effects, $translate($2), 46) }
+  if ($readini($char($1), StatusEffects, $2) > 0) { 
+    if ($readini($dbfile(statuseffects.db), $2, type) = buff) { %status.buffs = $addtok(%status.buffs, $translate($2), 46) }
+    else { %status.effects = $addtok(%status.effects, $translate($2), 46) }
+  }
 
   ; Check for HP that is below 1 and set it to 1 if so.
   if ($current.hp($1) <= 0) { writeini $char($1) Battle HP 1 }

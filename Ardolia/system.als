@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 06/28/17
+;;;; Last updated: 07/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1493,7 +1493,7 @@ clear_variables {
   unset %line | unset %next.person | unset %who | unset %whoturn | unset %temp.battle.list | unset %file.to.read.lines
   unset %current.room | unset %file | unset %total.targets | unset %random.target | unset %damage.display.color
   unset %true.turn | unset %adventureisopen
-  unset %adventure.open 
+  unset %adventure.open  | unset %multihit.message.on
   unset %stat.str | unset %target.hp | unset %ability.list
 }
 

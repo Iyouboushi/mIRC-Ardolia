@@ -137,6 +137,7 @@ DamageBoardTitle.Tech=$chr(3) $+ 3The Highest Average Tech Damage Players in %b
 RenkeiPerformed=$chr(3) $+ 4 $+ The Renkei %renkei.name has been performed!
 PortalReinforcements=$chr(3) $+ 4 $+ The demon portal shimmers as another monster comes through, ready to join the battle.
 RandomChanceGoesAgain=$chr(3) $+ 3 $+ Lady Luck smiles upon %real.name and $gender3($1) gets another turn! 
+AnotherActionThisTurn=$chr(3) $+ 3 $+ $get_chr_name($2) gets another action this turn!
 NoAchievements=$chr(3) $+ 3 $+  $+ %real.name has not unlocked any achievements yet.
 AchievementList=$chr(3) $+ 3 $+  $+ %real.name has unlocked the following achievements [ $+ %totalachievements.unlocked $+ / $+ %totalachievements $+ ]: %achievement.list
 NoAugments=$chr(3) $+ 3 $+  $+ %real.name has no augments currently activated.
@@ -463,7 +464,7 @@ StepsUpFirst=$chr(3) $+ 2 $+ $get_chr_name($read($txtfile(battle.txt),1)) step
 TurnMessage=$chr(3) $+ 3 $+ It is $get_chr_name($2) $+ 's turn [Health Status: $strip(%hstats,b) $+ 3]
 TurnStatusEffects=$chr(3) $+ 3 $+ Active Effects: %status.effects
 TurnStatusBuffs=$chr(3) $+ 3 $+ Active Buffs: %status.buffs
-StatusNormal==$chr(3) $+ 3 $+ $get_chr_name($2) has no active buffs or effects
+StatusNormal=$chr(3) $+ 3 $+ $get_chr_name($2) has no active buffs or effects
 
 
 CannotFleeBattle=$chr(3) $+ 4 $+ $get_chr_name($2) attempts to flee the battle but fails.
@@ -673,4 +674,5 @@ Haste=$chr(3) $+ 12 $+ haste
 SwiftSong=$chr(3) $+ 12 $+ swift song
 ForeSight=$chr(3) $+ 12 $+ foresight
 DivineSeal=$chr(3) $+ 12 $+ divineseal
+Barrage=$chr(3) $+ 12 $+ barrage
 

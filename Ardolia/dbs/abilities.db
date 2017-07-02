@@ -20,7 +20,7 @@ WARRIOR
 Level=1
 Type=Attack
 AOE=false
-Info=
+Info=Performs an extremely powerful blow that can only be used once in 100 turns.
 Description=unleashes the full power of $gender($1) weapon and performs a powerful mighty strike that delivers a devastating blow upon $get_chr_name($3) $+ !
 Cooldown=100
 Cost=300
@@ -40,7 +40,7 @@ Cost=100
 Stat=str
 Potency=150
 EnmityMultiplier=1.2
-Job=WAR
+Job=WHM
 
 [Foresight]
 level=2
@@ -55,6 +55,7 @@ Potency=150
 EnmityMultiplier=1.2
 Job=WAR
 StatusEffect=Foresight
+Instant=true
 
 [SkullSunder]
 level=4
@@ -128,6 +129,7 @@ Potency=30
 EnmityMultiplier=1.2
 Job=WHM
 StatusEffect=DivineSeal
+Instant=true
 
 [Tetragrammaton]
 Level=60
@@ -167,7 +169,20 @@ EnmityMultiplier=1.2
 Job=BRD
 StatusEffect=SwiftSong
 CanUseOutsideBattle=true
+Instant=true
 
+[Barrage]
+Level=38
+Type=buff
+Info=This ability will cause your next ability to triple in potency. This ability will not consume your turn but will wear off on your next turn.
+Description=
+Cost=200
+Potency=100
+EnmityMultiplier=1
+Job=BRD
+StatusEffect=Barrage
+CanUseOutsideBattle=false
+Instant=true
 
 
 =============================================
@@ -185,7 +200,7 @@ Stat=str
 Potency=100
 Job=$return.systemsetting(JobsTanks)
 Prescript=$enmity($1, add, $enmity($1, return))
-
+Instant=True
 
 
 =============================================

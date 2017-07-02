@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 06/30/17
+;;;; Last updated: 07/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -235,6 +235,9 @@ calculate.ability.damage {
   var %stat.needed $readini($dbfile(abilities.db), $2, stat)
   var %potency $readini($dbfile(abilities.db), $2, potency)
   if (%potency = $null) { var %potency 100 }
+
+  ; Check for skills that increase potency
+  if ($status.check($1, Barrage) != $null) { var %potency $calc(%potency * 3) }
 
   if (%stat.needed = str) { var %current.stat $current.str($1) } 
   if (%stat.needed = dex) { var %current.stat $current.dex($1) } 

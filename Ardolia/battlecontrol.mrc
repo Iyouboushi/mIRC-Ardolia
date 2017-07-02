@@ -519,9 +519,11 @@ alias turn {
   while (%current.status.effect <= %number.of.statuseffects) { 
     var %current.statuseffect.name $ini($char($1), StatusEffects, %current.status.effect)
     var %current.statuseffect.turnsleft $readini($char($1), StatusEffects, %current.statuseffect.name)
-    $perform.status.effect($1, %current.statuseffect.name)
     dec %current.statuseffect.turnsleft 1
-    if (%current.statuseffect.turnsleft < 0) { remini $char($1) StatusEffects %current.statuseffect.name) }
+    writeini $char($1) StatusEffects %current.statuseffect.name %current.statuseffect.turnsleft
+    $perform.status.effect($1, %current.statuseffect.name)
+
+    if (%current.statuseffect.turnsleft <= 0) { remini $char($1) StatusEffects %current.statuseffect.name) }
     else { writeini $char($1) StatusEffects %current.statuseffect.name %current.statuseffect.turnsleft }
 
     inc %current.status.effect
