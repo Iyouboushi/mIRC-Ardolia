@@ -34,7 +34,50 @@ Stat=mnd
 Jobs=whm.pld
 
 
+[Medica]
+Level=10
+Type=Heal
+AOE=true
+Info=This spell heals light wounds on all party members
+Description=casts medica on the party. Everyone is bathed in a refreshing white light and feels their wounds healing.
+Cooldown=5
+Cost=1000
+Potency=300
+EnmityMultiplier=1.5
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm
 
+[CureII]
+Level=30
+Type=Heal
+AOE=false
+Info=This spell heals wounds on a single target
+Description=casts a healing spell on $get_chr_name($3) $+ !  $get_chr_name($3) is bathed in a bright refreshing white light that heals $gender($3) wounds.
+Cooldown=3
+Cost=884
+Potency=$iif($current.job($1) = WHM, 650, 300)
+EnmityMultiplier=1.2
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm.pld
+
+[MedicaII]
+Level=50
+Type=Heal
+AOE=true
+Info=This spell heals wounds on all party members
+Description=casts medica on the party. Everyone is bathed in a refreshing white light and feels their wounds healing.
+Cooldown=5
+Cost=1500
+Potency=500
+EnmityMultiplier=1.5
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm
 
 
 =============================================
@@ -50,6 +93,51 @@ Cooldown=2
 Cost=250
 Potency=150
 EnmityMultiplier=1
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm
+
+[Diaga]
+Level=18
+Type=Attack
+AOE=true
+Info=This spell does light damage to all targets
+Description=
+Cooldown=2
+Cost=500
+Potency=110
+EnmityMultiplier=1
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm
+
+[DiaII]
+Level=36
+Type=Attack
+AOE=false
+Info=This spell does light damage
+Description=
+Cooldown=2
+Cost=600
+Potency=350
+EnmityMultiplier=1
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm
+
+[Holy]
+Level=45
+Type=Attack
+AOE=true
+Info=This spell does holy damage to all targets
+Description=
+Cooldown=3
+Cost=1700
+Potency=200
+EnmityMultiplier=1.2
 BuffLength=0
 Element=light
 Stat=mnd
