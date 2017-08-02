@@ -99,7 +99,7 @@ Stat=mnd
 Jobs=whm
 
 [Diaga]
-Level=18
+Level=15
 Type=Attack
 AOE=true
 Info=This spell does light damage to all targets
@@ -142,6 +142,22 @@ BuffLength=0
 Element=light
 Stat=mnd
 Jobs=whm
+
+[Repose]
+Level=55
+Type=Attack
+AOE=true
+Info=This spell inflicts sleep upon a target
+Description=
+Cooldown=10
+Cost=1500
+Potency=60
+EnmityMultiplier=1.2
+BuffLength=0
+Element=light
+Stat=mnd
+Jobs=whm
+StatusEffect=sleep
 
 =============================================
 BUFFING
@@ -194,6 +210,21 @@ Jobs=WHM
 CanUseOutsideBattle=false
 StatusEffect=regen
 
+[Refresh]
+Level=42
+Type=Buff
+AOE=false
+Info=This spell will add allow a target to regenerate MP each turn
+Description=
+Cooldown=2
+Cost=350
+Potency=100
+EnmityMultiplier=2
+Element=light
+Stat=mnd
+Jobs=WHM.RDM
+CanUseOutsideBattle=false
+StatusEffect=refresh
 
 =============================================
 SONGS

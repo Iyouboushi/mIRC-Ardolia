@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 08/01/17
+;;;; Last updated: 08/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -1227,11 +1227,11 @@ buff.check {
   }
 
   if ($2 = int) { 
-    ; abilities/spells that enhance int go here
+    if ($status.check($1, attunement) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
   }
 
   if ($2 = mnd) { 
-    ; abilities/spells that enhance mnd go here
+    if ($status.check($1, attunement) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
   }
 
   if ($2 = pie) { 

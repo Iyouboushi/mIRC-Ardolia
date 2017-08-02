@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 08/01/17
+;;;; Last updated: 08/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -816,6 +816,14 @@ perform.status.effect {
     inc %current.hp %regen.hp
     if (%current.hp >= $resting.hp($1)) { var %current.hp $resting.hp($1) }
     writeini $char($1) Battle Hp %current.hp
+  } 
+
+  if ($2 = refresh) { 
+    var %regen.mp $floor($calc($resting.mp($1) * .10))
+    var %current.mp $current.mp($1)
+    inc %current.mp %regen.mp
+    if (%current.mp >= $resting.mp($1)) { var %current.mp $resting.mp($1) }
+    writeini $char($1) Battle Mp %current.mp
   } 
 
   ; Add the status effect/buff to the correct list

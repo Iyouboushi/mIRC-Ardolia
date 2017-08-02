@@ -671,7 +671,6 @@ Cocoon=$chr(3) $+ 12 $+ evolving
 Ethereal=$chr(3) $+ 12 $+ ethereal
 Invincible=$chr(3) $+ 12 $+ invincible
 Regen=$chr(3) $+ 12 $+ +HP regen
-MPRegen=$chr(3) $+ 12 $+ +MP regen
 TPRegen=$chr(3) $+ 12 $+ +TP regen
 Auto-Regen=$chr(3) $+ 12 $+ +HP regen
 ConserveTP=$chr(3) $+ 12 $+ conserving TP
@@ -688,4 +687,6 @@ Berserk=$chr(3) $+ 12 $+ berserk
 ThrillOfBattle=$chr(3) $+ 12 $+ +max VIT
 Awareness=$chr(3) $+ 12 $+ awareness
 Deliverance=$chr(3) $+ 12 $+ +melee dmg
+Refresh=$chr(3) $+ 12 $+ +MP regen
+Attunement=$chr(3) $+ 12 $+ +INT +MND
 
