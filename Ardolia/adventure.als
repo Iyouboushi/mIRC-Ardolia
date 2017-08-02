@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 08/01/17
+;;;; Last updated: 08/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,7 +83,24 @@ adventure.start {
   if ($readini($zonefile(adventure), info, Name) != $null) { $display.message($translate(Can'tStartAdventure), global) | halt }
 
   ; Can the party leader lead another party so soon?
-  ; to be added
+  ; If more than 1 person is logged into the game there is a 5 minute wait for players to lead their own parties
+  ; Note that they can still join other playeres' parties while waiting.
+  var %voices $nick(%battlechan,0,v)
+
+  if (%voices > 1) { 
+    var %last.adventure.lead $readini($char($1), Info, LastAdventure)
+    if (%last.adventure.lead != $null) { 
+      var %party.lead.time 300 |  var %current.time $ctime
+      var %time.difference $calc($ctime - $ctime(%last.adventure.lead))
+
+      if (%time.difference < %party.lead.time) { 
+        var %time.left $duration($calc(%party.lead.time - %time.difference))
+
+        $display.message($translate(Can'tStartAnotherAdventure, $1, %time.left),global)
+        halt
+      }
+    }
+  }
 
   ; Does the adventure file exist?
   if ($isfile($zonefile($2)) = $false) { $display.message($translate(NoAdventureByThatName), global) | halt }
@@ -194,9 +211,6 @@ adventure.begin {
   ; Are there enough players in the party for this dungeon?
   if ($adventure.party.count < $adventure.minimumplayers) { $display.message($translate(NotEnoughPlayersInAdventure), global) | $adventure.clearfiles | halt }
 
-  ; Write the start time to the party leader. 
-  writeini $char($adventure.party.leader) info LastAdventure $fulldate
-
   ; Write when the adventure started
   writeini $txtfile(adventure.txt) info AdventureStarted $fulldate
 
@@ -230,6 +244,9 @@ adventure.end {
   ; $1 = victory, defeat
 
   $display.message($translate(AdventureIsOver), global)
+
+  ; Write the start time to the party leader. 
+  writeini $char($adventure.party.leader) info LastAdventure $fulldate
 
   ; calculate total battle duration
   var %total.adventure.duration $adventure.calculateduration

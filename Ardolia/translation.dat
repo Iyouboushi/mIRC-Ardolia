@@ -235,6 +235,8 @@ ShopPurchaseMessage=$chr(3) $+ 3 $+ You spend $bytes($2,b)  $+ $readini(syst
 SellMessage=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat takes $4 $3 $+ $iif($4 < 2, ,s) $+  from you and gives you $bytes(%total.price,b) $readini(system.dat, system, currency) $+ !
 
 ; Bot Admin Toggle Messages
+PartyIdleTimerOn=$chr(3) $+ 4 $+ The Adventure Party Idle Timer has been turned on.
+PartyIdleTimerOff=$chr(3) $+ 4 $+ The Adventure Party Idle Timer has been turned off.
 AllowPlayerAccessCmdsOn=$chr(3) $+ 4 $+ Player Access Commands has been turned on.
 AllowPlayerAccessCmdsOff=$chr(3) $+ 4 $+ Player Access Commands has been turned off.
 AllowColorsOn=$chr(3) $+ 4 $+ The Bot's Colors have been turned on.
@@ -422,6 +424,8 @@ Haven'tDonePreReqToEnter=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot enter th
 
 
 Can'tStartAdventure=$chr(3) $+ 4 $+ Error: $2 cannot start an adventure party because there is already an adventure in progress!
+
+Can'tStartAnotherAdventure=$chr(3) $+ 4 $+ Error: $2 cannot start another adventure so soon after leading a party. Please wait another4 $3
 
 NoAdventureByThatName=$chr(3) $+ 4 $+ Error: There is no adventure by that name!
 
