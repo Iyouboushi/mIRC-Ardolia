@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; admin.mrc
-;;;; Last updated: 05/29/17
+;;;; Last updated: 08/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 on 2:TEXT:!bot admin*:*: {  $bot.admin(list) }
@@ -123,6 +123,20 @@ on 50:TEXT:@time to enter *:*:{
     $display.message($translate(ChangeTimeForEnter), global)
   }
   else { $display.message(4You must enter a number for the time,global) | halt }
+}
+
+; Bot admins can toggle if the bot uses the adventure idle timer
+on 50:TEXT:@toggle adventure idle timer*:*:{   
+  if ($readini(system.dat, system,EnablePartyIdleTimer) = false) { 
+    writeini system.dat system EnablePartyIdleTimer true
+    $display.message($translate(PartyIdleTimerOn), global)
+    halt
+  }
+  else {
+    writeini system.dat system EnablePartyIdleTimer false
+    $display.message($translate(PartyIdleTimerOff), global)
+    halt
+  }
 }
 
 ; Bot admins can set the MOTD, everyone else can just see it
