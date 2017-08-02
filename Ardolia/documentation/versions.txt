@@ -1,6 +1,11 @@
 Ardolia Bot Changelog
 =========================
 
+08-01-2017
+- Added many more WAR abilities
+- Added more buffs and effects to the bot
+- Added !shop list and !shop buy
+
 07-01-2017
 - Added the ability for abilities to be considered "instant" and not consume the turn
 - Fixed a few issues with status effects still showing as being active when they're not

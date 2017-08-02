@@ -388,6 +388,19 @@ currency.add {
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; removes an amount to a currency
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+currency.remove {
+  ; $1 = the person 
+  ; $2 = the currency name
+  ; $3 = how much we're removing
+
+  var %currency.amount $currency.amount($1, $2)
+  dec %currency.amount $3
+  writeini $char($1) currencies $2 %currency.amount
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Returns the level of fame
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 character.fame {

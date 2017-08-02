@@ -1,0 +1,6 @@
+12::[Welcome to the Shop]::
+2The shop is where you can exchange money for items, armor and weapons.  The inventory of the shop depends on your current fame level. The more famous that you are the more inventory the shop keeper will have to sell to you.
+2Use !shop list category or !shop buy category itemname
+12Valid Categories:
+4Items $+ $chr(44) Armor $+ $chr(44) Weapons
+2Your current fame level is3 $character.fame($nick)

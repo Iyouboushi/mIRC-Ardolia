@@ -223,10 +223,16 @@ HasNoSongs=$chr(3) $+ 3 $+  $+ $get_chr_name($1) does not currently know any s
 HasNoRunes=$chr(3) $+ 3 $+  $+ $get_chr_name($1) currently has no runes.
 HasNoTrusts=$chr(3) $+ 3 $+  $+ $get_chr_name($1) does not currently have any NPC Trusts.
 
+
+Can'tBuy0ofThat=$chr(3) $+ 4 $+ Error: You can't buy 0 of that! 
+Can'tSellThat=$chr(3) $+ 4 $+ Error: You cannot sell this to the shop.
+Can'tBuyThis=$chr(3) $+ 4 $+ Error: This is not available for purchase in the $2 shop.
+FameTooLowToBuy=$chr(3) $+ 4 $+ Error: The shop keeper does not know you well enough to sell you this right now. Try again once you have raised your fame level.
+NotEnoughMoneyToBuy=$chr(3) $+ 4 $+ Error: You do not have enough money to purchase $2 of this item 
+ShopPurchaseMessage=$chr(3) $+ 3 $+ You spend $bytes($2,b)  $+ $readini(system.dat, system, currency) to purchase $3 $4
+
 ; selling things
 SellMessage=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat takes $4 $3 $+ $iif($4 < 2, ,s) $+  from you and gives you $bytes(%total.price,b) $readini(system.dat, system, currency) $+ !
-SellMessageAccessory=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat takes %amount.to.sell $3 $+ $iif($4 < 2, ,s) $+  from you and gives you $bytes(%total.price,b) $readini(system.dat, system, currency) $+ !
-SellWeaponMessage=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat performs a powerful ritual to unbind the weapon $3 $+  from your body and restores $bytes(%orb.amount,b) black orbs!
 
 ; Bot Admin Toggle Messages
 AllowPlayerAccessCmdsOn=$chr(3) $+ 4 $+ Player Access Commands has been turned on.
@@ -397,6 +403,8 @@ NoBattleCurrently=$chr(3) $+ 4 There is no battle currently in progress.
 AdventureClosed=$chr(3) $+ 4 $+  $+ $get_chr_name($2) cannot join this adventure party as either there is no adventure or the entry period is already closed.
 
 NotEnoughPlayersInAdventure=$chr(3) $+ 4 $+ There were not enough players to in the adventuring party to go on this adventure!  The adventure is over. 
+
+Can'tUseShopinAdventure=$chr(3) $+ 4 $+ You cannot use the shop when you are out on an adventure. Wait until you have returned to town.
 
 PartyIsFull=$chr(3) $+ 4 $+ The adventure party is currently full! Please try again in the next adventure.
 
