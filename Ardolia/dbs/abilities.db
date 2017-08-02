@@ -33,14 +33,14 @@ Job=WAR
 level=1
 Type=Attack
 AOE=false
-Info=
+Info=Performs a heavy swing of your weapon upon your target.
 Description=performs a heavy swing strike on $get_chr_name($3) $+ !
 Cooldown=2
 Cost=100
 Stat=str
 Potency=150
 EnmityMultiplier=1.2
-Job=WHM
+Job=WAR
 
 [Foresight]
 level=2
@@ -70,6 +70,165 @@ Potency=$iif($return.lastaction($1) = HeavySwing, 200, 100)
 EnmityMultiplier=1.5
 Job=WAR
 
+[Fracture]
+level=6
+Type=Attack
+AOE=false
+Info=Does a basic attack that also causes damage over time.
+Description=
+Cooldown=3
+Cost=100
+Stat=str
+Potency=100
+EnmityMultiplier=1.2
+Job=WAR
+StatusEffect=fracture
+
+[BrutalSwing]
+level=10
+Type=Attack
+AOE=false
+Info=Does a weak attack that has a chance of stunning the target.
+Description=
+Cooldown=5
+Cost=100
+Stat=str
+Potency=50
+EnmityMultiplier=1
+Job=WAR
+StatusEffect=stun
+
+[Overpower]
+level=12
+Type=Attack
+AOE=true
+Info=Performs an attack on all targets on the battlefield
+Description=
+Cooldown=5
+Cost=120
+Stat=str
+Potency=120
+EnmityMultiplier=1.3
+Job=WAR
+
+[Berserk]
+Level=22
+Type=Buff
+AOE=false
+Info=Enter a rage state that increases your strength by 25% for three turns
+Description=
+Cooldown=10
+Cost=200
+Potentcy=100
+EnmityMultiplier=1
+Job=WAR
+StatusEffect=Berserk
+Instant=true
+
+[MercyStroke]
+Level=26
+Type=Attack
+AOE=false
+Info=If the target's current HP is at or under 20% you will deal a 220 potency attack. Otherwise this attack will be weaker and only deal 75 potency.
+Description=
+Cooldown=5
+Cost=200
+Potentcy=$iif($hp.percent.value($3) <= 20, 220, 75)
+EnmityMultiplier=1.2
+Job=WAR
+
+[Butcher'sBlock]
+level=30
+Type=Attack
+AOE=false
+Info=Delivers an attack to a target. If SkullSunder was the last action done before this the attack will deal more damage.
+Description=
+Cooldown=2
+Cost=200
+Stat=str
+Potency=$iif($return.lastaction($1) = Skullsunder, 280, 100)
+EnmityMultiplier=1.5
+Job=WAR
+
+[ThrillOfBattle]
+Level=34
+Type=Buff
+AOE=false
+Info=Increases your VIT by 40% for 5 rounds, allowing you to increase your maximum HP.
+Description=
+Cooldown=15
+Cost=500
+Potentcy=100
+EnmityMultiplier=1
+Job=WAR
+StatusEffect=ThrillOfBattle
+Instant=true
+
+[InnerBeast]
+level=35
+Type=Attack
+AOE=false
+Info=Give into your inner beast and perform a powerful attack.
+Description=
+Cooldown=10
+Cost=300
+Stat=str
+Potency=300
+EnmityMultiplier=1.5
+Job=WAR
+
+[SteelCyclone]
+level=45
+Type=Attack
+AOE=true
+Info=performs an attack on all targets
+Description=
+Cooldown=10
+Cost=300
+Stat=str
+Potency=200
+EnmityMultiplier=1.5
+Job=WAR
+
+[Deliverance]
+Level=52
+Type=Buff
+AOE=false
+Info=Increases your melee damage directly by 35% for 3 turns.
+Description=
+Cooldown=10
+Cost=100
+Potentcy=100
+EnmityMultiplier=1
+Job=WAR
+StatusEffect=Deliverance
+Instant=true
+
+[Decimate]
+level=54
+Type=Attack
+AOE=false
+Info=performs an attack on all targets and increase your enmity by a large amount
+Description=
+Cooldown=10
+Cost=500
+Stat=str
+Potency=280
+EnmityMultiplier=3.5
+Job=WAR
+
+[FellCleave]
+level=60
+Type=Attack
+AOE=false
+Info=performs an ultimate attack on a single target and increases your enmity by a large amount
+Description=
+Cooldown=25
+Cost=500
+Stat=str
+Potency=550
+EnmityMultiplier=5
+Job=WAR
 
 
 
@@ -160,7 +319,7 @@ level=22
 Type=Buff
 AOE=true
 Info=This ability will increase each party member's speed by 10% for 10 rounds
-Description=prepares for the next few attacks!
+Description=pulls out a harp and plays the Swift Song that sends a wave of green energy around everyone's feet.  Everyone feels faster.
 Cooldown=5
 Cost=200
 Stat=str
@@ -193,7 +352,7 @@ Level=22
 Type=scriptonly
 AOE=false
 Info=Doubles your current enmity to help draw the monster's attention towards yourself.
-Description=
+Description=taunts and throws insults at $get_chr_name($3) $+ !
 Cooldown=10
 Cost=500
 Stat=str
@@ -202,6 +361,19 @@ Job=$return.systemsetting(JobsTanks)
 Prescript=$enmity($1, add, $enmity($1, return))
 Instant=True
 
+[Awareness]
+Level=34
+Type=Buff
+AOE=false
+Info=Increases your defense by 25% for 5 rounds
+Description=
+Cooldown=15
+Cost=250
+Potentcy=100
+EnmityMultiplier=1
+Job=$return.systemsetting(JobsTanks)
+StatusEffect=Awareness
+Instant=true
 
 =============================================
 MONSTERS

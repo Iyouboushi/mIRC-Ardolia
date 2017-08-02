@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 06/30/17
+;;;; Last updated: 08/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -551,6 +551,11 @@ alias turn {
   ; did the person die from the status effects? If so, kill the person and move onto the next person.
   if ($current.hp($1) <= 0) { remini $char($1) StatusEffects | remini $char($1) cooldowns | writeini $char($1) status dead | $next | halt }
 
+  ; is the person stunned?  If so, move onto the next person
+  if ($readini($char($1), StatusEffects, stun) >= 1) { $display.message.delay($translate(CurrentlyStunned, $1), battle, 1) 
+    /.timerNextPersonTimer 1 2 /next
+    halt
+  }
 
   if (($return.systemsetting(TurnType) = action) && ($action.points($1, check) <= 0)) { /.timerThrottle $+ $rand(a,z) $+ $rand(1,100) $+ $rand(a,z) 1 %file.to.read.lines /next | halt }
   unset %real.name

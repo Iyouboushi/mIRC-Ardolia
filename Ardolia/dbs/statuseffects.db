@@ -49,6 +49,29 @@ Chance=100
 Length=10
 Type=buff
 
+[Barrage]
+Chance=100
+Length=1
+Type=buff
+
+[Berserk]
+Chance=100
+Length=3
+Type=buff
+
+[ThrillOfBattle]
+Chance=100
+Length=5
+Type=buff
+
+[Awareness]
+Chance=100
+Length=5
+Type=buff
+
+[Deliverance]
+Chance=100
+Length=3
 
 =============================================
 Negative status effects
@@ -64,3 +87,12 @@ Chance=100
 Length=3
 Type=effect
 
+[Stun]
+Chance=100
+Length=1
+Type=effect
+
+[Fracture]
+Chance=100
+Length=3
+Type=effect

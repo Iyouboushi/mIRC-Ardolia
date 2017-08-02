@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 06/30/17
+;;;; Last updated: 08/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -941,7 +941,7 @@ adventure.alreadyinparty.check {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.party.addmember {
 
-  writeini $char($1) Info NeedsFull yes
+  writeini $char($1) Info NeedsFulls yes
 
   ; Add the person into the adventure.
   var %curbat $readini($txtfile(adventure.txt), Info, PartyMembersList)
@@ -969,7 +969,7 @@ adventure.party.addmember {
   ; Restore player's HP, MP and TP
   $fulls($1, yes)
 
-  writeini $char($1) Info NeedsFull yes
+  writeini $char($1) Info NeedsFulls yes
 
   ; Get the player's job role and increase a tally
   var %job.role $readini($jobfile($current.job($1)), BasicInfo, Role)

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 07/01/17
+;;;; Last updated: 08/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -800,6 +800,13 @@ perform.status.effect {
     writeini $char($1) Battle Hp %current.hp
   }
 
+  if ($2 = fracture) { 
+    var %fracture.damage $floor($calc($resting.hp($1) * .03))
+    var %current.hp $current.hp($1)
+    dec %current.hp %fracture.damage
+    writeini $char($1) Battle Hp %current.hp
+  } 
+
 
   ; Buffs / Positive Status Effects
 
@@ -813,13 +820,13 @@ perform.status.effect {
 
   ; Add the status effect/buff to the correct list
   if ($readini($char($1), StatusEffects, $2) > 0) { 
+    echo -a above 0
     if ($readini($dbfile(statuseffects.db), $2, type) = buff) { %status.buffs = $addtok(%status.buffs, $translate($2), 46) }
     else { %status.effects = $addtok(%status.effects, $translate($2), 46) }
   }
 
   ; Check for HP that is below 1 and set it to 1 if so.
   if ($current.hp($1) <= 0) { writeini $char($1) Battle HP 1 }
-
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

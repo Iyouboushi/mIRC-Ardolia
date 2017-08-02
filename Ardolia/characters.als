@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 06/21/17
+;;;; Last updated: 08/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -203,6 +203,9 @@ resting.vit {
   ; Increase this by the bonus given by armor and weapon
   inc %stat.vit $bonus.stats($1, vit)
 
+  ; Check for buffs that increase this
+  inc %stat.vit $buff.check($1, max-vit, %stat.vit)
+
   return %stat.vit
 }
 
@@ -229,6 +232,9 @@ resting.pie {
 
   ; Increase this by the bonus given by armor and weapon
   inc %stat.pie $bonus.stats($1, pie)
+
+  ; Check for buffs that increase this
+  inc %stat.vit $buff.check($1, max-pie, %stat.pie)
 
   return %stat.pie
 }
@@ -1188,8 +1194,15 @@ buff.check {
 
   var %buff.increase 0
 
+  if ($2 = max-vit) { 
+    if ($status.check($1, ThrillOfBattle) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 40)) }
+  }
+
+  if ($2 = max-pie) { 
+  }
+
   if ($2 = str) { 
-    ; abilities/spells that enhance str go here
+    if ($status.check($1, berserk) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 25)) }
   }
 
   if ($2 = dex) { 
@@ -1197,7 +1210,7 @@ buff.check {
   }
 
   if ($2 = vit) { 
-    ; abilities/spells that enhance vit go here
+    ; abilities/spells that enhance dex go here
   }
 
   if ($2 = int) { 
@@ -1219,6 +1232,9 @@ buff.check {
   if ($2 = defense) { 
     if ($status.check($1, protect) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
     if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
+    if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
+
+
   }
 
   if ($2 = mdefense) { 
@@ -1234,7 +1250,6 @@ buff.check {
     if ($status.check($1, DivineSeal) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 30)) }
   }
 
-
   ; Status effects that decrease the enmity multiplier
   if ($2 = DecreaseEnmity) {
     if ($status.check($1, QuellingStrikes) != $null) { inc %buff.increase .5 }
@@ -1242,6 +1257,16 @@ buff.check {
 
   ; Status effects that increase the enmity multiplier
   if ($2 = IncreaseEnmity) {
+  }
+
+  if ($2 = IncreaseMeleeDmg) {
+    if ($status.check($1, Deliverance) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 35)) }
+  }
+
+  if ($2 = IncreaseAbilityDmg) {
+  }
+
+  if ($2 = IncreaseRangedDmg) {
   }
 
   return %buff.increase

@@ -538,7 +538,7 @@ TooIntimidatedToFight=$chr(3) $+ 4 $+  $+ %real.name is too intimidated to fig
 TooStaggeredToFight=$chr(3) $+ 4 $+  $+ %real.name is staggered and is unable to fight this round!
 CurrentlyAsleep=$chr(3) $+ 4 $+ %real.name is currently asleep!
 WakesUp=$chr(3) $+ 4 $+ %enemy is no longer asleep!
-CurrentlyStunned=$chr(3) $+ 4 $+ %real.name is currently stunned and unable to move!
+CurrentlyStunned=$chr(3) $+ 4 $+ $get_chr_name($2) is currently stunned and unable to move!
 CurrentlyStopped=$chr(3) $+ 4 $+ %real.name is currently frozen in time and unable to move!
 CurrentlyWeighed=$chr(3) $+ 4 $+ %real.name $+ 's body feels really heavy.
 CurrentlyDrunk=$chr(3) $+ 4 $+ %real.name is drunk! 
@@ -656,6 +656,7 @@ DefenseDown=$chr(3) $+ 4 $+ -def
 StrengthDown=$chr(3) $+ 4 $+ -str
 IntDown=$chr(3) $+ 4 $+ -int
 Staggered=$chr(3) $+ 4 $+ staggered
+Fracture=$chr(3) $+ 4 $+ fractured
 
 ; Positive status effects
 Cocoon=$chr(3) $+ 12 $+ evolving
@@ -675,4 +676,8 @@ SwiftSong=$chr(3) $+ 12 $+ swift song
 ForeSight=$chr(3) $+ 12 $+ foresight
 DivineSeal=$chr(3) $+ 12 $+ divineseal
 Barrage=$chr(3) $+ 12 $+ barrage
+Berserk=$chr(3) $+ 12 $+ berserk
+ThrillOfBattle=$chr(3) $+ 12 $+ +max VIT
+Awareness=$chr(3) $+ 12 $+ awareness
+Deliverance=$chr(3) $+ 12 $+ +melee dmg
 

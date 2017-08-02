@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 07/01/17
+;;;; Last updated: 08/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1454,6 +1454,8 @@ hp_mech_hpcommand {
   if ((%hp.percent <= 10) && (%hp.percent > 0)) { set %hstats $translate(malfunctioning) | return }
   if (%hp.percent <= 0) { set %hstats $translate(Disabled)  | return }
 }
+
+hp.percent.value { return $calc(($current.hp($1) / $resting.hp($1))*100) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Functions to restore HP

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 05/24/17
+;;;; Last updated: 08/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -100,6 +100,7 @@ alias attack_cmd {
 
     ; Calculate, deal, and display the damage..
     $calculate_damage_weapon($1, %weapon.equipped, $2)
+    $buff.check($1, IncreaseMeleeDmg, %attack.damage)
 
     ; Deal the damage done
     $deal_damage($1, $2, %weapon.equipped, melee)
