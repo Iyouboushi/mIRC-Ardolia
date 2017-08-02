@@ -31,21 +31,18 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-* MAY 28, 2017
+* AUG 01, 2017
 
-Over the last few updates the game is getting closer to being in a playable state. With today's update I have added the !adventure list command so that players can see which adventures are available and open to them (it won't show adventures that they cannot start themselves).  !items, !food and !spoils have been added to help display what non-armor/weapon items a player has on hand.  I've also changed the !party command so that it shows how many tanks/healers/DPS are in the current party.
-
-With the update before this one status effects can now be inflicted upon targets and enmity generation was fixed.
+Over the last few updates the game is getting closer to being in a playable state. With today's update the shop is 90% finished and the warrior abilities should be done and ready to go. 
 
 ## TO-DO
 
 In order to make this game fully playable there are still a huge amount of things to be done.  Here's basically the list of things left that I want to have done before I would consider the game "playable"
 
-* !Fame
 
-* !shop commands (buying, selling, listing)
+* !shop commands (selling)
 
-* Adding armors and weapons for both WAR and WHM up to level 10 (to start)
+* Adding more armor and weapons for both WAR and WHM
 
 * Creating several adventures for people to play up to level 10 (to start)
 
