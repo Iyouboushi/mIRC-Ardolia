@@ -246,7 +246,10 @@ adventure.end {
   $display.message($translate(AdventureIsOver), global)
 
   ; Write the start time to the party leader. 
-  writeini $char($adventure.party.leader) info LastAdventure $fulldate
+  ; Have to do this this way to prevent an issue if the anti-idle timer triggered
+  var %party.list $readini($txtfile(adventure.txt), Info, PartyMembersList)
+  var %party.leader $gettok(%party.list, 1, 46)
+  writeini $char(%party.leader) info LastAdventure $fulldate
 
   ; calculate total battle duration
   var %total.adventure.duration $adventure.calculateduration
