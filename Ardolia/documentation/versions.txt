@@ -6,6 +6,7 @@ Ardolia Bot Changelog
 - Added more buffs and effects
 - Added the party leader throttle timer. If there's more than 1 player logged into the game players will need to wait 5 minutes
   between leading their own parties on adventures. They can still join other players' parties while waiting though.
+- Added the ability to sell items/weapons/armor to the shop using !sell category itemname where category is items/weapons/armor
 - Changed the levels on certain abilities and spells
 
 08-01-2017

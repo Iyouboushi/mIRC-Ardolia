@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; shop.mrc
-;;;; Last updated: 08/01/17
+;;;; Last updated: 08/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the shop
 
@@ -29,7 +29,15 @@ alias shop.start {
     $shop.buy($1, $3, $4, %amount.to.purchase)
   }
 
-  if ($2 = sell) { }
+  if ($2 = sell) { 
+
+    if ($3 = $null) { $gamehelp(Shop, $1)  | halt  }
+    if ($istok(%categories, $3, 46) = $false) { $gamehelp(Shop, $1)  | halt  }
+
+    var %amount.to.purchase $abs($5)
+    if ((%amount.to.purchase = $null) || (%amount.to.purchase !isnum 1-9999)) { var %amount.to.purchase 1 }
+    $shop.sell($1, $3, $4, %amount.to.purchase)
+  }
 
   if ($2 = list) { 
     if ($3 = $null) { $gamehelp(Shop, $1)  | halt  }
@@ -146,19 +154,61 @@ alias shop.buy {
 
   ; Display the message
   $display.private.message($translate(ShopPurchaseMessage, %item.cost, $4, $3))
-
 }
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Shop Sell Command
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; !shop sell [item/armor/weapon] itemname
+; !shop sell [item/armor/weapon] itemname amount
 alias shop.sell {
+  ; $1 = the person
+  ; $2 = the category
+  ; $3 = the item name
+  ; $4 = the amount
+
+  if (($2 = item) || ($2 = items)) {  var %category.db items.db } 
+  if ($2 = food) { var %category.db items.db }
+  if (($2 = weapons) || ($2 = weapon)) {  var %category.db weapons.db } 
+  if ($2 = armor) { var %category.db equipment.db }
 
   ; Can this item be sold?
+  var %sell.price $readini($dbfile(%category.db), $3, SellPrice)
+  if ((%sell.price = $null) || (%sell.price <= 0)) { $display.private.message($translate(CannotSellThisItem)) | halt }
 
-  ; Is this item equipped?
+  ; set the amount of this that the player owns
+  var %current.inventory $readini($char($1), inventory, $3)
+
+  if ((%current.inventory = 0) || (%current.inventory = $null)) { $display.private.message($translate(YouDoNotHaveThisItemToSell)) | halt }
+
+  ; Is this a weapon or armor that is equipped?
+  if ($2 = weapon) { 
+    var %weapon.equipped $readini($char($1), equipment, weapon)
+
+    if (%weapon.equipped = $3) {
+      if (%current.inventory = 1) { $display.private.message($translate(StillUsingWeapon)) | halt }
+    }
+  }
+
+  if ($2 = armor) { 
+    var %armor.equip.slot $readini($dbfile(equipment.db), $3, EquipLocation)
+    var %armor.equipped $readini($char($1), equipment, %armor.equip.slot)
+
+    if (%armor.equipped = $3) {
+      if (%current.inventory = 1) { $display.private.message($translate(StillWearingArmor)) | halt }
+    }
+  }
+
+  ; Does the player have the amount of items to sell?
+  dec %current.inventory $4 
+  if (%current.inventory < 0) { $display.private.message($translate(SellingMoreThanYouOwn)) | halt } 
 
   ; Sell the item and give currency to the player
+  if (%current.inventory = 0) { remini $char($1) inventory $3 }
+  else { writeini $char($1) inventory $3 %current.inventory }
+
+  var %money.earned $calc($4 * %sell.price)
+  $currency.add($1, money, %money.earned)
+
+  ; Display the sell message
+  $display.private.message($translate(SellMessage, $4, $3, %money.earned))
 }

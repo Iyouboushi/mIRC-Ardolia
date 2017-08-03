@@ -231,8 +231,14 @@ FameTooLowToBuy=$chr(3) $+ 4 $+ Error: The shop keeper does not know you well 
 NotEnoughMoneyToBuy=$chr(3) $+ 4 $+ Error: You do not have enough money to purchase $2 of this item 
 ShopPurchaseMessage=$chr(3) $+ 3 $+ You spend $bytes($2,b)  $+ $readini(system.dat, system, currency) to purchase $3 $4
 
+
 ; selling things
-SellMessage=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat takes $4 $3 $+ $iif($4 < 2, ,s) $+  from you and gives you $bytes(%total.price,b) $readini(system.dat, system, currency) $+ !
+SellMessage=$chr(3) $+ 3 $+ A shop keeper wearing a green and white bucket hat takes $2 $3 $+ $iif($2 < 2, ,s) $+  from you and gives you $bytes($4,b) $readini(system.dat, system, currency) $+ !
+StillWearingArmor=$chr(3) $+ 4 $+ Error: You can't sell this piece of armor because you're still wearing it!
+StillUsingWeapon=$chr(3) $+ 4 $+ Error: You can't sell this weapon because you're still wielding it!
+SellingMoreThanYouOwn=$chr(3) $+ 4 $+ Error: You cannot sell more than you own of this item!
+CannotSellThisItem=$chr(3) $+ 4 $+ Error: The shop refuses to buy this item from you.
+YouDoNotHaveThisItemToSell=$chr(3) $+ 4 $+ Error: You do not have this item to sell.
 
 ; Bot Admin Toggle Messages
 PartyIdleTimerOn=$chr(3) $+ 4 $+ The Adventure Party Idle Timer has been turned on.
