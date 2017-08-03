@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 08/01/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,6 +86,7 @@ system_defaults_check {
     if ($readini(system.dat, system, RPGMode) = $null) { writeini system.dat system RPGMode false }
     if ($readini(system.dat, system, GenkaiQuest) = $null) { writeini system.dat system GenkaiQuest true }
     if ($readini(system.dat, system, PlayerLevelCap) = $null) { writeini system.dat system PlayerLevelCap 60 }
+    if ($readini(system.dat, system, StartingMoney) = $null) { writeini system.dat system StartingMoney 20 }
 
     writeini system.dat system JobsDPS MNK
     writeini system.dat system JobsHealer WHM

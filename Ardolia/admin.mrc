@@ -208,7 +208,7 @@ on 50:TEXT:@add *:*:{
     $fulls($2)
   }
 
-  if ($3 = money) {  $currency.add($2, money, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 $return.systemsetting(currency) }
+  if ($3 = money) {  $currency.add($2, money, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 $return.systemsetting(currency), global) }
   if ($3 = craftingpoints) {  $currency.add($2, CraftingPoints, $4) |  $display.message(7* 2 $+ $get_chr_name($2) has gained $4 crafting points) }
 
   if ($3 = item) { 

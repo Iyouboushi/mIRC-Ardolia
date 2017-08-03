@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 08/02/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -184,7 +184,7 @@ adventure.join {
 
   ; Is there a maximum amount of players allowed?  If so, are we at the limit?
   if ($readini($zonefile(adventure), Info, MaximumPlayers) != $null) { 
-    if ($adventure.party.count = $readini($zonefile(adventure), info, MaximumPlayers) { $display.message($translate(PartyIsFull), global) | halt }
+    if ($adventure.party.count = $readini($zonefile(adventure), info, MaximumPlayers)) { $display.message($translate(PartyIsFull), global) | halt }
   }
 
   ; Is there a pre-req that needs to be done before this one may be started?
@@ -246,10 +246,7 @@ adventure.end {
   $display.message($translate(AdventureIsOver), global)
 
   ; Write the start time to the party leader. 
-  ; Have to do this this way to prevent an issue if the anti-idle timer triggered
-  var %party.list $readini($txtfile(adventure.txt), Info, PartyMembersList)
-  var %party.leader $gettok(%party.list, 1, 46)
-  writeini $char(%party.leader) info LastAdventure $fulldate
+  writeini $char($adventure.party.leader) info LastAdventure $fulldate
 
   ; calculate total battle duration
   var %total.adventure.duration $adventure.calculateduration
@@ -539,7 +536,7 @@ adventure.actions.checkforzero {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.look {
   ; [Objects Here] [Chests here]
-  ; [Trees]
+  ; [Trees] [MiningPoints]
 
   unset %object.list
 
@@ -567,6 +564,12 @@ adventure.look {
   var %room.tree.count $readini($zonefile(adventure), %current.room, trees)
   if (%room.tree.count > 0) { 
     $display.message(3You see5 %room.tree.count $iif(%room.tree.count > 1, trees, tree) 3here, global) 
+  }
+
+  ; Check for mining points
+  var %room.mining.count $readini($zonefile(adventure), %current.room, MiningPoints)
+  if (%room.mining.count > 0) { 
+    $display.message(3You see5 %room.mining.count mining $iif(%room.mining.count > 1, points, point) 3here, global) 
   }
 
   ; Exit LIst
@@ -600,6 +603,15 @@ adventure.tree.count {
   var %trees.in.room $readini($zonefile(adventure), %current.room, trees)
   if (%trees.in.room = $null) { return 0 }
   else { return %trees.in.room } 
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Returns the # of mining points in the room
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.miningpoints.count { 
+  var %miningpoints.in.room $readini($zonefile(adventure), %current.room, MiningPoints)
+  if (%miningpoings.in.room = $null) { return 0 }
+  else { return %miningpoints.in.room } 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -798,6 +810,72 @@ adventure.choptree {
 
   /.timerUnsetTreeSlowdown 1 2 unset %chopping.trees
 }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; The !mine command
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.mine {
+  ; $1 = the person trying to use the command
+
+  if (%mining = true) { halt }
+
+  ; are we in an adventure?
+  if (%adventureis != on) { $display.message($translate(NotCurrentlyInAdventure), global) | halt }
+
+  ; Is there a battle currently ongoing? If so we can't do this yet.
+  if (%battleis = on) { $display.message($translate(AdventureActionCannotBeUsedInBattle), global) | halt }  
+
+  ; Is $1 the party leader?
+  if ($1 != $adventure.party.leader) { $display.message($translate(OnlyPartyLeaderCanDoAction), global) | halt }
+
+  ; Are there any trees in this room?
+  var %mining.count $adventure.miningpoints.count
+  if (%mining.count <= 0) { $display.message($translate(NoMiningPointsInHere), global) | halt }
+
+  ; Does $1 have a pickaxe to use?
+  if ($inventory.amount($1, pickaxe) = 0) { $display.message($translate(NoPickaxeToUse, $1), global) | halt }
+
+  ; Set a variable so people can't just spam the command
+  var %mining true
+
+  ; Stop the idle timer so it doesn't fire when we're in the middle of this action
+  $adventure.idleTimer(stop)
+
+  ; Take an adventure action from their total. 
+  $adventure.actions.decrease(1)
+
+  ; Add a log to the item pool and show the message to the channel
+  var %ore.list $readini($zonefile(adventure), %current.room, OreList)
+  if (%ore.list = $null) { var %ore.list IronOre) }
+  var %ore.reward $gettok(%ore.list, $rand(1, $numtok(%ore.list, 46)), 46)
+  write $txtfile(battlespoils.txt) %ore.reward
+  $display.message($translate(ItemAddedToItemPool, %log.reward), global)  
+
+  ; Does the pickaxe break?
+  var %pickaxe.breakchance $readini($dbfile(items.db), pickaxe, BreakChance)
+  if (%pickaxe.breakchance = $null) { var %pickaxe.breakchance 65 }
+  var %break.roll $roll(1d100)
+  if (%break.roll <= %pickaxe.breakchance) { 
+    ; pickaxe broke
+    $inventory.decrease($1, pickaxe, 1)
+    $display.message($translate(pickaxeBroke, $1), global)
+  }
+
+  ; decrease the # of miningpionts
+  dec %mining.count 1
+  writeini $zonefile(adventure) %current.room MiningPoints %mining.count
+
+  unset %ore.list | unset %ore.reward
+
+  ; Increase the total number of times this player has mined
+  $miscstats($1, add,  MiningPointsMined, 1)
+
+  ; Check to see if the party has run out of actions to use.  
+  $adventure.actions.checkforzero
+
+  /.timerUnsetTreeSlowdown 1 2 unset %mining
+}
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Interacting with objects

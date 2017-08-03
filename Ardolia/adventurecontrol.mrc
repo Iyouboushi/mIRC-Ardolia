@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 06/03/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -45,15 +45,15 @@ on 2:TEXT:!adventure list:?: {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Start an adventure to a dungeon
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!dungeon start *:#: { $adventure.start($nick, $3)) }
-on 2:TEXT:!adventure start *:#: { $adventure.start($nick, $3)) }
-on 2:TEXT:!start adventure *:#: { $adventure.start($nick, $3)) }
+on 2:TEXT:!dungeon start *:#: { $adventure.start($nick, $3) }
+on 2:TEXT:!adventure start *:#: { $adventure.start($nick, $3) }
+on 2:TEXT:!start adventure *:#: { $adventure.start($nick, $3) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Join the party to go on an adventure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 2:TEXT:!enter:#: { $adventure.join($nick, $3)) }
-on 2:TEXT:!party join:#: { $adventure.join($nick, $3)) }
+on 2:TEXT:!enter:#: { $adventure.join($nick, $3) }
+on 2:TEXT:!party join:#: { $adventure.join($nick, $3) }
 ON 50:TEXT:*enters the adventure*:#:  { $adventure.join($1) }
 ON 50:TEXT:*joins the party:#:  { $adventure.join($1) }
 
@@ -104,6 +104,11 @@ on 2:TEXT:!read *:#: { $adventure.object($nick, $2-, read) }
 ; Chop down a tree
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 on 2:TEXT:!chop tree:#: { $adventure.choptree($nick) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Mine a mining point
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+on 2:TEXT:!mine:#: { $adventure.mine($nick) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Check party stamina

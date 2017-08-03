@@ -68,7 +68,7 @@ alias battle.generate {
 
 alias battle.generate.manual {
   ; Are there any monsters in battle?
-  if (($return_monstersinbattle = $null) || ($return_monstersinbattle = 0)) { $translate(NoMonstersInBattle),battle) | $battle.end(defeat) | halt }
+  if (($return_monstersinbattle = $null) || ($return_monstersinbattle = 0)) { $display.message($translate(NoMonstersInBattle),battle) | $battle.end(defeat) | halt }
 
   ; Set the turn
   set %current.turn 0
@@ -515,6 +515,7 @@ alias turn {
   writeini $char($1) Battle MP %current.mp
 
   ; Cycle through the Status Effects and perform the status effect
+  unset %status.effects | unset %status.buffs
   var %number.of.statuseffects $ini($char($1), StatusEffects, 0) | var %current.status.effect 1
   while (%current.status.effect <= %number.of.statuseffects) { 
     var %current.statuseffect.name $ini($char($1), StatusEffects, %current.status.effect)

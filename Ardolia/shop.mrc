@@ -1,11 +1,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; shop.mrc
-;;;; Last updated: 08/02/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the shop
 
-on 3:TEXT:!shop*:*: { $shop.start($nick, $2, $3, $4, $5) }
-on 3:TEXT:!sell*:*: { $shop.start($nick, sell, $2, $3, $4, $5) }
+on 2:TEXT:!shop*:*: { $shop.start($nick, $2, $3, $4, $5) }
+on 2:TEXT:!sell*:*: { $shop.start($nick, sell, $2, $3, $4, $5) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Basic Shop Starting Point
@@ -81,11 +81,14 @@ alias shop.list {
         if (($2 = weapon) || ($2 = weapons)) { var %item.color $rarity.color.check(%line.item.name, armor) }
 
         ; Determine the item's color for the shop (red meaning can't use it)
-        var %shop.item.level $readini($dbfile(%category.db), %line.item.name, Level)
+        var %shop.item.level $readini($dbfile(%category.db), %line.item.name, ItemLevel)
         if (%shop.item.level = $null) { var %shop.item.level 1 }
 
         var %shop.item.job $readini($dbfile(%category.db), %line.item.name, jobs)
         if ((%shop.item.job = $null) || (%shop.item.job = all)) { var %shop.item.job $current.job($1) } 
+
+        echo -a shop item level for %line.item.name :: %shop.item.level
+
 
         if ($istok(%shop.item.job, $current.job($1), 46) = $false) { var %item.color 4 }
         if ($get.level($1) < %shop.item.level) { var %item.color 4 }

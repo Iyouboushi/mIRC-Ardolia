@@ -1,6 +1,6 @@
 [HELP]
 list=<Intro> <Registering> <Goal> <Races> <Jobs> <!ID> <!newpass> 
-list2=<Descriptions> <!setgender> <Health> <MP> <TP> <!stats> <!xp>
+list2=<Descriptions> <!setgender> <Health> <MP> <TP> <!stats> <!xp> <Armor>
 list3=<Adventures> <stamina> <!party> <!look> <!go> <!rest> <ObjectCommands> <!warp> <anti-idleTimer>
 list4=<Battles> <Attacking> <Abilities> <Spells> <Items> <!eat>
 list5=<!armor> <!weapons> <!items> <iLevel> <Shop>

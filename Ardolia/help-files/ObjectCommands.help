@@ -7,3 +7,5 @@
 2!open <object>  - Will attempt to open an object, such as a door or treasure chests
 2!close <object> - Will attempt to close an object, such as a gate or a valve
 2!read <object>  - Will attempt to read an object, such as a note or a sign
+2!chop tree      - Will attempt to chop down a tree if one is in the room. This action requires a hatchet to perform.
+2!mine           - Will attempt to mine ore if the room has a mining point. This action requires a pickaxe to perform.

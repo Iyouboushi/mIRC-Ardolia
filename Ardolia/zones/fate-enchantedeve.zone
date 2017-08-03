@@ -1,0 +1,43 @@
+[Info]
+Name=FATE: One Enchanted Eve
+OriginalFile=fate-enchantedeve
+Desc=A spell gone wrong has enchanted a pack of funguar and made them into man-eating menances! Put an end to them before they cause havock!
+LevelRange=3-4
+MinimumPlayers=1
+MaximumPlayers=4
+PreReq=
+iLevel=1
+AdventureActions=5
+ClearRoom=1
+ClearReward.List=reward_fate-enchantedeve.lst
+ClearReward.XP=25
+FameRewarded=1
+AdventureClearMessage=The party returns to Ardolia after defeating the enchanted funguar.
+
+
+[0]
+Name=The King's Woods - Edge
+Clear=true
+EnterDesc=The party stands at the edge of the King's Woods. Up ahead they can see the pack of enchanted funguar slowly making their way towards them. Better go greet them.
+LookDesc=The party stands at the edge of the King's Woods. Up ahead they can see the pack of enchanted funguar slowly making their way towards them. Better go greet them.
+
+; Combat Info
+Combat=false
+
+; Exits
+ExitList=North
+North=1
+
+
+[1]
+Name=The King's Woods
+EnterDesc=The party walks towards the group of enchanted funguar who hiss at the approach.
+LookDesc=The party is standing in the King's Woods
+
+; Combat Info
+Combat=true
+Monsters=Enchanted_Funguar
+Monsters.Needed=$iif($adventure.party.count < 2, 3, 5)
+CombatDesc=A pack of enchanted funguar hiss and bounce towards the party ready for combat
+CombatEndDesc=The enchanted funguar problem has been deal with! Time to return to Ardolia to rest.
+

@@ -1,6 +1,15 @@
 Ardolia Bot Changelog
 =========================
 
+08-03-2017
+- Added a new FATE: One Enchanted Eve  This FATE is recommended for level 3's or a party of level 2's
+- Added some more messages to !new char to help explain the starting money and gear a player gets
+- Added mining to adventures.  Use !mine  in a room that has a mining point.  Requires a pickaxe.
+- Added a system flag for starting money. It's StartingMoney under [system]  Default is 20
+- Changed the amount of xp needed for levels 1-5
+- Fixed several syntax bugs
+- Fixed the battle drops so that it can properly read from drops.db
+
 08-02-2017
 - Added more WHM abilities and spells
 - Added more buffs and effects

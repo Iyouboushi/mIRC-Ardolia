@@ -42,10 +42,14 @@ AdventureClearMessage=
 ;            Cleared rooms no longer have monsters or combat in them.
 ; EnterDesc= This is the description that appears when the room is first loaded
 ; LookDesc= This is the description that shows when players use !look
+;
 ; Trees= the # of trees in the room. The party leader will be able to chop down trees at the cost of an adventure action 
 ;       if there are trees here and the party leader has a hatchet. Trees that are chopped down will add a log item 
 ;       into the item pool
 ; LogList= the types of logs that can be obtained by chopping trees.
+;
+; MiningPoints= The # of mining points in the room. The party leader will be able to mine here using a pickaxe and an adventure action
+; OreList= the types of ore that can be obtained here
 ;
 ; Combat= true/false, if set to true then a battle will begin when players enter this room if the room is not clear
 ; BattleType= the type of battle. 99.999% of the time this will be "normal"

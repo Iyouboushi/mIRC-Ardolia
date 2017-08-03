@@ -3,6 +3,17 @@ Item types:  Heal, RestoreMP, Revive, Crystal, Adventure, Crafting, Misc, Food
 =========================
 HEALING ITEMS
 =========================
+[Herb]
+Type=Heal
+Cost=0
+SellPrice=1
+Level=1
+ItemDesc=A small green herb used to restore 10 missing HP.
+UseDesc=pulls out a small green herb and gives it to %enemy who then eats it and feels better! %enemy has retored 10 missing HP.
+HealAmount=10
+Cooldown=2
+Exclusive=yes
+
 [Tonic]
 Type=Heal
 Cost=10
@@ -105,9 +116,35 @@ Level=1
 BreakChance=65
 FameLevel=1
 
+[Pickaxe]
+type=adventure
+ItemDesc=An iron pickaxe that can be used to mine ore.
+Cost=100
+SellPrice=1
+Exclusive=yes
+Level=1
+BreakChance=60
+FameLevel=1
+
 =========================
 MISC/CRAFTING ITEMS
 =========================
+
+[BronzeOre]
+Type=crafting
+ItemDesc=A chunk of bronze ore
+Cost=0
+SellPrice=10
+Exclusive=yes
+Level=1
+
+[IronOre]
+Type=crafting
+ItemDesc=A chunk of iron ore
+Cost=0
+SellPrice=10
+Exclusive=yes
+Level=1
 
 [AshLog]
 Type=crafting
@@ -133,6 +170,14 @@ SellPrice=2
 Exclusive=yes
 Level=1
 
+[Danceshroom]
+Type=crafting
+ItemDesc=A raw mushroom that can be used to make a dish
+Cost=0
+SellPrice=2
+Exclusive=yes
+Level=1
+
 =========================
 FOOD
 =========================
@@ -151,6 +196,7 @@ int=0
 mnd=0
 pie=0
 det=0
+FameLevel=1
 
 [CarrotJuice]
 type=food

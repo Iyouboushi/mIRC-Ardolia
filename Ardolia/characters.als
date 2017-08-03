@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 08/02/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -313,7 +313,8 @@ xp.to.level {
 
   if ($get.level($1) >= %level.cap) { return 0 }
   else {
-    if ($get.level($1) < 20) { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
+    if ($get.level($1) <= 5) { return $calc(100 * ($get.level($1) - 1) + (100 * $get.level($1))) }
+    if (($get.level($1) > 5) && ($get.level($1) < 20)) { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
     if (($get.level($1) >= 20) && ($get.level($1) < 50)) { return $calc(1000 * ($get.level($1) - 1) + (1000 * $get.level($1))) }
     if (($get.level($1) >= 50) && ($get.level($1) <= 60)) { return $calc(2000 * ($get.level($1) - 1) + (2000 * $get.level($1))) }
     if ($get.level($1) > 60) { return $calc(5000 * ($get.level($1) - 1) + (5000 * $get.level($1))) }
@@ -870,7 +871,7 @@ wear.armor {
 
   ; Are we high enough level?
   var %armor.level.requirement $readini($dbfile(equipment.db), $2, level)
-  if ($get.level($1) < %armor.level.requirement) { $display.message($readini($translate(ArmorLevelHigher, $1), private) | halt }
+  if ($get.level($1) < %armor.level.requirement) { $display.message($translate(ArmorLevelHigher, $1), private) | halt }
 
   ; Equip the armor and tell the world
   writeini $char($1) equipment %item.location $2
@@ -957,9 +958,9 @@ readabilities {
   if ($2 = private) { $display.private.message($translate(ViewAbilities, $1, $3)) }
   if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewAbilities, $1, $3)) } 
 
-  if (%abilities.list2 != $null) { $display.message(%abilities.list2), global) }
-  if (%abilities.list3 != $null) { $display.message(%abilities.list3), global) }
-  if (%abilities.list4 != $null) { $display.message(%abilities.list4), global) }
+  if (%abilities.list2 != $null) { $display.message(%abilities.list2, global) }
+  if (%abilities.list3 != $null) { $display.message(%abilities.list3, global) }
+  if (%abilities.list4 != $null) { $display.message(%abilities.list4, global) }
 
   unset %abilities.list*
 }
@@ -981,9 +982,9 @@ readspells {
   if ($2 = private) { $display.private.message($translate(ViewSpells, $1, $3)) }
   if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewSpells, $1, $3)) } 
 
-  if (%spells.list2 != $null) { $display.message(%spells.list2), global) }
-  if (%spells.list3 != $null) { $display.message(%spells.list3), global) }
-  if (%spells.list4 != $null) { $display.message(%spells.list4), global) }
+  if (%spells.list2 != $null) { $display.message(%spells.list2, global) }
+  if (%spells.list3 != $null) { $display.message(%spells.list3, global) }
+  if (%spells.list4 != $null) { $display.message(%spells.list4, global) }
 
   unset %spells.list*
 }
@@ -1006,11 +1007,11 @@ readarmor {
   if ($2 = private) { $display.private.message($translate(ViewArmor, $1, $3)) }
   if ($2 = dcc) { $dcc.private.message($nick, $translate(ViewArmor, $1, $3)) } 
 
-  if (%armor.list2 != $null) { $display.message(%armor.list2), global) }
-  if (%armor.list3 != $null) { $display.message(%armor.list3), global) }
-  if (%armor.list4 != $null) { $display.message(%armor.list4), global) }
-  if (%armor.list5 != $null) { $display.message(%armor.list5), global) }
-  if (%armor.list6 != $null) { $display.message(%armor.list6), global) }
+  if (%armor.list2 != $null) { $display.message(%armor.list2, global) }
+  if (%armor.list3 != $null) { $display.message(%armor.list3, global) }
+  if (%armor.list4 != $null) { $display.message(%armor.list4, global) }
+  if (%armor.list5 != $null) { $display.message(%armor.list5, global) }
+  if (%armor.list6 != $null) { $display.message(%armor.list6, global) }
 
   unset %armor.list*
 }
@@ -1033,11 +1034,11 @@ readweapons {
   if ($2 = private) { $display.private.message($translate(Viewweapons, $1, $3)) }
   if ($2 = dcc) { $dcc.private.message($nick, $translate(Viewweapons, $1, $3)) } 
 
-  if (%weapons.list2 != $null) { $display.message(%weapons.list2), global) }
-  if (%weapons.list3 != $null) { $display.message(%weapons.list3), global) }
-  if (%weapons.list4 != $null) { $display.message(%weapons.list4), global) }
-  if (%weapons.list5 != $null) { $display.message(%weapons.list5), global) }
-  if (%weapons.list6 != $null) { $display.message(%weapons.list6), global) }
+  if (%weapons.list2 != $null) { $display.message(%weapons.list2, global) }
+  if (%weapons.list3 != $null) { $display.message(%weapons.list3, global) }
+  if (%weapons.list4 != $null) { $display.message(%weapons.list4, global) }
+  if (%weapons.list5 != $null) { $display.message(%weapons.list5, global) }
+  if (%weapons.list6 != $null) { $display.message(%weapons.list6, global) }
 
   unset %weapons.list*
 }
@@ -1246,8 +1247,6 @@ buff.check {
     if ($status.check($1, protect) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
     if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
     if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
-
-
   }
 
   if ($2 = mdefense) { 

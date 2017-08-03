@@ -4,4 +4,4 @@
 2Once inside an adventure the party leader will have access to a variety of different commands. Note that most of these commands consume party stamina.  If the party runs out of stamina the adventure will end in a failure. Stamina can be checked with !stamina
 12::[Action List ]::
 2This is a list of all adventure actions that can be done by the party leader. For more info use 12!help <!command>2 to read more about it.
-2!look, !go, !rest, !warp, !push, !pull, !read, !open, !close, !chop tree
+2!look, !go, !rest, !warp, !push, !pull, !read, !open, !close, !chop tree, !mine

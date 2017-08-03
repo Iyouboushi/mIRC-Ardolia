@@ -537,3 +537,50 @@ MONSTER WEAPONS
 =============================================
 These are weapons that Monsters use.  They shouldn't be available for players.
 
+[Stinger]
+Type=Bee
+Info=It's a stinger of a bee
+Jobs=all
+Stat=str
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=5
+Speed=5
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+Cost=0
+SellPrice=0
+CraftingPointValue=0
+
+[Funguar]
+Type=funguar
+Info=It's the weapon of the funguar
+Jobs=all
+Stat=str
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=10
+Speed=5
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+Cost=0
+SellPrice=0
+CraftingPointValue=0
+
+

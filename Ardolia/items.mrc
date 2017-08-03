@@ -191,7 +191,7 @@ alias item.heal {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Alias for restoring MP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-item.restoreMP {
+alias item.restoreMP {
   ; Is the target dead?
   if ($readini($char($4), battle, status) = dead) { $display.message($translate(CannotUseItemOnDead), private) | halt }
   if ($flag($3) = monster) {  $display.message($translate(ItemCanOnlyBeUsedOnPlayers),private) | halt }

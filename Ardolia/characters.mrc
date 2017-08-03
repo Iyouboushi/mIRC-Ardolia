@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 08/02/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -50,6 +50,11 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
   writeini $char($nick) StartingStats Pie $readini($racefile($3), StartingStats, Pie)
   writeini $char($nick) StartingStats Det $readini($racefile($3), StartingStats, Det)
 
+  ; Give the starting money
+  var %starting.money $readini(system.dat, system, StartingMoney)
+  if (%starting.money = $null) { var %starting.money 20 }
+  writeini $char($nick) Currency Money %starting.money
+
   ; Generate a password
   set %password ardolia $+ $rand(1,100) $+ $rand(a,z) $+ $rand(1,1000)
   writeini $char($nick) info password $encode(%password)
@@ -77,6 +82,10 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
 
   ; Tell the world we've joined
   $display.message($translate(CharacterCreated))
+
+  ; Tell the player what starting stuff he/she gets
+  $display.private.message($translate(CharacterNewItems))
+  $display.private.message($translate(StartingRecommendation, $nick))
 
   ; Copy the starting stats to the current stats
   $copyini($nick, StartingStats, BaseStats)
@@ -535,27 +544,32 @@ on 2:TEXT:!desc*:#: {  $checkscript($2-)
 ; !equip shield shieldname
 
 on 2:TEXT:!wear *:*: { $wear.armor($nick, $2) | halt }
+on 2:TEXT:!wield *:*: { $wield.weapon($nick, $2) | halt }
 
 on 2:TEXT:!equip *:*: { 
   if ($2 = armor) { $wear.armor($nick, $3) | halt }
   if ($2 = shield) { $wear.armor($nick, $3) | halt }
 
-  if ((%adventureis = on) && ($adventure.alreadyinparty.check($nick) = true)) { $display.message($translate(CanOnlySwitchOutsideAdventure, $nick), private) | halt }
+  $wield.weapon($1, $2) 
+}
+
+alias wield.weapon {
+  if ((%adventureis = on) && ($adventure.alreadyinparty.check($1) = true)) { $display.message($translate(CanOnlySwitchOutsideAdventure, $1), private) | halt }
 
   ; Is the weapon already equipped?
-  if ($2 = $return.equipped($nick, Weapon)) { $set_chr_name($nick) | $display.message($translate(WeaponAlreadyEquipped, $nick, $2), private) | unset %real.name | halt }
+  if ($2 = $return.equipped($1, Weapon)) { $set_chr_name($1) | $display.message($translate(WeaponAlreadyEquipped, $1, $2), private) | unset %real.name | halt }
 
   ; Does the player own this weapon?
-  if ($inventory.amount($nick, $2) < 1) { $set_chr_name($nick) | $display.message($translate(DoNotHaveWeapon, $nick) , private) | unset %real.name | halt }
+  if ($inventory.amount($1, $2) < 1) { $set_chr_name($1) | $display.message($translate(DoNotHaveWeapon, $1) , private) | unset %real.name | halt }
 
   ; Is the player the correct level and job to use this weapon?
   var %jobs.list $readini($dbfile(weapons.db), $2, jobs)
-  if (($istok(%jobs.list, $current.job($nick), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToEquip, $nick) , private) | halt }
+  if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToEquip, $1) , private) | halt }
 
   ; Is the player's level too low to equip this?
-  if ($get.level($nick) < $readini($dbfile(weapons.db), $2, PlayerLevel)) { $display.message($translate(LevelTooLowToEquip, $nick) , private) | halt }
+  if ($get.level($1) < $readini($dbfile(weapons.db), $2, PlayerLevel)) { $display.message($translate(LevelTooLowToEquip, $1) , private) | halt }
 
-  $character.wieldweapon($nick, $2)
+  $character.wieldweapon($1, $2)
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -31,9 +31,11 @@ NameReserved=$chr(3) $+ 4 $+ A character with the name $nick is reserved and c
 
 ; Character Creation Stuff
 CharacterCreated=$chr(3) $+ 7*2 $nick the $race($nick) has joined the Ardolian Adventurer's Guild.
+CharacterNewItems=$chr(3) $+ 7*2 You have been given $bytes($currency.amount($nick, money),b)  $+ $readini(system.dat, system, currency) and the following equipment: BasicTunic $+ $chr(44) BasicLeggings $+ $chr(44) BasicBoots $+ $chr(44) and BasicGloves
+StartingRecommendation=$chr(3) $+ 7*2 Your current class is set to $current.job($2) $+ . To see which other classes you have available use 12!jobs2 and then 12!job change jobcode2 to change to it. For more information on armor use12 !help armor2  It is recommended that you 12!wear2 your armor and buy a weapon for your class in the 12!shop2 before going on adventures.
 
 
-
+; Stat point allocation message
 AllocatedStatPoints=$chr(3) $+ 3 $+ You spend $2 stat $iif($2 > 1, points, point) to raise your $3 stat to $4 $+ . You now have $current.freestatpoints($nick) left to spend.
 
 
@@ -444,6 +446,12 @@ NotCurrentlyInAdventure=$chr(3) $+ 4 $+  Error: This command can only be used 
 AdventureActionCannotBeUsedInBattle=$chr(3) $+ 4 $+  Error: This action cannot be done while there is a battle in progress!
 
 OnlyPartyLeaderCanDoAction=$chr(3) $+ 4 $+  Error: Only12 $adventure.party.leader 4is able to perform this action!
+
+NoMiningPointsInHere=$chr(3) $+ 4 $+ There are no mining points in this room!
+
+NoPickaxeToUse=$chr(3) $+ 4 $+ $get_chr_name($2) does not have a pickaxe to mine with!
+
+PickaxeBroke=$chr(3) $+ 4 $+ $get_chr_name($2) $+ 's pickaxe has broken!
 
 NoTreesInHere=$chr(3) $+ 4 $+ There are no trees in this room!
 

@@ -20,6 +20,7 @@ currency=Gil
 RPGMode=false
 GenakiQuest=true
 PlayerLevelCap=60
+StartingMoney=20
 JobsDPS=MNK
 JobsHealer=WHM
 JobsMage=BLM.RDM

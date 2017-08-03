@@ -177,7 +177,6 @@ calculate.accuracy {
   ; check for status effects that raise accuracy
   if ($status.check($1, Hawk'sEye) != $null) { inc %accuracy 25 }
 
-
   ; We never want accuracy to be below 5%
   if (%accuracy < 5) { var %accuracy 5 }
 

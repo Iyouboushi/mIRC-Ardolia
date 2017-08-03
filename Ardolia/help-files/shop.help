@@ -4,3 +4,5 @@
 12Valid Categories:
 4Items $+ $chr(44) Armor $+ $chr(44) Weapons
 2Your current fame level is3 $character.fame($nick)
+12::[Selling Items]::
+2Most unwanted items can be sold using !sell category itemname

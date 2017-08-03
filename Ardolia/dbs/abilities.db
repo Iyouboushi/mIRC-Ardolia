@@ -463,5 +463,29 @@ EnmityMultiplier=1
 Job=all
 Stat=HP
 
+[FrogKick]
+level=1
+Type=Attack
+AOE=false
+Info=
+Description=spins around and forces its powerful back legs to kick $get_chr_name($3) $+ !
+Cooldown=2
+Cost=200
+Stat=str
+Potency=150
+EnmityMultiplier=1.2
+Job=all
 
-
+[DarkSpore]
+level=1
+Type=Attack
+AOE=true
+Info=
+Description=releases a powerful black spore from its body that explodes into a large amount of smoke in an attempt to blind all of its enemies.
+Cooldown=5
+Cost=500
+Stat=str
+Potency=50
+EnmityMultiplier=1.2
+Job=all
+StatusEffect=Blind

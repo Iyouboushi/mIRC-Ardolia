@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 08/02/17
+;;;; Last updated: 08/03/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -737,9 +737,7 @@ add.monster.drop {
   if (%total.money.amount = $null) { var %total.money.amount 0 }
   inc %total.money.amount %money.reward
 
-
   writeini $txtfile(adventure.txt) Rewards Money %total.money.amount
-
 
   ; Determine spoil
   var %drop.chance $readini($char($2), Drops, ItemDropChance)
@@ -752,6 +750,8 @@ add.monster.drop {
   if ((%drops.list != $null) && ($rand(1,100) <= %drop.chance)) { 
     ; Pick a random item from the list and add it to the item pool
 
+    var %random.spoil $gettok(%drop.list, $rand(1, $numtok(%drop.list, 46)), 46)
+    write $txtfile(battlespoils.txt) %random.spoil
   }
 
 }
@@ -828,7 +828,6 @@ perform.status.effect {
 
   ; Add the status effect/buff to the correct list
   if ($readini($char($1), StatusEffects, $2) > 0) { 
-    echo -a above 0
     if ($readini($dbfile(statuseffects.db), $2, type) = buff) { %status.buffs = $addtok(%status.buffs, $translate($2), 46) }
     else { %status.effects = $addtok(%status.effects, $translate($2), 46) }
   }
