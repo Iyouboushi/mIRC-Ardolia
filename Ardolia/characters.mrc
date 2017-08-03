@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 06/21/17
+;;;; Last updated: 08/02/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -533,6 +533,8 @@ on 2:TEXT:!desc*:#: {  $checkscript($2-)
 ; !equip weaponname
 ; !equip armor armorname
 ; !equip shield shieldname
+
+on 2:TEXT:!wear *:*: { $wear.armor($nick, $2) | halt }
 
 on 2:TEXT:!equip *:*: { 
   if ($2 = armor) { $wear.armor($nick, $3) | halt }
