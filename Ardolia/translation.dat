@@ -211,7 +211,7 @@ HasNoAmmo=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no ammo.
 
 NeedToSayWhichArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which armor to search for: Shield, Head, Body, Legs, Feet, Hands, Ears, Neck, Wrists, Ring
 
-NeedToSayWhichWeaponType=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which weapon type to search for: HandToHand, Sword, Gun, Bow, GreatAxe
+NeedToSayWhichWeaponType=$chr(3) $+ 3 $+  $+ $get_chr_name($2)  needs to specify which weapon type to search for: HandToHand, Sword, Gun, Bow, GreatAxe, Stave, Wand
 
 HasNoArmor=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no $3 armor.
 HasNoWeapons=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no $3 weapons. 
@@ -400,7 +400,7 @@ PartyLeaderOpen=$chr(3) $+ 2* 4 $adventure.party.leader is no longer in contr
 
 PartyStaminaCutDueToIdle=$chr(3) $+ 2* 4The party has been idle for too long! The party's stamina has been cut decreased by $2 
 
-EnteredTheAdventure=$chr(3) $+ 4 $+  $+ $get_chr_name($1) has joined the party and is ready for the adventure! 
+EnteredTheAdventure=$chr(3) $+ 4 $+  $+ $get_chr_name($2) has joined the party and is ready for the adventure! 
 
 EnteredTheBattle=$chr(3) $+ 4 $+  $+ $get_chr_name(%current.monster.to.spawn.name) has entered into battle! 
 

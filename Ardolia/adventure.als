@@ -196,7 +196,7 @@ adventure.join {
 
   writeini $char($1) info SkippedTurns 0
 
-  $display.message($translate(EnteredTheAdventure), global)
+  $display.message($translate(EnteredTheAdventure, $1), global)
 
   remini $char($1) info levelsync 
   writeini $char($1) info NeedsFulls yes
