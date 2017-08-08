@@ -1251,7 +1251,6 @@ SellPrice=1
 Jobs=all
 FameLevel=1
 CraftingPointValue=0
-<<<<<<< HEAD
 
 [WeatheredChoker]
 Name=Weathered Choker
@@ -1524,8 +1523,6 @@ SellPrice=10
 Jobs=$return.systemsetting(JobsHealer)
 CraftingPointValue=15
 
-=======
->>>>>>> origin/master
 
 
 ========

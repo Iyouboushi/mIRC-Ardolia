@@ -249,7 +249,6 @@ mdefense=0
 CraftingPointValue=0
 cost=5
 SellPrice=1
-<<<<<<< HEAD
 FameLevel=1
 
 [BronzeAxe]
@@ -277,16 +276,11 @@ SellPrice=10
 FameLevel=1
 
 [BronzeLabrys]
-=======
-
-[BronzeAxe]
->>>>>>> origin/master
 Type=axe
 Info=An axe made of bronze.
 Jobs=WAR
 Stat=str
 Element=none
-<<<<<<< HEAD
 ItemLevel=7
 PlayerLevel=7
 Damage=10
@@ -387,31 +381,16 @@ Speed=3
 str=3
 dex=0
 vit=2
-=======
-ItemLevel=5
-PlayerLevel=5
-Damage=9
-Speed=4
-str=0
-dex=0
-vit=0
->>>>>>> origin/master
 int=0
 mnd=0
 pie=0
 det=0
 pdefense=0
 mdefense=0
-<<<<<<< HEAD
 CraftingPointValue=12
 cost=100
 SellPrice=18
 FameLevel=2
-=======
-CraftingPointValue=1
-cost=50
-SellPrice=10
->>>>>>> origin/master
 
 =============================================
 HAMMERS
