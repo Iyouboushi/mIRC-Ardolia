@@ -1039,6 +1039,67 @@ Jobs=all
 FameLevel=1
 CraftingPointValue=0
 
+[LeatherCrakows]
+Name=Leather Crakows
+EquipLocation=feet
+Str=1
+Dex=1
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=8
+MDefense=8
+ItemLevel=5
+PlayerLevel=5
+Rarity=1
+cost=50
+FameLevel=1
+SellPrice=10
+Jobs=$return.systemsetting(JobsDPS)
+CraftingPointValue=10
+
+[LeatherSandals]
+Name=Leather Sandals
+EquipLocation=feet
+Str=0
+Dex=0
+Vit=0
+Int=1
+Mnd=1
+Pie=0
+PDefense=5
+MDefense=10
+ItemLevel=5
+PlayerLevel=5
+Rarity=1
+cost=50
+FameLevel=1
+SellPrice=10
+Jobs=$return.systemsetting(JobsMage)
+CraftingPointValue=10
+
+[LeatherSollerets]
+Name=Leather Sollerets
+EquipLocation=feet
+Str=0
+Dex=0
+Vit=2
+Int=0
+Mnd=0
+Pie=0
+PDefense=10
+MDefense=8
+ItemLevel=5
+PlayerLevel=5
+Rarity=1
+cost=50
+FameLevel=1
+SellPrice=10
+Jobs=$return.systemsetting(JobsTanks)
+CraftingPointValue=10
+
+
 
 ========
 HANDS
@@ -1071,6 +1132,25 @@ EARS
 ========
 NECK
 ========
+[RedbillScarf]
+Name=Redbill Scarf
+EquipLocation=neck
+Str=0
+Dex=0
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=1
+MDefense=1
+ItemLevel=1
+PlayerLevel=1
+Rarity=1
+cost=5
+SellPrice=1
+Jobs=all
+FameLevel=1
+CraftingPointValue=0
 
 
 ========

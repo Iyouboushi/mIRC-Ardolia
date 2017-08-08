@@ -227,7 +227,51 @@ GUNS & RIFLES
 =============================================
 AXES
 =============================================
+[WeatheredAxe]
+Type=axe
+Info=An axe that has seen better days.
+Jobs=WAR
+Stat=str
+Element=none
+ItemLevel=1
+PlayerLevel=1
+Damage=7
+Speed=3
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=0
+cost=5
+SellPrice=1
 
+[BronzeAxe]
+Type=axe
+Info=An axe made of bronze.
+Jobs=WAR
+Stat=str
+Element=none
+ItemLevel=5
+PlayerLevel=5
+Damage=9
+Speed=4
+str=0
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+CraftingPointValue=1
+cost=50
+SellPrice=10
 
 =============================================
 HAMMERS

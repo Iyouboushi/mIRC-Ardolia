@@ -84,7 +84,7 @@ Jobs=whm
 ATTACKING
 =============================================
 [Dia]
-Level=3
+Level=2
 Type=Attack
 AOE=false
 Info=This spell does light damage

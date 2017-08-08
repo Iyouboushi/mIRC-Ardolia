@@ -63,8 +63,9 @@ AdventureClearMessage=
 ;
 ; Objects
 ; ObjectsList= A list of objects that players can interact with inside the room at the cost of an adventure action
+; NPCObjects= A list of NPC objects that players can interact with inside the room at the cost of an adventure action
 ; <ObjectName>.<Action>=  What happens when the party interacts with this? $iif statements and other commands go here.
-;                         Valid Actions: push, pull, open, close, read
+;                         Valid Actions: push, pull, open, close, read, talk
 ;  An example might be something like  
 ;   ObjectsList=Lever
 ;   Lever.Pull=$display.message(The party pulls the lever and a trap door opens beneath them, global) | $adventure.go(005)
@@ -95,7 +96,9 @@ ExitList=
 
 ; Objects/Chests
 ObjectList=
+NPCObjects=
 <ObjectName>.<Action>=
+
 
 ; Treasure Chest Info
 Chest=

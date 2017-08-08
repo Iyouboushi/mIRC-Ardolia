@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/07/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,7 +84,7 @@ adventure.start {
 
   ; Can the party leader lead another party so soon?
   ; If more than 1 person is logged into the game there is a 5 minute wait for players to lead their own parties
-  ; Note that they can still join other playeres' parties while waiting.
+  ; Note that they can still join other player's parties while waiting.
   var %voices $nick(%battlechan,0,v)
 
   if (%voices > 1) { 
@@ -550,6 +550,8 @@ adventure.look {
 
   if ($readini($zonefile(adventure), %current.room, objectlist) != $null) { var %object.list $readini($zonefile(adventure), %current.room, ObjectList) }
   if ($readini($zonefile(adventure), %current.room, chest) != $null) { %object.list = $addtok(%object.list, chest, 46) }
+  if ($readini($zonefile(adventure), %current.room, NPCObjects) != $null) { var %npc.list $readini($zonefile(adventure), %current.room, NPCObjects) }
+
 
   ; [Name of Room]
   $display.message(12[ $+ $readini($zonefile(adventure), %current.room, name) $+  ] , global)
@@ -559,6 +561,9 @@ adventure.look {
 
   ; Objects
   if (%object.list != $null) { var %object.list $clean.list(%object.list) | $display.message(10Objects:12 %object.list) }
+
+  ; NPCs
+  if (%npc.list != $null) { var %%npc.list $clean.list(%npc.list) | $display.message(10NPCs Here:12 %npc.list) }
 
   ; Check for trees
   var %room.tree.count $readini($zonefile(adventure), %current.room, trees)
@@ -654,7 +659,12 @@ adventure.go {
   $display.message(7*2 $readini($zonefile(adventure), %current.room, EnterDesc), global)
 
   ; If the room is clear, show the !look desc automatically. 
-  if ($readini($zonefile(adventure), %current.room, clear) = true) { $adventure.look | halt }
+  if ($readini($zonefile(adventure), %current.room, clear) = true) { 
+
+    ; Is this the end of the adventure?
+    if (%current.room = $readini($zonefile(adventure), Info, ClearRoom)) { $adventure.end(victory)  | halt }
+    else { $adventure.look | halt }
+  }
 
   ; If the room is not clear, check for combat.  If the combat is true, start a battle and show the battle begin message.
   if ($readini($zonefile(adventure), %current.room, combat) = true) { 
@@ -898,7 +908,8 @@ adventure.object {
   if ($2 = chest) { $adventure.chest($1, $2, $3) }
   else { 
     var %room.objects $readini($zonefile(adventure), %current.room, ObjectList)
-    if ($istok(%room.objects,$2,46) = $false) {  $display.message($translate(DoNotSeeThatObject, $1), global) | halt }
+    var %npc.objects $readini($zonefile(adventure), %current.room, NPCObjects)
+    if (($istok(%room.objects,$2,46) = $false) && ($istok(%npc.objects,$2,46) = $false)) {  $display.message($translate(DoNotSeeThatObject, $1), global) | halt }
   }
 
   ; Can that command be used with the object?

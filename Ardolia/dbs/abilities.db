@@ -263,7 +263,7 @@ EnmityMultiplier=4
 Job=WHM
 
 [Pray]
-Level=5
+Level=4
 Type=Heal
 AOE=true
 Info=Pray to the gods for healing! The gods may or may not listen to your prayers. There is a 50% chance that this ability will only restore 1-2 HP to your allies.
