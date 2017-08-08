@@ -201,10 +201,10 @@ HasNoAbilities=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently knows no abilit
 HasNoSpells=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently knows no spells.
 
 ; items
-ViewItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following items: %items.list
-ViewFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following food items: %items.list 
-ViewSpoils=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following spoils: %spoils.items.list 
-ViewCrystalItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following crystals: %crystal.items.list 
+ViewItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following items: %items.list
+ViewFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following food items: %items.list 
+ViewSpoils=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following spoils: %spoils.items.list 
+ViewCrystalItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) has the following crystals: %crystal.items.list 
 
 HasNoItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no items. 
 HasNoFoodItems=$chr(3) $+ 3 $+  $+ $get_chr_name($2) currently has no food. 
@@ -354,8 +354,10 @@ CanNotAttackSomeoneWhoIsDead=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack s
 CanNotAttackSomeoneWhoFled=$chr(3) $+ 4 $+ $get_chr_name($2) cannot attack $get_chr_name($3) $+ , because $get_chr_name($3) has run away from the fight! 
 NotRightLevelForAbility=$chr(3) $+ 4 $+ $get_chr_name($2) is not high enough level to use $3 $+ !
 NotRightLevelForSpell=$chr(3) $+ 4 $+ $get_chr_name($2) is not high enough level to cast $3 $+ !
-WrongJobToUseAbility=$chr(3) $+ 4 $+ $get_chr_name($2) $+  's current job cannot use $3 $+ !
-WrongJobToUseSpell=$chr(3) $+ 4 $+ $get_chr_name($2) $+  's current job cannot cast $3 $+ !
+WrongJobToUseAbility=$chr(3) $+ 4 $+ $get_chr_name($2) $+  's current job cannot use $3 $+ !
+WrongJobToUseSpell=$chr(3) $+ 4 $+ $get_chr_name($2) $+  's current job cannot cast $3 $+ !
+NoSuchAbility=$chr(3) $+ 4 $+ There is no ability called $3 $+ 
+NoSuchSpell=$chr(3) $+ 4 $+ There is no spell called $3 $+ 
 
 MustSpecifyName=$chr(3) $+ 4 $+ Error: You must specify a name, rather than "me"
 

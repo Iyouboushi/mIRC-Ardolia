@@ -1,0 +1,645 @@
+[Info]
+Name=Blackrock Ridge
+OriginalFile=blackrock_ridge
+Desc=A cave in has caused a bunch of miners from Blackrock Ridge Mines to be trapped. The foreman has sent our an urgent request for help!
+LevelRange=5-6
+MinimumPlayers=1
+MaximumPlayers=4
+PreReq=
+iLevel=2
+AdventureActions=120
+ClearRoom=49
+ClearReward.List=reward_blackrockridge.lst
+ClearReward.XP=$return_percentofvalue($xp.to.level(%party.member.name), 8))
+FameRewarded=3
+AdventureClearMessage=The party returns home to Ardolia knowing that they have saved a group of lives today.
+
+[KeyItems]
+; The item players will be collecting by defeating the bosses inside this dungeon
+FireSand=0
+
+
+[0]
+Name=Blackrock Ridge - Mine Entrance
+Clear=true
+EnterDesc=The party has entered Blackrock Ridge.
+LookDesc=The party stands in a carved hallway. The roof here is about 8 feet high, and a long wire, stretching from deeper down a long pathway, gives energy to several lamps tilting over your head.
+Combat=false
+
+ExitList=north
+North=1
+
+
+[1]
+Name=Blackrock Ridge - Carved Hallway
+Clear=true
+LookDesc=The party is in a carved hallway. A long wire, stretching from deeper down the pathway, gives energy to several lamps tilting over your head.
+Combat=false
+
+ExitList=north.south
+North=2
+South=0
+
+[2]
+Name=Blackrock Ridge - Carved Hallway
+Clear=true
+LookDesc=The party is in a carved hallway. A long wire, stretching from deeper down the pathway, gives energy to several lamps tilting over your head.
+Combat=false
+
+ExitList=east.south
+East=3
+South=1
+
+[3]
+Name=Blackrock Ridge - Carved Hallway
+Clear=true 
+LookDesc=The party is in a carved hallway. A long wire, stretching from deeper down the pathway, gives energy to several lamps tilting over your head.
+Combat=false
+
+ExitList=north.west
+North=4
+West=2
+
+[4]
+Name=Blackrock Ridge - Carved Hallway
+Clear=true
+LookDesc=The party is in a carved hallway. A long wire, stretching from ahead of you, gives energy to several lamps tilting over your head.
+Combat=false
+
+ExitList=north.south
+North=5
+South=3
+
+[5]
+Name=Blackrock Ridge - Caved in Wall
+Clear=true
+LookDesc=Muffled cries for help are coming from beyond a large wall of rubble that lays before you in this room. Rasmus, the foreman, stands here with a panicked expression on his face. There are passages leading east and west here.  A large machine is supplying power to the lamps hanging from the ceiling.
+Combat=false
+
+ObjectList=Detonator.Generator.Rubble
+Detonator.Push=$iif($adventure.keyitem(check, FireSand) >= 3, $adventure.go(49), $display.message(4It appears that if you had12 3 ounces of FireSand4 you could use this detonator to blow a hole in the rubble here, global))
+Detonator.Look=$display.message(2This detonator runs off of 12FireSand2. Three ounces of it will be enough to blow a hole in this rubble., global)
+
+Generator.Push=$display.message(4Rasmus panics and yells 2"NO! Don't touch that! It's the only thing keeping the monsters away from here and the lights on!", global)
+Generator.Pull=$display.message(4Rasmus panics and yells 2"NO! Don't touch that! It's the only thing keeping the monsters away from here and the lights on!", global)
+Generator.Look=$display.message(2It appears to be a generator that is powering the lights throughout the upper floor of the mine, global)
+
+Rubble.Look=$display.message(2It's a pile of rocks that fell when the mine collapsed here. There are men trapped on the other side of this.,global)
+Rubble.Push=$display.message(2It's too heavy to move by hand.,global)
+Rubble.Pull=$display.message(2It's too heavy to move by hand.,global)
+Rubble.Talk=$display.message(You hear 2"PLEASE SAVE US!" muffled from the other side.,global)
+
+NPCObjects=Rasmus
+Rasmus.Talk=$display.message(Rasmus says 2"The miners are trapped behind this rubble in our dining hall! 7Three ounces of FireSand2 and a 7push2 of this 7detonator2 would be enough to blast it open but monsters have taken over the mines and our stock of FireSand! If only I had trained with a blade..", global)
+Rasmus.Look=$display.message(2Rasmus is a Hyur standing at average height. He has short black hair and is covered in soot. He looks to be in total panic about the cave-in that has his workers trapped., global)
+Rasmus.Push=$display.message(4Rasmus glares at you and says 2"HEY! WATCH IT!")
+
+
+ExitList=east.south.west
+East=6
+West=14
+South=4
+
+[6]
+Name=Blackrock Ridge - Cozy Cove
+Clear=true
+LookDesc=For some strange reason, this is a nice looking place.  It is nested deep inside the rock almost making the entire place feel safe and secure.
+Combat=false
+
+ExitList=north.south.west
+north=7
+south=8
+west=5
+
+[7]
+Name=Blackrock Ridge - Sleeping Quarters
+Clear=true
+LookDesc=This room appears to be where the miners sleep when they are not on duty. There are several sleeping bags in here. $iif($readini($zonefile(adventure), 7, Chest.Open) = false, There is a chest belonging to one of the miners in here)
+Combat=false
+
+ExitList=south
+south=6
+
+Chest=true
+Chest.Open=false
+Chest.List=chest_blackridge_A.lst
+
+[8]
+Name=Blackrock Ridge - Storage Room Hallway
+Clear=true
+LookDesc=The ceiling gets lower in this room and the light is dimmer. The hallway leads to the north to where you can see other rooms.
+Combat=false
+
+ExitList=north.south
+north=6
+south=9
+
+
+[9]
+Name=Blackrock Ridge - Storage Room Hallway
+Clear=true
+LookDesc=The ceiling is lower in this room and the light is dimmer. This is the hallway that leads to several storage rooms.  To the east and west you can make out barrels, crates and minecarts.
+Combat=false
+
+ExitList=north.east.south.west
+north=8
+east=10
+west=11
+south=12
+
+[10]
+Name=Blackrock Ridge - Storage Room
+Clear=true
+LookDesc=This room is being used by the miners to store supplies and empty minecarts.
+Combat=false
+
+ExitList=west
+west=9
+
+[11]
+Name=Blackrock Ridge - Storage Room
+Clear=true
+LookDesc=This room is being used by the miners to store supplies and empty minecarts.
+Combat=false
+
+ExitList=east
+east=9
+
+[12]
+Name=Blackrock Ridge - Storage Room Hallway
+Clear=true
+LookDesc=The ceiling is lower in this room and the light is dimmer. This is the hallway that leads to several storage rooms.  To the north you can see the hallway splits to other rooms. To the east you can see a storage room.
+Combat=false
+
+ExitList=north.east
+north=9
+east=13
+
+[13]
+Name=Blackrock Ridge - Storage Room
+Clear=true
+LookDesc=This room has many boxes and crates laying around full of material the miners need to work here. $iif($readini($zonefile(adventure), 7, Chest.Open) = false, There is a small wooden chest in here that seems to stand out from the rest of the crates and boxes.)
+Combat=false
+
+ExitList=west
+west=12
+
+Chest=true
+Chest.Open=false
+Chest.List=chest_blackridge_B.lst
+
+
+[14]
+Name=Blackrock Ridge
+Clear=true
+EnterDesc=
+LookDesc=An empty minecart sits here in front of a door leading into a small elevator that takes the miners down into the mine.  Above the lights flicker briefly. To the east you can hear Rasmus give off a panicked noise as well as muffled cries for help.
+Combat=false
+
+ExitList=east.elevator
+east=5
+elevator=15
+
+[15]
+Name=Blackrock Ridge - Elevator
+Clear=true
+LookDesc=The elevator is half way between the mine and the surface. 
+Combat=false
+
+ExitList=down.up
+down=16
+up=14
+
+[16]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=An elevator leading back up to the surface is here. A gravel path leads south and west. The power to the lights in the rest of the mine seem to be off and noises are coming from the darkness beyond.
+Combat=false
+
+ExitList=elevator.south.west
+elevator=15
+south=17
+west=19
+
+[17]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The ceiling continues to get lower as the miners apparently never had time to finish this particular passage of the mines. Rodent droppings cover the floor in a nasty mess.  
+Combat=false
+
+ExitList=north.south
+north=16
+south=18
+
+[18]
+Name=Blackrock Ridge - Mine
+Clear=false
+LookDesc=This is a rather small alcove inside the cave portion of the Blackrock Ridge mines. $iif($adventure.miningpoints.count != 0, This spot looks like it would make a good place to mine some ore.)
+
+ExitList=north
+north=17
+
+MiningPoints=1
+OreList=BronzeOre.IronOre
+
+Combat=true
+Monsters=Blackrock_Wererat
+Monsters.Needed=2
+CombatDesc=Wererats have made a nest here and upon being disturbed lunge for attack!
+CombatEndDesc=The rats have been taken care of.
+
+
+[19]
+Name=Blackrock Ridge - Mine
+Clear=false
+LookDesc=The path curves to the northwest and southwest. To the northwest the party can barely make out a roughly cut set of stairs. To the southwest the party can make out a wooden bridge.
+
+ExitList=northwest.southwest.east
+east=16
+northwest=20
+southwest=26
+
+Combat=true
+Monsters=Blackrock_Coblyn
+Monsters.Needed=2
+CombatDesc=Two coblyns snarl and attack out of the darkness!
+CombatEndDesc=The coblyns make one last strange noise before succumbing to their wounds.
+
+
+[20]
+Name=Blackrock Ridge - Mine - Stairs
+Clear=true
+LookDesc=The party stands on a roughly cut set of stairs that lead north, deeper into the mine.
+Combat=false
+
+ExitList=north.southeast
+north=21
+southeast=19
+
+[21]
+Name=Blackrock Ridge - Mine
+Clear=false
+LookDesc=The path splits here in three different directions. 
+
+ExitList=north.east.south
+north=23
+east=22
+south=20
+
+Combat=true
+Monsters=Blackrock_Bat
+Monsters.Needed=2
+CombatDesc=Two bats fly out of the darkness and attack the party!
+CombatEndDesc=The bats squeak and die.
+
+[22]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands at the end of a carved out tunnel. $iif($adventure.miningpoints.count != 0, This spot looks like it would make a good place to mine some ore.)
+Combat=false
+
+ExitList=west
+west=21
+
+MiningPoints=1
+OreList=BronzeOre.IronOre
+
+[23]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The ceiling in this section of the mine is much higher than other corridors. Judging by the aspect of the walls this appears to be a natural cave the miners uncovered. A dripping sound can be heard ahead.
+Combat=false
+
+ExitList=east.south.west
+east=24
+south=21
+west=34
+
+
+[24]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=Drops of water fall from the ceiling down upon the party's head as they walk down this tunnel. $iif($readini($zonefile(adventure), 25, Clear) = false, The party hears something moving to the south)
+Combat=false
+
+ExitList=south.west
+west=23
+south=25
+
+[25]
+Name=Blackrock Ridge - Mine - Pools
+Clear=false
+LookDesc=Drops of water fall from the ceiling down upon the party's head. There is a small pool of water here.
+
+ExitList=north
+north=24
+
+; Combat Info
+Combat=true
+Monsters=Veindigger
+Monsters.Needed=1
+CombatDesc=An abnormally large red and white leech takes notice of the party and bounces towards them ready for combat!
+CombatEndDesc=Upon defeating the large leech the party discovers an ounce of FireSand that it was protecting. 
+CombatEndAction=$adventure.keyitem(add, FireSand, 1)
+
+[26]
+Name=Blackrock Ridge - Mine - Wooden Bridge
+Clear=true
+LookDesc=The party stands on an old wooden bridge that the miners put up to cross a large natural chasm below. Although you may be tempted to look down, doing so could seriously upset your balance.
+Combat=false
+
+ExitList=northeast.south
+northeast=19
+south=27
+
+[27]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel of the mine. It is dark here with only the light of the party's torch to light the path. $iif($readini($zonefile(adventure), 32, Clear) = false, The party hears child-like laughter echoing through this part of the mine)
+Combat=false
+
+ExitList=north.south
+north=26
+south=28
+
+[28]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel of the mine. It is dark here with only the light of the party's torch to light the path.
+Combat=false
+
+ExitList=north.south
+north=27
+south=29
+
+[29]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel of the mine. It is dark here with only the light of the party's torch to light the path. The path forks here.
+Combat=false
+
+ExitList=north.southeast.southwest
+north=28
+southeast=31
+southwest=30
+
+[30]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel of the mine. $iif($readini($zonefile(adventure), 32, Clear) = false, The child-like laughter seems to be getting louder and appears to be coming from the south somewhere.)
+Combat=false
+
+ExitList=northeast.south
+northeast=29
+south=33
+
+[31]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel of the mine. $iif($readini($zonefile(adventure), 32, Clear) = false, can make out an odd shape from the south. It also appears the laughter is coming from there.)
+Combat=false
+
+ExitList=northwest.south
+northwest=29
+south=32
+
+
+[32]
+Name=Blackrock Ridge - Mine - Boulder Room
+Clear=false
+LookDesc=A large boulder with small cracks in it lies here along with the body of Gogmagolem. Other large rocks sit in this room, too heavy to move.
+Combat=false
+
+ExitList=north
+north=31
+
+; Combat Info
+Combat=true
+Monsters=Gogmagolem
+Monsters.Needed=1
+CombatDesc=A child-like Spriggan sits atop a large boulder and through its magic is causing it to bounce around the room. Upon noticing the party it turns the boulder towards you and shouts "GoGmAgOlEm PlAy WiTh YoU!" 
+CombatEndDesc=The boulder crashes into a wall and stops as Gogmagolem's death has ended the magic used to animate it. A small portion of the cracked boulder reveals an ounce of FireSand.  
+CombatEndAction=$adventure.keyitem(add, FireSand, 1)
+
+ObjectList=GogmagolemCorpse
+GogmagolemCorpse=$display.message(2The dead body of Gogmagolem.,global)
+
+[33]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=This is a rather small alcove inside the cave portion of the Blackrock Ridge mines. $iif($adventure.miningpoints.count != 0, This spot looks like it would make a good place to mine some ore.)
+Combat=false
+
+ExitList=north
+north=30
+
+MiningPoints=1
+OreList=BronzeOre.IronOre
+
+
+[34]
+Name=Blackrock Ridge - Mine
+Clear=false
+LookDesc=The ceiling in this section of the mine is much higher than other corridors. Judging by the aspect of the walls this appears to be a natural cave the miners uncovered.
+
+ExitList=east.west.southwest
+east=23
+west=35
+southwest=36
+
+Combat=true
+Monsters=Blackrock_Bat
+Monsters.Needed=2
+CombatDesc=Two more bats fly out of the darkness and attack the party!
+CombatEndDesc=The bats squeak and die.
+
+
+[35]
+Name=Blackrock Ridge - Mine - Dead End
+Clear=true
+LookDesc=The party has come to a dead end. Another cave-in has blocked the path going forward. $iif($readini($zonefile(adventure), 48, Clear) = false, A very loud roar can be heard on the other side of the rubble)
+Combat=false
+
+ExitList=east.southeast
+east=34
+southeast=36
+
+[36]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The path here splits into multiple directions. 
+Combat=false
+
+ExitList=northeast.northwest.south
+northeast=34
+northwest=35
+south=37
+
+
+[37]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=Pillars of rock jut into the air here.  The party also notices that rodent droppings cover the floor in a nasty mess. 
+Combat=false
+
+ExitList=north.east.west
+north=36
+east=38
+west=40
+
+[38]
+Name=Blackrock Ridge - Mine
+Clear=false
+LookDesc=The party stands in a carved out tunnel. Gravel litters the ground causing loud crunching upon walking on it.
+
+ExitList=east.west
+east=39
+west=37
+
+Combat=true
+Monsters=Blackrock_Wererat
+Monsters.Needed=2
+CombatDesc=Wererats have made a nest here and upon being disturbed lunge for attack!
+CombatEndDesc=The rats have been taken care of.
+
+[39]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands at the end of a carved out tunnel. Gravel litters the ground causing loud crunching upon walking on it. $iif($adventure.miningpoints.count != 0, This spot looks like it would make a good place to mine some ore.)
+Combat=false
+
+ExitList=west
+west=38
+
+MiningPoints=1
+OreList=BronzeOre.IronOre
+
+
+[40]
+Name=Blackrock Ridge - Mine
+Clear=false
+LookDesc=The party stands in a carved out tunnel. Gravel litters the ground causing loud crunching upon walking on it.
+
+ExitList=east.west.south
+east=37
+south=41
+west=46
+
+Combat=$iif($readini($zonefile(adventure), 32, Clear) = true, true, false)
+Monsters=Blackrock_Spriggan
+Monsters.Needed=2
+CombatDesc=Two Spriggans pop up out of the darkness and yell at you about avenging the death of Gogmagolem!
+CombatEndDesc=The Spriggans fall to the ground dead. They shall trouble you no more.
+
+
+[41]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel.
+Combat=false
+
+ExitList=north.southeast
+north=40
+southeast=42
+
+[42]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel.
+Combat=false
+
+ExitList=northwest.southeast
+northwest=41
+southeast=43
+
+[43]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel.
+Combat=false
+
+ExitList=northwest.south
+northwest=42
+south=44
+
+[44]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands in a carved out tunnel. The ground slopes slightly here.
+Combat=false
+
+ExitList=north.south
+north=43
+south=45
+
+[45]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=The party stands at the end of a carved out tunnel. $iif($adventure.miningpoints.count != 0, This spot looks like it would make a good place to mine some ore.)
+Combat=false
+
+ExitList=north
+west=44
+
+MiningPoints=1
+OreList=BronzeOre.IronOre
+
+Chest=true
+Chest.Open=false
+Chest.List=chest_blackridge_C.lst
+
+[46]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=This spacious cavern seems to hide many mysteries in its depths.  Large, natural pillars of rock climb several yards into the air, meeting a cavern ceiling that would be high above even the tallest human. $iif($readini($zonefile(adventure), 48, Clear) = false, A very loud roar echos through the mine.)  A bloody Hyur corpse is here holding a bloodied note.
+Combat=false
+
+ExitList=north.east
+north=47
+east=40
+
+ObjectList=BloodyNote.HyurCorpse
+BloodyNote.Read=$display.message(2"It... it found its way into the mines and we had no choice but to set off several explosions to prevent it from escaping.. Whatever you do... do not free it!", global)
+BloodyNote.Look=$display.message(2It's a note scribbled in a hurry and covered in blood. Perhaps you should 4read2 it., global)
+
+HyurCorpse.Push=$display.message(2You push the corpse slightly. It does not move.,global)
+HyurCorpse.Pull=$display.message(2You pull the corpse slightly. It does not move.,global)
+HyurCorpse.Look=$display.message(2You see a dead Hyur. It appears his left arm was crushed by something heavy. His right hand is holding onto a note covered in blood,global)
+
+
+[47]
+Name=Blackrock Ridge - Mine
+Clear=true
+LookDesc=You have reached another cave-in. However there seems to be just enough room through a small crack to slip through into the next room. $iif($readini($zonefile(adventure), 48, Clear) = false, Through the cracks you can see the shadow of something moving in the next room)
+Combat=false
+
+ExitList=south.crack
+south=46
+crack=48
+
+[48]
+Name=Blackrock Ridge - Mine - Giant's Trap
+Clear=false
+LookDesc=The body of Ouranos lies here in this large but now empty room. Using a small crack in the rubble you may be able to slip back outside.
+
+ExitList=crack
+crack=47
+
+; Combat Info
+Combat=true
+Monsters=Ouranos
+Monsters.Needed=1
+CombatDesc=A large malnourished-looking Gigas turns and gives out a loud roar. It appears this room was used to trap the beast.  It does not look happy.
+CombatEndDesc=Upon defeating the foe the party finds a patch of left-over FireSand that must have been used to create the cave in to trap the Gigas here.
+CombatEndAction=$adventure.keyitem(add, FireSand, 1)
+
+ObjectList=OuranosCorpse
+OuranosCorpse.Look=$display.message(2The dead body of a malnourished giant.,global)
+
+
+[49]
+Name=Blackrock Ridge - 
+Clear=true
+EnterDesc=The FireSand inside the detonator causes a huge explosion and breaks apart the caved-in wall.  The party moves through the smoke and rubble to find the group of trapped miners and helps to escort them out of the mines and to safety.
+LookDesc=
+Combat=false

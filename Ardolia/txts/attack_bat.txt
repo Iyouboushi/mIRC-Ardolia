@@ -1,3 +1,2 @@
-swings the bat at %enemy dealing damage
-laughs at %enemy before swinging the bat to deal damage
-leaps at %enemy swinging the bat
+attempts to bite %enemy
+launchs itself towards %enemy and attacks

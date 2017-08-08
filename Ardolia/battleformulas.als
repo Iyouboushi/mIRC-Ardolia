@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 07/01/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -216,9 +216,13 @@ calculate.wpn.damage {
   if (%stat.needed = pie) { var %current.stat $current.pie($1) } 
 
   var %current.det $current.det($1)
+  var %det.calculation $calc(%current.det / 7308 +1)
+  var %stat.calculation $calc(%current.stat / 9.05)
+  var %wpnspd.calculation $calc(%weapon.speed / 3)
 
-  var %base.melee.damage $abs($calc((%weapon.damage * .2714745 + %current.stat * .1006032 + (%current.det -202) * .0241327 + %weapon.damage * %current.stat * .0036167 + %weapon.damage * (%weapon.det - 202) * .0022597 - 1) * (%weapon.speed / 3)))
-  inc %base.melee.damage $rand(1,2)
+  var %base.melee.damage $calc(%weapon.damage / 25 +1)
+  var %base.melee.damage $abs($calc(%base.melee.damage * (%stat.calculation) * (%det.calculation + 1) - 1))
+  var %base.melee.damage $calc(%base.melee.damage * %wpnspd.calculation)
 
   return $round(%base.melee.damage,0)
 }
@@ -246,13 +250,14 @@ calculate.ability.damage {
   if (%stat.needed = pie) { var %current.stat $current.pie($1) } 
 
   var %current.det $current.det($1)
+  var %det.calculation $calc(%current.det / 7308 +1)
+  var %stat.calculation $calc(%current.stat / 9.05)
 
-  var %det.calculation $calc(%current.det - 202)
-  var %base.ability.damage $abs($calc((%weapon.damage *.2714745 + %current.stat * .1006032 + %det.calculation * .0241327 + %weapon.damage * %current.stat * .0036167 + %weapon.damage * %det.calculation *.0022597 - 1)))
+  var %base.ability.damage $calc(%weapon.damage / 25+1)
+  var %base.ability.damage $calc(%base.ability.damage * (%stat.calculation) * (%det.calculation + 1) - 1)
   var %base.ability.damage $abs($calc((%potency / 100) * %base.ability.damage))
 
   inc %base.ability.damage $roll(1d3)
-
   return $round(%base.ability.damage,0)
 }
 
@@ -282,7 +287,6 @@ calculate.spell.damage {
   var %base.spell.damage $abs($calc((%potency / 100) * %base.spell.damage)) 
   inc %base.spell.damage $rand(1,2)
   return $round(%base.spell.damage,0)
-
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -302,12 +306,10 @@ calculate.defense {
   if (($2 = spell) || ($2 = magical)) { var %defense $current.mdefense($1) }
 
   var %defense.percent $abs($calc(1 - (0.044 * %defense)))
+
   if (%defense.percent = 1) { return 1 }
   else { 
-
     var %defense.percent $calc((100-%defense.percent)/100)
-
-
     return %defense.percent
   }
 }
@@ -324,10 +326,13 @@ formula.melee.player {
   var %damage.defense.percent $calculate.defense($3, physical)
 
   set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
+
+  ; Check for buffs and modifiers
+  set %starting.damage %attack.damage
+
+  dec %attack.damage $round($buff.check($3, reduceDmg, %attack.damage),0)
   if (%attack.damage <= 0) { set %attack.damage 1 }
 
-  ; Check for modifiers
-  set %starting.damage %attack.damage
   $damage.color.check
   ; to be added
 }
@@ -346,8 +351,13 @@ formula.melee.monster {
   set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
   if (%attack.damage <= 0) { set %attack.damage 1 }
 
-  ; Check for modifiers
+  ; Check for buffs and modifiers
   set %starting.damage %attack.damage
+
+  dec %attack.damage $round($buff.check($3, reduceDmg, %attack.damage),0)
+
+  if (%attack.damage <= 0) { set %attack.damage 1 }
+
   $damage.color.check
   ; to be added
 
@@ -366,4 +376,11 @@ formula.ability {
 
   set %attack.damage $floor($calc(%attack.damage * %damage.defense.percent))
   if (%attack.damage <= 0) { set %attack.damage 1 }
+
+  ; Check for buffs and modifiers
+  set %starting.damage %attack.damage
+  dec %attack.damage $round($buff.check($3, reduceDmg, %attack.damage),0)
+
+  if (%attack.damage <= 0) { set %attack.damage 1 }
+
 }

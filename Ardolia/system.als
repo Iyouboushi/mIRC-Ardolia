@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1130,8 +1130,8 @@ items.list {
     var %item_amount $inventory.amount($1, %item.name) 
 
     if ((%item_amount != $null) && (%item_amount >= 1)) { 
-      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 3 $+ %item.name 3x $+ %item_amount, 46) }
-      else { %items.list2 = $addtok(%items.list2, 3 $+ %item.name 3x $+ %item_amount, 46) }
+      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 3 $+ %item.name 3x $+ %item_amount $+ , 46) }
+      else { %items.list2 = $addtok(%items.list2, 3 $+ %item.name 3x $+ %item_amount $+ , 46) }
     }
     unset %item.name | unset %item_amount
     inc %value 1 
@@ -1145,8 +1145,8 @@ items.list {
     var %item_amount $inventory.amount($1, %item.name) 
 
     if ((%item_amount != $null) && (%item_amount >= 1)) { 
-      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 6 $+ %item.name 3x $+ %item_amount, 46) }
-      else { %items.list2 = $addtok(%items.list2, 6 $+ %item.name 3x $+ %item_amount, 46) }
+      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 6 $+ %item.name 3x $+ %item_amount $+ , 46) }
+      else { %items.list2 = $addtok(%items.list2, 6 $+ %item.name 3x $+ %item_amount $+ , 46) }
     }
     unset %item.name | unset %item_amount
     inc %value 1 
@@ -1160,7 +1160,7 @@ items.list {
     var %item_amount $inventory.amount($1, %item.name) 
 
     if ((%item_amount != $null) && (%item_amount >= 1)) { 
-    %crystal.items.list = $addtok(%crystal.items.list, 12 $+ %item.name 3x $+ %item_amount, 46) }
+    %crystal.items.list = $addtok(%crystal.items.list, 12 $+ %item.name 3x $+ %item_amount $+ , 46) }
 
     unset %item.name | unset %item_amount
     inc %value 1 
@@ -1192,8 +1192,8 @@ food.list {
     var %item_amount $inventory.amount($1, %item.name) 
 
     if ((%item_amount != $null) && (%item_amount >= 1)) { 
-      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 10 $+ %item.name 3x $+ %item_amount, 46) }
-      else { %items.list2 = $addtok(%items.list2, 10 $+ %item.name 3x $+ %item_amount, 46) }
+      if ($numtok(%items.list,46) <= 20) { %items.list = $addtok(%items.list, 10 $+ %item.name 3x $+ %item_amount $+ , 46) }
+      else { %items.list2 = $addtok(%items.list2, 10 $+ %item.name 3x $+ %item_amount $+ , 46) }
     }
     unset %item.name | unset %item_amount
     inc %value 1 
@@ -1230,12 +1230,12 @@ spoils.list {
       inc %token.count.spoils 1
 
       if (%token.count.spoils <= 20) { 
-        %spoils.items.list = $addtok(%spoils.items.list, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list = $addtok(%spoils.items.list, 5 $+ %item.name 3x $+ %item_amount $+ ,46) 
         %spoils.items.list = $clean.list(%spoils.items.list)  
       }
 
       if ((%token.count.spoils > 20) && ( %token.count.spoils <= 40)) { 
-        %spoils.items.list2 = $addtok(%spoils.items.list2, 5 $+ %item.name 3x $+ %item_amount,46) 
+        %spoils.items.list2 = $addtok(%spoils.items.list2, 5 $+ %item.name 3x $+ %item_amount $+ ,46) 
         %spoils.items.list2 = $clean.list(%spoils.items2.list)  
       }
 

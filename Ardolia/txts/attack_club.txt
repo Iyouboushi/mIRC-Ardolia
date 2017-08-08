@@ -1,0 +1,4 @@
+swings at %enemy with the club before stepping backwards in a defensive stance
+tries to bash %enemy several times before rolling to the side before %enemy can react
+leaps into the air and brings the club down upon %enemy
+strikes at %enemy with $gender(%attacker) club

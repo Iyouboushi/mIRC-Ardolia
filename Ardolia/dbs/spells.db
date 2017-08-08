@@ -27,7 +27,7 @@ Description=casts a healing spell on $get_chr_name($3) $+ !  $get_chr_name($3) i
 Cooldown=2
 Cost=150
 Potency=$iif($current.job($1) = WHM, 400, 150)
-EnmityMultiplier=1.2
+EnmityMultiplier=1.32
 BuffLength=0
 Element=light
 Stat=mnd
@@ -43,7 +43,7 @@ Description=casts medica on the party. Everyone is bathed in a refreshing white 
 Cooldown=5
 Cost=1000
 Potency=300
-EnmityMultiplier=1.5
+EnmityMultiplier=1.15
 BuffLength=0
 Element=light
 Stat=mnd
@@ -84,7 +84,7 @@ Jobs=whm
 ATTACKING
 =============================================
 [Dia]
-Level=3
+Level=2
 Type=Attack
 AOE=false
 Info=This spell does light damage
@@ -159,6 +159,21 @@ Stat=mnd
 Jobs=whm
 StatusEffect=sleep
 
+[Stone]
+Level=1
+Type=Attack
+AOE=false
+Info=This spell does earth damage
+Description=casts stone upon $get_chr_name($3) $+ ! A series of small rocks fly up and slam into $gender2($3)
+Cooldown=2
+Cost=100
+Potency=140
+EnmityMultiplier=1
+BuffLength=0
+Element=earth
+Stat=int
+Jobs=blm
+
 =============================================
 BUFFING
 =============================================
@@ -169,14 +184,14 @@ AOE=true
 Info=Increases the physical defence of all party members by 15%.
 Description=chants for a moment and a bright blue diamond flashes over the party's bodies enhancing their defense.
 Cooldown=10
-Cost=500
+Cost=100
 Potency=100
 Enmity=0
 StatusEffect=Protect
 Stat=mnd
 CanUseOutsideBattle=true
 Jobs=whm
-EnmityMultiplier=1.2
+EnmityMultiplier=1
 
 [Shell]
 Level=8
@@ -192,7 +207,7 @@ StatusEffect=Shell
 Stat=mnd
 CanUseOutsideBattle=true
 Jobs=whm
-EnmityMultiplier=1.2
+EnmityMultiplier=1
 
 [Regen]
 Level=35

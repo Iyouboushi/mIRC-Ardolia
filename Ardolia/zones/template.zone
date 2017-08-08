@@ -57,14 +57,17 @@ AdventureClearMessage=
 ; Monsters.Needed= A direct # of monsters to spawn, or you can use $iif to adjust based on how many players are in the party
 ; CombatDesc= A message displayed when combat begins 
 ; CombatEndDesc= A message shown when the party wins the battle
+; CombatEndAction= If you want the bot to run an alias after winning the battle you can put the alias here.
+;                  For example: CombatEndAction=$adventure.keyitem(add, KeyItemName, 1)
 ;
 ; ExitList= A list of exits, for example: north.east.south.west.up.down.passage.stairs
 ; <ExitName>= where the exit goes, room number.  For example: North=03   or East=06
 ;
 ; Objects
 ; ObjectsList= A list of objects that players can interact with inside the room at the cost of an adventure action
+; NPCObjects= A list of NPC objects that players can interact with inside the room at the cost of an adventure action
 ; <ObjectName>.<Action>=  What happens when the party interacts with this? $iif statements and other commands go here.
-;                         Valid Actions: push, pull, open, close, read
+;                         Valid Actions: push, pull, open, close, read, talk
 ;  An example might be something like  
 ;   ObjectsList=Lever
 ;   Lever.Pull=$display.message(The party pulls the lever and a trap door opens beneath them, global) | $adventure.go(005)
@@ -95,7 +98,9 @@ ExitList=
 
 ; Objects/Chests
 ObjectList=
+NPCObjects=
 <ObjectName>.<Action>=
+
 
 ; Treasure Chest Info
 Chest=

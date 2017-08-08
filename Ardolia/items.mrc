@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; items.mrc
-;;;; Last updated: 05/09/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -19,7 +19,7 @@ on 2:TEXT:!count*:?: {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; The !use command for using items
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-on 3:TEXT:!use*:*: {  unset %real.name | unset %enemy | $set_chr_name($nick)
+ON 2:TEXT:!use*:*: {  unset %real.name | unset %enemy | $set_chr_name($nick)
   $no.turn.check($nick, return)
 
   if ($person_in_mech($nick) = true) { $display.message($translate(Can'tDoThatInMech, $nick), private) | halt }
@@ -44,7 +44,7 @@ ON 50:TEXT:*uses item * on *:*:{  $set_chr_name($1)
   $uses_item($1, $4, $5, %attack.target)
 }
 
-ON 3:TEXT:*uses item * on *:*:{  $set_chr_name($1)
+ON 2:TEXT:*uses item * on *:*:{  $set_chr_name($1)
   if ($1 = uses) { halt }
   if ($5 != on) { halt }
 

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/07/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -72,7 +72,18 @@ on 2:TEXT:!look*:#: {
     if ((%adventureis = on) && (%battleis = on)) { $battle.list }
     if (%adventureis = off) { $lookat($nick, channel) }
   }
-  else { $checkchar($2) | $lookat($2, channel) }
+  else { 
+
+    ; is $2 an object in the room?
+    var %isobject false
+
+    var %room.objects $readini($zonefile(adventure), %current.room, ObjectList)
+    var %npc.objects $readini($zonefile(adventure), %current.room, NPCObjects)
+    if (($istok(%room.objects,$2,46) = $true) || ($istok(%npc.objects,$2,46) = $true)) {  $adventure.object($nick, $2-, look) | halt }
+
+    if ((%adventureis != on) || (%isobject = false)) { $checkchar($2) | $lookat($2, channel) }
+
+  }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -99,6 +110,9 @@ on 2:TEXT:!pull *:#: { $adventure.object($nick, $2-, pull) }
 on 2:TEXT:!open *:#: { $adventure.object($nick, $2-, open) }
 on 2:TEXT:!close *:#: { $adventure.object($nick, $2-, close) }
 on 2:TEXT:!read *:#: { $adventure.object($nick, $2-, read) }
+on 2:TEXT:!talk to *:#: { $adventure.object($nick, $3-, talk) }
+on 2:TEXT:!talk *:#: { $adventure.object($nick, $2-, talk) }
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Chop down a tree

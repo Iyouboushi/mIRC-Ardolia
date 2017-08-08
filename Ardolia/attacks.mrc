@@ -1,19 +1,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; ATTACKS COMMAND
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Melee Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-ON 3:ACTION:attacks *:#:{ 
+ON 2:ACTION:attacks *:#:{ 
   $no.turn.check($nick)
   $set_chr_name($nick) 
   $partial.name.match($nick, $2)
   $covercheck(%attack.target)
   $attack_cmd($nick , %attack.target) 
 } 
-on 3:TEXT:!attack *:#:{ 
+ON 2:TEXT:!attack *:#:{ 
   $no.turn.check($nick)
   $set_chr_name($nick)
   $partial.name.match($nick, $2)

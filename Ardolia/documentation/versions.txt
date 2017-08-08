@@ -1,6 +1,28 @@
 Ardolia Bot Changelog
 =========================
 
+08-08-2017
+- Added the Blackrock Ridge Mine dungeon to the game. It's level 5 and has 49 total rooms.
+- Changed adventures so that each room does not necessarily have to have an EnterDesc
+- Changed the adventure spoils lines so that it can show more item rewards at the end of battle
+- Changed the damage formulas for abilities and melee attacks, again
+- Changed the rate that enmity decays when monsters attack
+- Fixed an issue where !warp would hang the bot
+- Fixed issues where certain commands were too high of a user level for players to actually use
+
+08-07-2017
+- Added new equipment
+- Changed the !shop list command so that armor and weapons need a type to search for.
+   Armor:Head, Body, Legs, Feet, Hands, Ears, Neck, Wrists, Ring, Shield
+   Weapons: HandToHand, Sword, Axe, Stave, Wand
+- Changed the level of Dia and Pray for WHMs
+- Changed adventures so that it is possible to end an adventure by entering the cleared final room even
+  if there is no battle in the room. 
+
+08-06-2017
+- Added the adventure action !talk
+- Added the ability for NPC objects to be added to adventures.
+
 08-03-2017
 - Added a new FATE: One Enchanted Eve  This FATE is recommended for level 3's or a party of level 2's
 - Added some more messages to !new char to help explain the starting money and gear a player gets

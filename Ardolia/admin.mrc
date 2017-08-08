@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; admin.mrc
-;;;; Last updated: 08/02/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 on 2:TEXT:!bot admin*:*: {  $bot.admin(list) }
@@ -140,7 +140,7 @@ on 50:TEXT:@toggle adventure idle timer*:*:{
 }
 
 ; Bot admins can set the MOTD, everyone else can just see it
-on 3:TEXT:@motd*:*:{   
+ON 50:TEXT:@motd*:*:{   
   $checkscript($2-) 
 
   if (($2 = $null) || ($2 = list)) { 

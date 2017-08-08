@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 08/01/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -133,8 +133,9 @@ alias battle.addmonster {
   $display.message(12 $+ $get_chr_name(%current.monster.to.spawn.name)  $+ $readini($char(%current.monster.to.spawn.name), Descriptions, Char),battle)
 
   var %bossquote $readini($char(%current.monster.to.spawn.name), descriptions, bossquote)
+
   if (%bossquote != $null) { 
-    var %bossquote 2 $+ %real.name looks at the heroes and says " $+ $readini($char(%current.monster.to.spawn), descriptions, BossQuote) $+ "
+    var %bossquote 2 $+ %real.name looks at the heroes and says " $+ %boss.quote $+ "
     $display.message(%bossquote, battle) 
   }
 
@@ -327,6 +328,8 @@ alias battle.end {
   writeini $zonefile(adventure) %current.room Clear true
   unset %battleis
 
+  if ($readini($zonefile(adventure), %current.room, CombatEndAction) != $null) { $readini($zonefile(adventure), p, %current.room, CombatEndAction) }
+
   ; Increase the # of battles we've won
   var %total.battles $readini(adventure.dat, BattleStats, BattlesWon)
   inc %total.battles 1
@@ -334,8 +337,12 @@ alias battle.end {
 
   ; Is this the final boss/combat room of the dungeon?  If so, we won! Let's end the adventure with victory
   if (($1 = victory) && (%current.room = $readini($zonefile(adventure), Info, ClearRoom))) { $adventure.end(victory)  }
+  else { 
+    $adventure.idleTimer(start)
 
-  $adventure.idleTimer(start)
+    ; Show the !look desc  
+    /.timerShowRoomDesc 1 2 /adventure.look
+  }
 
 }
 
@@ -398,9 +405,9 @@ alias next {
 ; Displays battle information
 ; to the channel
 ; ==========================
-on 3:TEXT:!batlist*:#:battle.list
-on 3:TEXT:!bat list*:#:battle.list
-on 3:TEXT:!bat info*:#:battle.list
+ON 2:TEXT:!batlist*:#:battle.list
+ON 2:TEXT:!bat list*:#:battle.list
+ON 2:TEXT:!bat info*:#:battle.list
 
 alias battle.list {
   if (%battleis = off) { $display.message($translate(NoBattleCurrently), private) | halt }
@@ -521,8 +528,11 @@ alias turn {
     var %current.statuseffect.name $ini($char($1), StatusEffects, %current.status.effect)
     var %current.statuseffect.turnsleft $readini($char($1), StatusEffects, %current.statuseffect.name)
     dec %current.statuseffect.turnsleft 1
-    writeini $char($1) StatusEffects %current.statuseffect.name %current.statuseffect.turnsleft
-    $perform.status.effect($1, %current.statuseffect.name)
+    if ((%current.statuseffect.name != $null) && (%current.statuseffect.turnsleft != $null)) { 
+      writeini $char($1) StatusEffects %current.statuseffect.name %current.statuseffect.turnsleft
+      $perform.status.effect($1, %current.statuseffect.name)
+    }
+
 
     if (%current.statuseffect.turnsleft <= 0) { remini $char($1) StatusEffects %current.statuseffect.name) }
     else { writeini $char($1) StatusEffects %current.statuseffect.name %current.statuseffect.turnsleft }

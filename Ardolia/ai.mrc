@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; AI COMMANDS
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -237,6 +237,7 @@ alias ai_spellcheck {
   ; Look through the spell list and see if this monster can use this right now.
   var %current.spell.counter 1
   while (%current.spell.counter <= %number.of.spells) {
+
     var %spell.name $ini($char($1), spells, %current.spell.counter)
     var %spell.value $readini($char($1), spells, %spell.name)
 
@@ -244,6 +245,7 @@ alias ai_spellcheck {
 
       ; Does the monster have enough MP to use this?
       var %spell.mp $readini($dbfile(spells.db), %spell.name, cost)
+
       if ($current.mp($1) >= %spell.mp)  {
 
         ; Is the monster high enough level for this?
@@ -336,8 +338,11 @@ alias ai_gettarget {
   if (%ai.target = $null) { $ai_gettarget.random($1) | return }
 
   ; We have a valid target. Let's decrease the amount of enmity that person has now.
-  var %reduced.enmity.amount $calc($enmity(%ai.target, return) / 2)
-  writeini $txtfile(battle2.txt) enmity %ai.target %reduced.enmity.amount
+  var %current.enmity $enmity(%ai.target, return)
+  var %enmity.decay $round($calc(%current.enmity * .30),0)
+  dec %current.enmity %enmity.decay
+
+  writeini $txtfile(battle2.txt) enmity %ai.target %current.enmity
 
 }
 

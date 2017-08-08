@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; shop.mrc
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/07/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the shop
 
@@ -14,7 +14,7 @@ alias shop.start {
   if ($2 = $null) { $gamehelp(Shop, $nick)  | halt  }
   if ($5 = 0) {  $display.private.message($translate(Can'tBuy0OfThat)) | halt }
 
-  if ((%adventureis = on) && ($adventure.alreadyinparty.check($nick) = true)) { $display.message($translate(Can'tUseShopinAdventure, $nick), private) | halt }
+  if ((%adventureis = on) && ($adventure.alreadyinparty.check($nick) = true)) { $display.private.message($translate(Can'tUseShopinAdventure, $nick)) | halt }
 
   var %categories items.item.armor.weapons.weapon
 
@@ -41,16 +41,19 @@ alias shop.start {
 
   if ($2 = list) { 
     if ($3 = $null) { $gamehelp(Shop, $1)  | halt  }
+    if (($3 = armor) && ($4 = $null)) { $gamehelp(Shop, $1)  | halt  }
+    if (($3 = weapons) && ($4 = $null)) { $gamehelp(Shop, $1)  | halt  }
+    if (($3 = weapon) && ($4 = $null)) { $gamehelp(Shop, $1)  | halt  }
     if ($istok(%categories, $3, 46) = $false) { $gamehelp(Shop, $1)  | halt  }
 
-    $shop.list($1, $3)
+    $shop.list($1, $3, $4)
   }
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Shop List Command
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; !shop list [item/weapon/armor]
+; !shop list [item/weapon/armor] [type for armor and weapons]
 alias shop.list {
   unset %shop.items*
   unset %token.count.shop
@@ -59,8 +62,8 @@ alias shop.list {
 
   if (($2 = item) || ($2 = items)) {  var %category.db items.db } 
   if ($2 = food) { var %category.db items.db }
-  if (($2 = weapons) || ($2 = weapon)) {  var %category.db weapons.db } 
-  if ($2 = armor) { var %category.db equipment.db }
+  if (($2 = weapons) || ($2 = weapon)) {  var %type.location Type | var %category.db weapons.db } 
+  if ($2 = armor) { var %type.location EquipLocation | var %category.db equipment.db }
 
   ; Cycle through the fame lists
   while (%shop.fame.level <= %fame.level) {
@@ -87,21 +90,30 @@ alias shop.list {
         var %shop.item.job $readini($dbfile(%category.db), %line.item.name, jobs)
         if ((%shop.item.job = $null) || (%shop.item.job = all)) { var %shop.item.job $current.job($1) } 
 
-        echo -a shop item level for %line.item.name :: %shop.item.level
-
-
         if ($istok(%shop.item.job, $current.job($1), 46) = $false) { var %item.color 4 }
         if ($get.level($1) < %shop.item.level) { var %item.color 4 }
 
-        inc %token.count.shop 1
+
         var %item.to.add %item.color $+ %line.item.name $+ 2 $+ $chr(40) $+ %line.item.cost $+ $chr(41)
 
-        if (%token.count.shop <= 20) { %shop.items.list = $addtok(%shop.items.list, %item.to.add,46) }
-        if ((%token.count.shop > 20) && ( %token.count.shop <= 40)) { %shop.items.list2 = $addtok(%shop.items.list2, %item.to.add,46) }
-        if ((%token.count.shop > 40) && ( %token.count.shop <= 60)) {  %shop.items.list3 = $addtok(%shop.items.list3, %item.to.add,46) }
-        if ((%token.count.shop > 60) && ( %token.count.shop <= 80)) { %shop.items.list4 = $addtok(%shop.items.list4, %item.to.add,46)  }
-        if (%token.count.shop > 80) { %shop.items.list5 = $addtok(%shop.items.list5, %item.to.add,46) }
+        ; Is this a type that we're looking for?
+        if ($3 != $null) { 
+          if ($readini($dbfile(%category.db), %line.item.name, %type.location) = $3) { var %add.to.list true }
+          else { var %add.to.list false }
+        }
+        if ($3 = $null) { var %add.to.list true }
+
+        if (%add.to.list = true) { 
+          inc %token.count.shop 1
+          if (%token.count.shop <= 18) { %shop.items.list = $addtok(%shop.items.list, %item.to.add,46) }
+          if ((%token.count.shop > 18) && ( %token.count.shop <= 38)) { %shop.items.list2 = $addtok(%shop.items.list2, %item.to.add,46) }
+          if ((%token.count.shop > 38) && ( %token.count.shop <= 58)) {  %shop.items.list3 = $addtok(%shop.items.list3, %item.to.add,46) }
+          if ((%token.count.shop > 58) && ( %token.count.shop <= 78)) { %shop.items.list4 = $addtok(%shop.items.list4, %item.to.add,46)  }
+          if ((%token.count.shop > 78) && ( %token.count.shop <= 98)) { %shop.items.list5 = $addtok(%shop.items.list5, %item.to.add,46)  }
+          if (%token.count.shop > 98) { %shop.items.list6 = $addtok(%shop.items.list6, %item.to.add,46) }
+        }
       }
+
 
       inc %shop.line
     }
@@ -110,15 +122,18 @@ alias shop.list {
   }
 
   ; Display the items for the category
-  $display.private.message(3 $+ $2 available for purchase)
+  if (%shop.items.list != $null) { 
+    $display.private.message(3 $+ $2 available for purchase)
 
-  %shop.items.list = $clean.list(%shop.items.list)
-  $display.private.message(2 $+ %shop.items.list)
-  if (%shop.items.list2 != $null) { %shop.items.list2 = $clean.list(%shop.items.list2)  | $display.private.message(2 $+ %shop.items.list2) }
-  if (%shop.items.list3 != $null) {  %shop.items.list3 = $clean.list(%shop.items.list3) | $display.private.message(2 $+ %shop.items.list3) }
-  if (%shop.items.list4 != $null) { %shop.items.list4 = $clean.list(%shop.items.list4) | $display.private.message(2 $+ %shop.items.list4) }
-  if (%shop.items.list5 != $null) { %shop.items.list5 = $clean.list(%shop.items.list5)   | $display.private.message(2 $+ %shop.items.list5) } 
-
+    %shop.items.list = $clean.list(%shop.items.list)
+    $display.private.message(2 $+ %shop.items.list)
+    if (%shop.items.list2 != $null) { %shop.items.list2 = $clean.list(%shop.items.list2)  | $display.private.message(2 $+ %shop.items.list2) }
+    if (%shop.items.list3 != $null) {  %shop.items.list3 = $clean.list(%shop.items.list3) | $display.private.message(2 $+ %shop.items.list3) }
+    if (%shop.items.list4 != $null) { %shop.items.list4 = $clean.list(%shop.items.list4) | $display.private.message(2 $+ %shop.items.list4) }
+    if (%shop.items.list5 != $null) { %shop.items.list5 = $clean.list(%shop.items.list5)   | $display.private.message(2 $+ %shop.items.list5) } 
+    if (%shop.items.list6 != $null) { %shop.items.list6 = $clean.list(%shop.items.list6)   | $display.private.message(2 $+ %shop.items.list6) } 
+  }
+  else { $display.private.message(4Nothing for sale under that category for now.  Try again later.) } 
   unset %shop.items*
 }
 
@@ -130,7 +145,7 @@ alias shop.buy {
 
   if (($2 = item) || ($2 = items)) {  var %category.db items.db } 
   if ($2 = food) { var %category.db items.db }
-  if (($2 = weapons) || ($2 = weapon)) {  var %category.db weapons.db } 
+  if (($2 = weapons) || ($2 = weapon)) { var %category.db weapons.db } 
   if ($2 = armor) { var %category.db equipment.db }
 
   ; Can this item even be bought in the store?

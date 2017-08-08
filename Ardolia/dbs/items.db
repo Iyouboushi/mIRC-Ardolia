@@ -162,9 +162,25 @@ SellPrice=5
 Exclusive=yes
 Level=1
 
+[BatWing]
+Type=crafting
+ItemDesc=The wing from a sheep
+Cost=0
+SellPrice=5
+Exclusive=yes
+Level=1
+
 [ArdolianCarrot]
 Type=crafting
 ItemDesc=A bright orange carrot. Often used to make carrot juice.
+Cost=0
+SellPrice=2
+Exclusive=yes
+Level=1
+
+[DriedMeat]
+Type=crafting
+ItemDesc=A chunk of dried meat
 Cost=0
 SellPrice=2
 Exclusive=yes

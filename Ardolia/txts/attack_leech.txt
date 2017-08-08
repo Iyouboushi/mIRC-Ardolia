@@ -1,0 +1,1 @@
+bounces up and attempts to bite %enemy

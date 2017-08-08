@@ -1,24 +1,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 06/21/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Ability Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-ON 3:ACTION:uses * * on *:#:{ 
+ON 2:ACTION:uses * * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $5)
   $ability_cmd($nick , $3 , %attack.target, $7) | halt 
 } 
 
-ON 3:TEXT:!ability * on *:#:{ 
+ON 2:TEXT:!ability * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $ability_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
 
-ON 3:TEXT:!tech * on *:#:{ 
+ON 2:TEXT:!tech * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $ability_cmd($nick , $2 , %attack.target, $5) | halt 
@@ -88,6 +88,9 @@ alias ability_cmd {
     }
 
     if ($flag($1) != monster) { 
+      ; does this ability exist?
+      if ($readini($dbfile(abilities.db), $2, job) = $null) { $display.message($translate(NoSuchAbility, $1, $2) , private) | halt }
+
       ; Can this job use this ability?
       var %jobs.list $readini($dbfile(abilities.db), $2, job)
       if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseAbility, $1, $2) , private) | halt }
@@ -138,9 +141,6 @@ alias ability_cmd {
   ; Write to the file that we just used this ability
   writeini $char($1) cooldowns $2 %true.turn
 
-  ; Write that we used this as the last action
-  writeini $txtfile(battle2.txt) Actions $1 $2 
-
   ; Display the action message
   $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(abilities.db), $2, Description), global)
 
@@ -155,6 +155,9 @@ alias ability_cmd {
     writeini $char($1) Battle Status dead 
     $add.monster.xp($1, $1)
   }
+
+  ; Write that we used this as the last action
+  writeini $txtfile(battle2.txt) Actions $1 $2 
 
   ; Check for a postcript
   if ($readini($dbfile(abilities.db), n, $2, PostScript) != $null) { $readini($dbfile(abilities.db), p, $2, PostScript) }

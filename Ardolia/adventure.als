@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,7 +84,7 @@ adventure.start {
 
   ; Can the party leader lead another party so soon?
   ; If more than 1 person is logged into the game there is a 5 minute wait for players to lead their own parties
-  ; Note that they can still join other playeres' parties while waiting.
+  ; Note that they can still join other player's parties while waiting.
   var %voices $nick(%battlechan,0,v)
 
   if (%voices > 1) { 
@@ -268,7 +268,6 @@ adventure.end {
     var %total.adventures $readini(adventure.dat, AdventureStats, TotalAdventuresFailed)
     inc %total.adventures 1
     writeini adventure.dat AdventureStats TotalAdventuresFailed %total.adventures
-
   }
 
   ; Kill any related timers..
@@ -302,6 +301,7 @@ adventure.end {
 clear_timers {
   /.timerAdventureBegin off
   $adventure.idleTimer(stop)
+  return
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -377,7 +377,7 @@ adventure.clearfiles {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.rewards {
   unset %winners.xp
-  unset %winners.spoils
+  unset %winners.spoils | unset %winners.spoils2
 
   ; Cycle through the party
   var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
@@ -472,20 +472,32 @@ adventure.rewards {
     while (%current.spoil.number <= %spoils.to.reward) {
       var %spoil.name $read($txtfile(battlespoils.txt), %current.spoil.number)
       var %random.partymember $gettok(%adventure.party, $rand(1, $numtok(%adventure.party,46)), 46)
-      var %spoil.reward %spoil.name ->  $+ %random.partymember $+ 
-      if ($istok(%winners.spoils, %spoil.reward, 46) = $true) { %winners.spoils = %winners.spoils $+ . %spoil.reward }
-      else { %winners.spoils = $addtok(%winners.spoils, %spoil.reward, 46) } 
+      var %spoil.reward 12 $+ %spoil.name 3->  $+ %random.partymember $+ 
+
+
+      if (%current.spoil.number >= 10) {
+        if ($istok(%winners.spoils2, %spoil.reward, 46) = $true) { %winners.spoils2 = %winners.spoils $+ . %spoil.reward }
+        else { %winners.spoils2 = $addtok(%winners.spoils2, %spoil.reward, 46) } 
+      }
+      else {       
+        if ($istok(%winners.spoils, %spoil.reward, 46) = $true) { %winners.spoils = %winners.spoils $+ . %spoil.reward }
+        else { %winners.spoils = $addtok(%winners.spoils, %spoil.reward, 46) } 
+      }
+
+
 
       $inventory.add(%random.partymember, %spoil.name, $calc($inventory.amount(%random.partymember, %spoil.name) + 1))
 
       inc %current.spoil.number
     }
     %winners.spoils = $clean.list(%winners.spoils)
+    if (%winners.spoils2 != $null) { %winners.spoils2 = $clean.list(%winners.spoils2) }
   }
 
   ; Show the rewards.
   if (%winners.xp != $null) { %winners.xp = $clean.list(%winners.xp) | $display.message($translate(ShowXPRewards), global) }
   if (%winners.spoils != $null) {  $display.message($translate(ShowSpoilRewards), global) }
+  if (%winners.spoils2 != $null) {  $display.message(3 $+ %winners.spoils2, global) }
 
   if ($1 = victory) { 
     if (%winners.clearrewards != $null) { 
@@ -496,6 +508,7 @@ adventure.rewards {
   ; Unset variables
   unset %winners.xp
   unset %winners.spoils
+  unset %winners.spoils2
   unset %winners.clearrewards
 
 }
@@ -550,6 +563,8 @@ adventure.look {
 
   if ($readini($zonefile(adventure), %current.room, objectlist) != $null) { var %object.list $readini($zonefile(adventure), %current.room, ObjectList) }
   if ($readini($zonefile(adventure), %current.room, chest) != $null) { %object.list = $addtok(%object.list, chest, 46) }
+  if ($readini($zonefile(adventure), %current.room, NPCObjects) != $null) { var %npc.list $readini($zonefile(adventure), %current.room, NPCObjects) }
+
 
   ; [Name of Room]
   $display.message(12[ $+ $readini($zonefile(adventure), %current.room, name) $+  ] , global)
@@ -559,6 +574,9 @@ adventure.look {
 
   ; Objects
   if (%object.list != $null) { var %object.list $clean.list(%object.list) | $display.message(10Objects:12 %object.list) }
+
+  ; NPCs
+  if (%npc.list != $null) { var %%npc.list $clean.list(%npc.list) | $display.message(10NPCs Here:12 %npc.list) }
 
   ; Check for trees
   var %room.tree.count $readini($zonefile(adventure), %current.room, trees)
@@ -610,7 +628,7 @@ adventure.tree.count {
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 adventure.miningpoints.count { 
   var %miningpoints.in.room $readini($zonefile(adventure), %current.room, MiningPoints)
-  if (%miningpoings.in.room = $null) { return 0 }
+  if (%miningpoints.in.room = $null) { return 0 }
   else { return %miningpoints.in.room } 
 }
 
@@ -651,10 +669,17 @@ adventure.go {
   set %current.room $1
 
   ; Show the entering room desc 
-  $display.message(7*2 $readini($zonefile(adventure), %current.room, EnterDesc), global)
+  if ($readini($zonefile(adventure), %current.room, EnterDesc) != $null) { 
+    $display.message(7*2 $readini($zonefile(adventure), %current.room, EnterDesc), global)
+  }
 
   ; If the room is clear, show the !look desc automatically. 
-  if ($readini($zonefile(adventure), %current.room, clear) = true) { $adventure.look | halt }
+  if ($readini($zonefile(adventure), %current.room, clear) = true) { 
+
+    ; Is this the end of the adventure?
+    if (%current.room = $readini($zonefile(adventure), Info, ClearRoom)) { $adventure.end(victory)  | halt }
+    else { $adventure.look | halt }
+  }
 
   ; If the room is not clear, check for combat.  If the combat is true, start a battle and show the battle begin message.
   if ($readini($zonefile(adventure), %current.room, combat) = true) { 
@@ -740,8 +765,6 @@ adventure.warp {
 
   ; Display a message showing that the dungeon is ending and then end the adventure.
   $display.message($translate(AdventureWarpOut), global)
-
-  set %adventureis off
 
   /.timerWarpOut 1 2 /adventure.end defeat
 }
@@ -849,7 +872,7 @@ adventure.mine {
   if (%ore.list = $null) { var %ore.list IronOre) }
   var %ore.reward $gettok(%ore.list, $rand(1, $numtok(%ore.list, 46)), 46)
   write $txtfile(battlespoils.txt) %ore.reward
-  $display.message($translate(ItemAddedToItemPool, %log.reward), global)  
+  $display.message($translate(ItemAddedToItemPool, %ore.reward), global)  
 
   ; Does the pickaxe break?
   var %pickaxe.breakchance $readini($dbfile(items.db), pickaxe, BreakChance)
@@ -898,7 +921,8 @@ adventure.object {
   if ($2 = chest) { $adventure.chest($1, $2, $3) }
   else { 
     var %room.objects $readini($zonefile(adventure), %current.room, ObjectList)
-    if ($istok(%room.objects,$2,46) = $false) {  $display.message($translate(DoNotSeeThatObject, $1), global) | halt }
+    var %npc.objects $readini($zonefile(adventure), %current.room, NPCObjects)
+    if (($istok(%room.objects,$2,46) = $false) && ($istok(%npc.objects,$2,46) = $false)) {  $display.message($translate(DoNotSeeThatObject, $1), global) | halt }
   }
 
   ; Can that command be used with the object?
@@ -906,8 +930,10 @@ adventure.object {
 
   if ($readini($zonefile(adventure), n, %current.room, %object.command) = $null) { $display.message($translate(ThisActionHasNoEffect), global) | halt }
 
-  ; remove 1 adventure action
-  $adventure.actions.decrease(1)
+  if ($3 != look) { 
+    ; remove 1 adventure action
+    $adventure.actions.decrease(1)
+  }
 
   ; If adventure actions = 0, boot us out.
   $adventure.actions.checkforzero
@@ -1077,7 +1103,6 @@ adventure.party.addmember {
   inc %current.role.count 1
   writeini $txtfile(adventure.txt) BattleInfo %job.role %current.role.count
 
-
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1134,4 +1159,27 @@ adventure.removepartyleader {
     $adventure.actions.checkforzero
   }
 
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Manipulates "key items" inside of adventures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adventure.keyitem { 
+  ; $1 = add, remove, check
+  ; $2 = the key item
+  ; $3 = the amount (for add and remove)
+
+  var %keyitem $readini($zonefile(adventure), KeyItems, $2)
+  if (%keyitem = $null) { var %keyitem 0 }
+
+  if ($1 = check) { return %keyitem }
+  if ($1 = add) { 
+    inc %keyitem $3
+    writeini $zonefile(adventure) KeyItems $2 %keyitem
+  }
+  if ($1 = remove) { 
+    dec %keyitem $3
+    if (%keyitem < 0) { var %keyitem 0 }
+    writeini $zonefile(adventure) KeyItems $2 %keyitem
+  }
 }

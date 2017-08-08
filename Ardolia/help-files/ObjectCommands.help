@@ -1,5 +1,5 @@
 12::[Object Commands]::
-2As a party progresses through adventures they are likely to encounter objects in rooms. There are multiple commands that can be used to interact with these objects though not every object will work with every action.  It is important to note that only the party leader can use these commands and successful interactions will consume 1 stamina. 
+2As a party progresses through adventures they are likely to encounter objects in rooms. There are multiple commands that can be used to interact with these objects though not every object will work with every action.  It is important to note that only the party leader can use these commands and successful interactions will consume 1 stamina (except for !look). 
 
 12::[What Are the Object Commands?]::
 2!pull <object>  - Will attempt to pull an object, such as a lever
@@ -7,5 +7,7 @@
 2!open <object>  - Will attempt to open an object, such as a door or treasure chests
 2!close <object> - Will attempt to close an object, such as a gate or a valve
 2!read <object>  - Will attempt to read an object, such as a note or a sign
+2!look <object>  - Will attempt to look at an object or npc
+2!talk to <npc>  - Will attempt to talk to an npc that is in the room
 2!chop tree      - Will attempt to chop down a tree if one is in the room. This action requires a hatchet to perform.
 2!mine           - Will attempt to mine ore if the room has a mining point. This action requires a pickaxe to perform.

@@ -152,9 +152,9 @@ enmity {
 ; person's turn or not.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 check_for_battle { 
-  if (%wait.your.turn = on) { $display.message($translate(WaitYourTurn, %who), private) | halt }
+  if (%wait.your.turn = on) { $display.message($translate(WaitYourTurn, $1), private) | halt }
   if ((%battleis = on) && (%who = $1)) { return }
-  if ((%battleis = on) && (%who != $1)) { $display.message($translate(WaitYourTurn, %who), private) | halt }
+  if ((%battleis = on) && (%who != $1)) { $display.message($translate(WaitYourTurn, $1), private) | halt }
   else { return  }
 }
 
@@ -389,7 +389,23 @@ heal_damage {
   ; $3 = action that was done (tech name, item, etc)
 
   ; Increase enmity
-  if ($flag($1) != monster) { $enmity($1, add, $calc(%attack.damage * 2)) }
+  if ($flag($1) != monster) { 
+
+    var %enmity.amount %attack.damage
+    var %enmity.multiplier 1.2
+
+    ; If the user has any enmity lowering abilities, calculate that here
+    dec %enmity.multiplier $buff.check($1, DecreaseEnmity, %enmity.multiplier)
+
+    ; If the user has any enmity lowering abilities, calculate that here
+    inc %enmity.multiplier $buff.check($1, IncreaseEnmity, %enmity.multiplier)
+
+    ; Calculate total enemity gained
+    var %enmity.gained $calc(%enmity.multiplier * %enmity.amount)
+
+    $enmity($1, add, %enmity.gained) 
+
+  }
 
   ; Increase the total amount that the player has healed
   $miscstats($1, add, DamageHealed, %attack.damage)

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -264,7 +264,7 @@ on 2:TEXT:!job:*: {  $display.message($translate(ViewMyCurrentJob),private) }
 ; Set your gender
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; !setgender male/female/neither/none
-on 3:TEXT:!setgender*:*: { $checkscript($2-)
+ON 2:TEXT:!setgender*:*: { $checkscript($2-)
   if ($2 = neither) { writeini $char($nick) Info Gender its | writeini $char($nick) Info Gender2 its | $display.private.message($translate(SetGenderNeither)) | unset %check | halt }
   if ($2 = none) { writeini $char($nick) Info Gender its | writeini $char($nick) Info Gender2 its | $display.private.message($translate(SetGenderNeither))  | unset %check | halt }
   if ($2 = male) { writeini $char($nick) Info Gender his | writeini $char($nick) Info Gender2 him | $display.private.message($translate(SetGenderMale))  | unset %check | halt }

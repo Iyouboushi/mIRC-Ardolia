@@ -39,7 +39,7 @@ Cooldown=2
 Cost=100
 Stat=str
 Potency=150
-EnmityMultiplier=1.2
+EnmityMultiplier=2.1
 Job=WAR
 
 [Foresight]
@@ -52,7 +52,7 @@ Cooldown=5
 Cost=200
 Stat=str
 Potency=150
-EnmityMultiplier=1.2
+EnmityMultiplier=2.1
 Job=WAR
 StatusEffect=Foresight
 Instant=true
@@ -67,7 +67,7 @@ Cooldown=2
 Cost=200
 Stat=str
 Potency=$iif($return.lastaction($1) = HeavySwing, 200, 100)
-EnmityMultiplier=1.5
+EnmityMultiplier=2.5
 Job=WAR
 
 [Fracture]
@@ -80,7 +80,7 @@ Cooldown=3
 Cost=100
 Stat=str
 Potency=100
-EnmityMultiplier=1.2
+EnmityMultiplier=2.2
 Job=WAR
 StatusEffect=fracture
 
@@ -108,7 +108,7 @@ Cooldown=5
 Cost=120
 Stat=str
 Potency=120
-EnmityMultiplier=1.3
+EnmityMultiplier=1.5
 Job=WAR
 
 [Berserk]
@@ -147,7 +147,7 @@ Cooldown=2
 Cost=200
 Stat=str
 Potency=$iif($return.lastaction($1) = Skullsunder, 280, 100)
-EnmityMultiplier=1.5
+EnmityMultiplier=2
 Job=WAR
 
 [ThrillOfBattle]
@@ -263,7 +263,7 @@ EnmityMultiplier=4
 Job=WHM
 
 [Pray]
-Level=5
+Level=4
 Type=Heal
 AOE=true
 Info=Pray to the gods for healing! The gods may or may not listen to your prayers. There is a 50% chance that this ability will only restore 1-2 HP to your allies.
@@ -489,3 +489,111 @@ Potency=50
 EnmityMultiplier=1.2
 Job=all
 StatusEffect=Blind
+
+[PoisonBite]
+level=5
+Type=Attack
+AOE=false
+Info=The poisoned bite of a wererat
+Description=leaps at $get_chr_name($3) and bites down hard!
+Cooldown=2
+Cost=200
+Stat=str
+Potency=150
+EnmityMultiplier=1.2
+Job=All
+SatusEffect=Poison
+
+[BoulderLeap]
+level=1
+Type=Attack
+AOE=true
+Info=
+Description=causes the giant boulder to leap up into the air and come flying down upon its enemies!
+Cooldown=5
+Cost=500
+Stat=str
+Potency=250
+EnmityMultiplier=1.2
+Job=all
+
+[BoulderToss]
+level=1
+Type=Attack
+AOE=true
+Info=
+Description=picks up a loose boulder and tosses it into its enemies!
+Cooldown=5
+Cost=500
+Stat=str
+Potency=250
+EnmityMultiplier=1.2
+Job=all
+
+[PowerSlam]
+level=1
+Type=Attack
+AOE=false
+Info=
+Description=spins its weapon wildly and swings with full force at $get_chr_name($3) 
+Cooldown=5
+Cost=500
+Stat=str
+Potency=300
+EnmityMultiplier=1.5
+Job=all
+
+[LeechRegen]
+Level=5
+Type=Buff
+AOE=false
+Info=This causes the leech to regen HP
+Description=uses stolen blood from victims to heal damage it has taken.
+Cooldown=10
+Cost=300
+Potency=100
+EnmityMultiplier=5
+Element=light
+Stat=mnd
+Job=all
+StatusEffect=regen
+
+[LeechKiss]
+level=1
+Type=Attack
+AOE=false
+Info=
+Description=leaps up and attempts to suck blood from $get_chr_name($3)
+Cooldown=2
+Cost=100
+Stat=str
+Potency=110
+EnmityMultiplier=1.5
+Job=all
+
+[JetStream]
+level=1
+Type=Attack
+AOE=false
+Info=
+Description=enters a stream of air and flies at a fast speed down to attack $get_chr_name($3)
+Cooldown=2
+Cost=100
+Stat=str
+Potency=110
+EnmityMultiplier=1.5
+Job=all
+Element=wind
+
+[Shatter]
+level=1
+Type=Attack
+AOE=true
+Info=
+Description=sends out an electrical shockwave from its ore-body that hits everyone on the battlefield.
+Cooldown=5
+Cost=500
+Stat=str
+Potency=80
+EnmityMultiplier=1.2
+Job=all

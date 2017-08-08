@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 08/03/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -108,7 +108,6 @@ current.defense {
 
   ; Check for buffs that increase defense
   inc %defense $buff.check($1, defense, %defense)
-
   return %defense
 }
 
@@ -175,8 +174,8 @@ resting.hp {
   else { return $readini($char($1), BaseStats, HP) }
 }
 resting.mp { 
-  if ($flag = $null) { return $round($calc($resting.pie($1) * $job.mp($1)),0) }
-  else { return $readini($char($1), BaseStats, HP) }
+  if ($flag($1) = $null) { return $round($calc($resting.pie($1) * $job.mp($1)),0) }
+  else { return $readini($char($1), BaseStats, MP) }
 }
 
 resting.str { 
@@ -313,8 +312,8 @@ xp.to.level {
 
   if ($get.level($1) >= %level.cap) { return 0 }
   else {
-    if ($get.level($1) <= 5) { return $calc(100 * ($get.level($1) - 1) + (100 * $get.level($1))) }
-    if (($get.level($1) > 5) && ($get.level($1) < 20)) { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
+    if ($get.level($1) < 5) { return $calc(100 * ($get.level($1) - 1) + (100 * $get.level($1))) }
+    if (($get.level($1) >= 5) && ($get.level($1) < 20)) { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
     if (($get.level($1) >= 20) && ($get.level($1) < 50)) { return $calc(1000 * ($get.level($1) - 1) + (1000 * $get.level($1))) }
     if (($get.level($1) >= 50) && ($get.level($1) <= 60)) { return $calc(2000 * ($get.level($1) - 1) + (2000 * $get.level($1))) }
     if ($get.level($1) > 60) { return $calc(5000 * ($get.level($1) - 1) + (5000 * $get.level($1))) }
@@ -448,6 +447,8 @@ inventory.add {
   ; $1 = the person
   ; $2 = the item name
   ; $3 = the amount we're adding
+
+  if ($2 = $null) { return }
 
   var %inventory.amount $inventory.amount($1, $2)
   inc %inventory.amount $3
@@ -1245,12 +1246,14 @@ buff.check {
 
   if ($2 = defense) { 
     if ($status.check($1, protect) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
-    if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
-    if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 20)) }
   }
 
   if ($2 = mdefense) { 
     if ($status.check($1, shell) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 15)) }
+  }
+
+  if ($2 = reduceDmg) {
+    if ($status.check($1, foresight) != $null) { inc %buff.increase $floor($return_percentofvalue($3, 25)) } 
   }
 
   if ($2 = speed) {

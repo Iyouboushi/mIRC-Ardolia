@@ -1,22 +1,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 05/29/17
+;;;; Last updated: 08/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Spell Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-ON 3:ACTION:casts * on *:#:{ 
+ON 2:ACTION:casts * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $spell_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
-ON 3:TEXT:!cast * on *:#:{ 
+ON 2:TEXT:!cast * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $spell_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
-ON 3:TEXT:!magic * on *:#:{ 
+ON 2:TEXT:!magic * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $spell_cmd($nick , $2 , %attack.target, $5) | halt 
@@ -73,7 +73,10 @@ alias spell_cmd {
     if ($readini($char($3), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $3),private) | unset %real.name | halt } 
 
     if ($flag($1) != monster) { 
-      ; Can this job use this ability?
+      ; does this spell exist?
+      if ($readini($dbfile(spells.db), $2, jobs) = $null) { $display.message($translate(NoSuchSpell, $1, $2) , private) | halt }
+
+      ; Can this job use this spell?
       var %jobs.list $readini($dbfile(spells.db), $2, jobs)
       if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToUseSpell, $1, $2) , private) | halt }
     }
@@ -126,9 +129,6 @@ alias spell_cmd {
   ; Write to the file that we just used this spell
   writeini $char($1) cooldowns $2 %true.turn
 
-  ; Write that we used this as the last action
-  writeini $txtfile(battle2.txt) Actions $1 $2 
-
   ; Show the casting description
   $display.message(3 $+ $get_chr_name($1)  $+ $readini($dbfile(spells.db), $2, Description), global)
 
@@ -136,6 +136,9 @@ alias spell_cmd {
   if (%spell.type = attack) { $spell.attack($1, $2, $3) } 
   if (%spell.type = buff) { $spell.buff($1, $2, $3) }
   if (%spell.type = heal) { $spell.heal($1, $2, $3) }
+
+  ; Write that we used this as the last action
+  writeini $txtfile(battle2.txt) Actions $1 $2 
 
   ; Check for a postcript
   if ($readini($dbfile(spells.db), n, $2, PostScript) != $null) { $readini($dbfile(spells.db), p, $2, PostScript) }

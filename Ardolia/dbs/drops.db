@@ -3,12 +3,22 @@
 
 [drops]
 
-; Bosses
+================
+BOSSES
+================
 
 
-; Monsters
+================
+MONSTERS
+================
+; FATE monsters
 Blue_Slime=Herb
 Diseased_Sheep=SheepSkin
 Enchanted_Funguar=Danceshroom
 Hungry_Rabbit=ArdolianCarrot
 
+; Blackrock Ridge Mine Dungeon
+Blackrock_Coblyn=EarthCrystal.BronzeOre
+Blackrock_Wererat=EarthCrystal.DriedMeat
+Blackrock_Bat=WindCrystal.BatWing
+Blackrock_Spriggin=EarthCrystal
