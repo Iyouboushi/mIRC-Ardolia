@@ -1,6 +1,7 @@
 Ardolia Bot Changelog
 =========================
 
+<<<<<<< HEAD
 08-08-2017
 - Added the Blackrock Ridge Mine dungeon to the game. It's level 5 and has 49 total rooms.
 - Changed adventures so that each room does not necessarily have to have an EnterDesc
@@ -10,6 +11,8 @@ Ardolia Bot Changelog
 - Fixed an issue where !warp would hang the bot
 - Fixed issues where certain commands were too high of a user level for players to actually use
 
+=======
+>>>>>>> origin/master
 08-07-2017
 - Added new equipment
 - Changed the !shop list command so that armor and weapons need a type to search for.
