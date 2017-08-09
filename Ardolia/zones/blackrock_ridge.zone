@@ -6,7 +6,6 @@ LevelRange=5-6
 MinimumPlayers=1
 MaximumPlayers=4
 PreReq=
-iLevel=2
 AdventureActions=120
 ClearRoom=49
 ClearReward.List=reward_blackrockridge.lst

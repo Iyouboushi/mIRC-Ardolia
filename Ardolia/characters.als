@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 08/08/17
+;;;; Last updated: 08/09/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -868,7 +868,8 @@ wear.armor {
 
   ; Can the job wear the armor?
   var %jobs.list $readini($dbfile(equipment.db), $2, jobs)
-  if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToWear) , private) | halt }
+
+  if (($istok(%jobs.list, $current.job($1), 46) = $false) && (%jobs.list != all))  { $display.message($translate(WrongJobToWear, $1) , private) | halt }
 
   ; Are we high enough level?
   var %armor.level.requirement $readini($dbfile(equipment.db), $2, level)

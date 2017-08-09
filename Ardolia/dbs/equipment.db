@@ -163,7 +163,7 @@ Rarity=1
 cost=50
 SellPrice=5
 FameLevel=1
-Jobs=$return.systemsetting(JobDPS)
+Jobs=$return.systemsetting(JobsDPS)
 CraftingPointValue=10
 
 [LeatherCap]
@@ -183,7 +183,7 @@ Rarity=1
 cost=50
 SellPrice=5
 FameLevel=1
-Jobs=$return.systemsetting(JobTanks)
+Jobs=$return.systemsetting(JobsTanks)
 CraftingPointValue=10
 
 [BronzeChainCoif]
@@ -202,7 +202,7 @@ PlayerLevel=8
 Rarity=1
 cost=0
 SellPrice=5
-Jobs=$return.systemsetting(JobTanks)
+Jobs=$return.systemsetting(JobsTanks)
 CraftingPointValue=10
 
 [PotHelm]
@@ -221,7 +221,7 @@ PlayerLevel=8
 Rarity=1
 cost=0
 SellPrice=5
-Jobs=$return.systemsetting(JobDPS)
+Jobs=$return.systemsetting(JobsDPS)
 CraftingPointValue=10
 
 [StrawHat]
@@ -240,7 +240,7 @@ PlayerLevel=8
 Rarity=1
 cost=0
 SellPrice=5
-Jobs=$return.systemsetting(JobMage)
+Jobs=$return.systemsetting(JobsMage)
 CraftingPointValue=10
 
 [AshMask]
@@ -405,15 +405,15 @@ CraftingPointValue=0
 [BronzeHaubergeon]
 Name=Bronze Haubergeon
 EquipLocation=body
-Str=1
+Str=0
 Dex=0
-Vit=0
+Vit=1
 Int=0
 Mnd=0
 Pie=0
 PDefense=15
 MDefense=11
-ItemLevel=8
+ItemLevel=5
 PlayerLevel=5
 Rarity=1
 cost=50
@@ -421,6 +421,26 @@ SellPrice=10
 FameLevel=1
 Jobs=$return.systemsetting(JobsTanks)
 CraftingPointValue=10
+
+[LeatherTunic]
+Name=Leather Tunic
+EquipLocation=body
+Str=1
+Dex=1
+Vit=0
+Int=0
+Mnd=0
+Pie=0
+PDefense=14
+MDefense=10
+ItemLevel=5
+PlayerLevel=5
+Rarity=1
+cost=50
+SellPrice=10
+Jobs=$return.systemsetting(JobsDPS)
+CraftingPointValue=10
+FameLevel=1
 
 [BronzeCuirass]
 Name=Bronze Cuirass
@@ -441,7 +461,7 @@ SellPrice=10
 Jobs=$return.systemsetting(JobsTanks)
 CraftingPointValue=10
 
-[LeatherTunic]
+[HardLeatherTunic]
 Name=Leather Tunic
 EquipLocation=body
 Str=1
@@ -817,7 +837,7 @@ Rarity=1
 cost=50
 SellPrice=4
 FameLevel=1
-Jobs=$return.systemsetting(JobDPS)
+Jobs=$return.systemsetting(JobsDPS)
 CraftingPointValue=0
 
 [HempenSarouel]
@@ -837,7 +857,7 @@ Rarity=1
 cost=50
 SellPrice=4
 FameLevel=1
-Jobs=$return.systemsetting(JobTanks)
+Jobs=$return.systemsetting(JobsTanks)
 CraftingPointValue=0
 
 [HempenKecks]
@@ -1726,7 +1746,7 @@ MDefense=0
 ItemLevel=5
 PlayerLevel=5
 Rarity=1
-cost=100
+cost=25
 SellPrice=10
 Jobs=$return.systemsetting(JobsTanks)
 FameLevel=1
