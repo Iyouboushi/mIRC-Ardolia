@@ -344,7 +344,7 @@ CraftingPointValue=10
 cost=0
 SellPrice=15
 
-[AetherialIrondAxe]
+[AetherialIronAxe]
 Type=axe
 Info=An aetherial axe made out of iron
 Jobs=WAR

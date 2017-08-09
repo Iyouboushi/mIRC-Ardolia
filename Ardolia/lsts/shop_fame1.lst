@@ -16,12 +16,17 @@ BronzeHaubergeon
 BasicLeggings
 BasicBoots
 BasicGloves
+FingerlessLeatherGloves
+LeatherGloves
+LeatherLightmitts
 SquareMapleShield
 RedBeret
 ReadingGlasses
 MoonCirclet
 SunCirclet
 HempenHat
+HempenBandana
+LeatherCap
 HempenHalfrobe
 EaglewingBreeches
 HempenTights
@@ -29,7 +34,6 @@ HempenSarouel
 LeatherCrakows
 LeatherSandals
 LeatherSollerets
-<<<<<<< HEAD
 RedbillScarf
 WeatheredChoker
 LeatherChoker
@@ -38,6 +42,14 @@ CopperEarCuffs
 FangEarrings
 BrassEarrings
 IronEarrings
-=======
-RedbillScarf
->>>>>>> origin/master
+WeatheredWristlets
+BoneCuffs
+CopperCuffs
+BronzeCuffs
+WeatheredRing
+BoneRing
+CopperRing
+BrassRing
+FangRing
+StoneRing
+AmberRing
