@@ -84,6 +84,11 @@ Chance=100
 Length=5
 Type=buff
 
+[ElementalSeal]
+Chance=100
+Length=1
+Type=buff
+
 =============================================
 Negative status effects
 =============================================

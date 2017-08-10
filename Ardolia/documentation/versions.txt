@@ -1,6 +1,10 @@
 Ardolia Bot Changelog
 =========================
 
+08-10-2017
+- Added the BLM job
+- Added spells and abilities for BLM up to level 17
+
 08-09-2017
 - Added more equipment
 - Changed the drops for Blackrock Ridge Mine. 

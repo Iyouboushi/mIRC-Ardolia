@@ -174,6 +174,142 @@ Element=earth
 Stat=int
 Jobs=blm
 
+[Ice]
+Level=2
+Type=Attack
+AOE=false
+Info=This spell does ice damage
+Description=casts ice upon $get_chr_name($3) $+ ! A series of small icicles fly up and crash into $gender2($3)
+Cooldown=2
+Cost=300
+Potency=180
+EnmityMultiplier=1
+BuffLength=0
+Element=ice
+Stat=int
+Jobs=blm
+
+[Fire]
+Level=3
+Type=Attack
+AOE=false
+Info=This spell does ice damage
+Description=casts fire upon $get_chr_name($3) $+ ! Fire dances around and burns $gender2($3)
+Cooldown=2
+Cost=500
+Potency=200
+EnmityMultiplier=1
+BuffLength=0
+Element=fire
+Stat=int
+Jobs=blm
+
+[Thunder]
+Level=4
+Type=Attack
+AOE=false
+Info=This spell does lightning damage
+Description=casts thunder upon $get_chr_name($3) $+ ! A lightning bolt shoots out of the sky down upon $gender2($3)
+Cooldown=2
+Cost=500
+Potency=200
+EnmityMultiplier=1
+BuffLength=0
+Element=lightning
+Stat=int
+Jobs=blm
+
+[Aero]
+Level=6
+Type=Attack
+AOE=false
+Info=This spell does wind damage
+Description=casts aero upon $get_chr_name($3) $+ ! A lightning bolt shoots out of the sky down upon $gender2($3)
+Cooldown=2
+Cost=500
+Potency=200
+EnmityMultiplier=1
+BuffLength=0
+Element=wind
+Stat=int
+Jobs=blm
+
+[Water]
+Level=7
+Type=Attack
+AOE=false
+Info=This spell does water damage
+Description=casts water upon $get_chr_name($3) $+ ! A tiny water of wave crashes down upon $gender2($3)
+Cooldown=2
+Cost=500
+Potency=200
+EnmityMultiplier=1
+BuffLength=0
+Element=water
+Stat=int
+Jobs=blm
+
+[Stonega]
+Level=10
+Type=Attack
+AOE=true
+Info=This spell does earth damage to all targets on the battlefield.
+Description=casts stonega. Rocks rise around all targets on the battlefield and explode dealing earth damage to everyone.
+Cooldown=5
+Cost=800
+Potency=120
+EnmityMultiplier=1
+BuffLength=0
+Element=earth
+Stat=int
+Jobs=blm
+
+[StoneII]
+Level=12
+Type=Attack
+AOE=false
+Info=This spell does heavier earth damage
+Description=casts Stone II upon $get_chr_name($3) $+ ! A large boulder flies into $gender2($3) dealing earth damage.
+Cooldown=2
+Cost=800
+Potency=300
+EnmityMultiplier=1
+BuffLength=0
+Element=earth
+Stat=int
+Jobs=blm
+
+[Icega]
+Level=15
+Type=Attack
+AOE=true
+Info=This spell does ice damage to all targets on the battlefield.
+Description=casts icega. Pillars of ice rise out of the ground before shattering all around everyone on the battlefield.
+Cooldown=5
+Cost=800
+Potency=120
+EnmityMultiplier=1
+BuffLength=0
+Element=ice
+Stat=int
+Jobs=blm
+
+[IceII]
+Level=17
+Type=Attack
+AOE=false
+Info=This spell does heavier ice damage
+Description=casts Ice II upon $get_chr_name($3) $+ ! A boulder made of pure ice flies into $gender2($3) dealing ice damage.
+Cooldown=2
+Cost=800
+Potency=300
+EnmityMultiplier=1
+BuffLength=0
+Element=ice
+Stat=int
+Jobs=blm
+
+
 =============================================
 BUFFING
 =============================================

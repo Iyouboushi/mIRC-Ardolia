@@ -307,6 +307,34 @@ Job=WHM
 =============================================
 BLM
 =============================================
+[AethericBurst]
+Level=1
+Type=Attack
+AOE=true
+Info=Consumes 700 TP to send out a shockwave of energy upon all targets. This ability can only be used once in 100 turns.
+Description=unleashes the full power of $gender($1) weapon and performs a powerful mighty strike that delivers a devastating blow upon $get_chr_name($3) $+ !
+Cooldown=100
+Cost=700
+Stat=int
+Potency=250
+EnmityMultiplier=2
+Job=BLM
+
+[ElementalSeal]
+Level=5
+Type=Buff
+AOE=false
+Info=This ability will increase the potency of your next spell by 50
+Description=draws either towards $gender($1) body and creates a powerful seal in the air that will enhance $gender($1) next spell.
+Cooldown=5
+Cost=300
+Stat=str
+Potency=0
+EnmityMultiplier=1
+Job=BLM
+StatusEffect=ElementalSeal
+Instant=true
+
 
 
 

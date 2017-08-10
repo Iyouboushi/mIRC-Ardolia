@@ -1,0 +1,25 @@
+[BasicInfo]
+Name=Black Mage
+Description=Sometimes known as Glass Cannons, Black Mages (BLM) are masters of powerful elemental magic that deal heavy damage but are weak to attack.
+Role=DPS
+
+[StatInfo]
+HPperVIT=3
+MPperPIE=14.5
+DamageStat=Int
+BaseSpeed=6
+
+
+[LevelUpInfo]
+STR=2
+DEX=2
+VIT=3
+INT=9
+MND=6
+PIE=8
+DET=5
+
+
+
+
+
