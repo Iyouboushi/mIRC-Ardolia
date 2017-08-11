@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 08/08/17
+;;;; Last updated: 08/10/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,6 +157,9 @@ adventure.open {
 
   ; Start the timer for players to enter
   /.timerAdventureBegin 1 %time.to.enter /adventure.begin
+
+  ; Display the adventure description if it's set
+  if ($readini($zonefile(adventure), Info, Desc) != $null) { $display.message(2* 5 $+ $readini($zonefile(adventure), Info, Desc), global)  }
 
   ; Display the message that the adventure is open
   $display.message($translate(AdventureOpen, $1), global) 
@@ -383,6 +386,7 @@ adventure.rewards {
   var %adventure.party $readini($txtfile(adventure.txt), Info, partymembersList) | var %current.party.member 1 
   while (%current.party.member <= $adventure.party.count) { 
     var %party.member.name $gettok(%adventure.party, %current.party.member, 46)
+    unset %bonus.xp
 
     ; Increase that this party member has been in the adventure
     $miscstats(%party.member.name, add, TotalAdventures, 1)
@@ -396,6 +400,7 @@ adventure.rewards {
     if ($1 = victory) { 
 
       ; Write that we've cleared this adventure
+      if ($readini($char(%party.member.name), AdventuresCleared, $readini($zonefile(adventure), Info, OriginalFile)) = $null) { var %bonus.xp true }
       writeini $char(%party.member.name) AdventuresCleared $readini($zonefile(adventure), Info, OriginalFile) true 
 
       ; Give some fame
@@ -429,6 +434,8 @@ adventure.rewards {
       ; Add some bonus xp for clearing the adventure
       inc %xp.to.reward $readini($zonefile(adventure), Info, ClearReward.XP)
 
+      ; If this is the first time the person has cleared the dungeon then give double the xp
+      if (%bonus.xp = true) { var %xp.to.reward $calc(%xp.to.reward * 2) }
     } 
 
     ; Reward XP if it's not 0

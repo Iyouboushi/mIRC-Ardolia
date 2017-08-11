@@ -883,3 +883,26 @@ mdefense=0
 Cost=0
 SellPrice=0
 CraftingPointValue=0
+
+[pugil]
+Type=pugil
+Info=It's the weapon of a pugil
+Jobs=all
+Stat=str
+Element=none
+ItemLevel=4
+PlayerLevel=1
+Damage=11
+Speed=9
+str=1
+dex=0
+vit=0
+int=0
+mnd=0
+pie=0
+det=0
+pdefense=0
+mdefense=0
+Cost=0
+SellPrice=0
+CraftingPointValue=0

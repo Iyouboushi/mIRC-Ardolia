@@ -4,6 +4,9 @@ Ardolia Bot Changelog
 08-10-2017
 - Added the BLM job
 - Added spells and abilities for BLM up to level 17
+- Added a new FATE: Taking It to the Streams  This FATE is recommended for level 4's or a party of level 3's.
+- Changed !start adventure to display the adventure's description (often the goal/reason why the party goes on the adventure)
+- Changed adventures so that a victory will reward double the clear XP on the very first clear. 
 
 08-09-2017
 - Added more equipment

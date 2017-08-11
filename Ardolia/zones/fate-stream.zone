@@ -1,0 +1,50 @@
+[Info]
+Name=FATE: Taking It to the Streams
+OriginalFile=fate-stream
+Desc=A school of angry pugils have been attacking fishermen. Put an end to these giant carnivorous fish!
+LevelRange=4
+MinimumPlayers=1
+MaximumPlayers=4
+PreReq=
+iLevel=2
+AdventureActions=6
+ClearRoom=1
+ClearReward.List=reward_fate-stream.lst
+ClearReward.XP=50
+FameRewarded=2
+AdventureClearMessage=The party returns to Ardolia ready to cook some fish.
+
+
+[0]
+Name=The Rogue River
+Clear=true
+EnterDesc=The party stands on the bank of the Rogue River. Ahead they can see a school of angry pugils swimming around. 
+LookDesc=The party stands on the bank of the Rogue River. Ahead they can see a school of angry pugils swimming around. 
+
+; Combat Info
+Combat=false
+
+; Npcs
+NPCObjects=Brelloix
+Brelloix.Talk=$display.message(Brelloix says 2"These pugils are making it impossible for me to fish my dinner up. Be a good adventurer and take care of them.", global)
+Brelloix.Look=$display.message(2Brelloix is an Elf fisherman standing at average height. He has short black hair and seems to be tapping his foot impatiently., global)
+Brelloix.Push=$display.message(4Brelloix looks at you rather annoyed. 2"Don't you have some fish to fry?")
+Brelloix.Pull=$display.message(4Brelloix looks at you rather annoyed. 2"Don't you have some fish to fry?")
+
+; Exits
+ExitList=Stream
+Stream=1
+
+
+[1]
+Name=The Rogue River - Stream
+EnterDesc=The party jumps down from the bank and splashes into the stream. 
+LookDesc=The party is standing in The Rogue River.
+
+; Combat Info
+Combat=true
+Monsters=Pugil
+Monsters.Needed=$iif($adventure.party.count < 2, 3, 5)
+CombatDesc=The pack of carnivorous fish hear the splash and immediately attack.
+CombatEndDesc=The pack of pugils have been killed. Time to return to Ardolia.
+

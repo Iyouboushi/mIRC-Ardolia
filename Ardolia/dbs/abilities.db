@@ -625,3 +625,32 @@ Stat=str
 Potency=80
 EnmityMultiplier=1.2
 Job=all
+
+[Screwdriver]
+level=1
+Type=Attack
+AOE=false
+Info=A strong pugil attack
+Description=swims around to build momentum and then shoots like a torpedo ramming into $get_chr_name($3) $+ !
+Cooldown=5
+Cost=100
+Stat=str
+Potency=210
+EnmityMultiplier=1.5
+Job=all
+Element=water
+
+[Aquaball]
+level=1
+Type=Attack
+AOE=true
+Info=An AOE attack by a pugil
+Description=inhales water before shooting out a large powerful ball of it towards everyone on the battlefield 
+Cooldown=5
+Cost=100
+Stat=str
+Potency=210
+EnmityMultiplier=1.5
+Job=all
+Element=water
+

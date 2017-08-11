@@ -1,0 +1,2 @@
+swims up to %enemy and attempts to take a bite
+swims up quickly and attempts to hit %enemy with its tail
