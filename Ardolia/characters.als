@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.als
-;;;; Last updated: 08/10/17
+;;;; Last updated: 09/08/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A flag for brand new characters who aren't set up yet
@@ -312,11 +312,12 @@ xp.to.level {
 
   if ($get.level($1) >= %level.cap) { return 0 }
   else {
-    if ($get.level($1) < 5) { return $calc(100 * ($get.level($1) - 1) + (100 * $get.level($1))) }
-    if (($get.level($1) >= 5) && ($get.level($1) < 20)) { return $calc(500 * ($get.level($1) - 1) + (500 * $get.level($1))) }
-    if (($get.level($1) >= 20) && ($get.level($1) < 50)) { return $calc(1000 * ($get.level($1) - 1) + (1000 * $get.level($1))) }
-    if (($get.level($1) >= 50) && ($get.level($1) <= 60)) { return $calc(2000 * ($get.level($1) - 1) + (2000 * $get.level($1))) }
-    if ($get.level($1) > 60) { return $calc(5000 * ($get.level($1) - 1) + (5000 * $get.level($1))) }
+    var %exponent 1.5
+
+    if ($get.level($1) <= 5) { var %baseXP 100 }
+    if ($get.level($1) > 5) { var %baseXP 300 }
+
+    return $floor($calc(%baseXP * ($get.level($1) ^ %exponent)))
   }
 }
 
