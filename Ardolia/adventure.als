@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventure.als
-;;;; Last updated: 08/10/17
+;;;; Last updated: 09/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -435,7 +435,7 @@ adventure.rewards {
       inc %xp.to.reward $readini($zonefile(adventure), Info, ClearReward.XP)
 
       ; If this is the first time the person has cleared the dungeon then give double the xp
-      if (%bonus.xp = true) { var %xp.to.reward $calc(%xp.to.reward * 2) }
+      if (%bonus.xp = true) { set %show.bonus.xp.message true | var %xp.to.reward $calc(%xp.to.reward * 2) }
     } 
 
     ; Reward XP if it's not 0
@@ -502,6 +502,12 @@ adventure.rewards {
   }
 
   ; Show the rewards.
+
+  if (%show.bonus.xp.message = true) { 
+    $display.message($translate(SomeBonusXP), global) 
+    unset %show.bonus.xp.message 
+  }
+
   if (%winners.xp != $null) { %winners.xp = $clean.list(%winners.xp) | $display.message($translate(ShowXPRewards), global) }
   if (%winners.spoils != $null) {  $display.message($translate(ShowSpoilRewards), global) }
   if (%winners.spoils2 != $null) {  $display.message(3 $+ %winners.spoils2, global) }

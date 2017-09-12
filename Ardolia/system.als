@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 08/08/17
+;;;; Last updated: 09/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1497,7 +1497,7 @@ clear_variables {
   unset %current.room | unset %file | unset %total.targets | unset %random.target | unset %damage.display.color
   unset %true.turn | unset %adventureisopen
   unset %adventure.open  | unset %multihit.message.on
-  unset %stat.str | unset %target.hp | unset %ability.list
+  unset %stat.str | unset %target.hp | unset %ability.list | unset %stat.vit
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -29,6 +29,9 @@ ChangeTimeForEnter=$chr(3) $+ 4 $+ Time allowed for the !enter period has been s
 PlayerExists=$chr(3) $+ 4 $+ A character with the name $nick already exists.  If this is you, use the !id command with your password in query to log in.  If not, please change your nick and try again.
 NameReserved=$chr(3) $+ 4 $+ A character with the name $nick is reserved and cannot be used. Please change your nick and try again.
 
+SomeBonusXP=$chr(3) $+ 5 $+ * Some players are receiving a first-time clear xp bonus
+
+
 ; Character Creation Stuff
 CharacterCreated=$chr(3) $+ 7*2 $nick the $race($nick) has joined the Ardolian Adventurer's Guild.
 CharacterNewItems=$chr(3) $+ 7*2 You have been given $bytes($currency.amount($nick, money),b)  $+ $readini(system.dat, system, currency) and the following equipment: BasicTunic $+ $chr(44) BasicLeggings $+ $chr(44) BasicBoots $+ $chr(44) and BasicGloves

@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; adventurecontrol.mrc
-;;;; Last updated: 08/07/17
+;;;; Last updated: 09/11/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; this file contains the commands and code for the adventures (dungeons)
@@ -112,7 +112,7 @@ on 2:TEXT:!close *:#: { $adventure.object($nick, $2-, close) }
 on 2:TEXT:!read *:#: { $adventure.object($nick, $2-, read) }
 on 2:TEXT:!talk to *:#: { $adventure.object($nick, $3-, talk) }
 on 2:TEXT:!talk *:#: { $adventure.object($nick, $2-, talk) }
-
+on 2:TEXT:!take *:#: { $adventure.object($nick, $2-, take) }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Chop down a tree
