@@ -21,12 +21,12 @@ adventure.list {
   ; Check for month. If not the right month, return
   var %zone.month $readini($zonefile(%zone.name), Info, Month)
   if (%zone.month = $null) { var %zone.month $left($adate,2) }
-  if ($left($adate, 2) != %zone.month) { return }
+  if ($istok(%zone.month, $left($adate,2), 46) = $false) { return }
 
   ;  check for a specific day
   var %zone.day $readini($zonefile(%zone.name), Info, Day)
   if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
-  if (($right($left($adate,5),2) != %zone.day) && ($left($fulldate, 3) != %zone.day)) { return }
+  if (($istok(%zone.day, $right($left($adate,5),2), 46) = $false) && ($istok(%zone.day, $left($fulldate, 3), 46) = $false)) { return }
 
   ; Check for pre-req.
   var %zone.prereq $readini($zonefile(%zone.name), Info, Prereq)
@@ -108,12 +108,12 @@ adventure.start {
   ; Is this dungeon only available on a certain month (i.e. holiday dungeons)?   If so, is it the right month?
   var %zone.month $readini($zonefile($2), Info, Month)
   if (%zone.month = $null) { var %zone.month $left($adate,2) }
-  if ($left($adate, 2) != %zone.month) { $display.message($translate(NotRightMonthToStart, $1), private) | halt }
+  if ($istok(%zone.month, $left($adate,2), 46) = $false) { $display.message($translate(NotRightMonthToStart, $1), private) | halt }
 
   ; Is this dungeon only available on a certain day of a month?   If so, is it the right day?
   var %zone.day $readini($zonefile($2), Info, Day)
   if (%zone.day = $null) { var %zone.day $right($left($adate,5),2) }
-  if (($right($left($adate,5),2) != %zone.day) && ($left($fulldate, 3) != %zone.day)) { $display.message($translate(NotRightDayToStart, $1), private) | halt }
+  if (($istok(%zone.day, $right($left($adate,5),2), 46) = $false) && ($istok(%zone.day, $left($fulldate, 3), 46) = $false)) { $display.message($translate(NotRightDayToStart, $1), private) | halt }
 
   ; Is there a pre-req that needs to be done before this one may be started?
   var %zone.prereq $readini($zonefile($2), Info, Prereq)

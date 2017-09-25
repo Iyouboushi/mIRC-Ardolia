@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battlecontrol.mrc
-;;;; Last updated: 08/08/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file contains code for the battles
 ; including the NEXT command, generating battle order
@@ -115,6 +115,8 @@ alias battle.addmonster {
 
   if ($isfile($boss($1)) = $true) { .copy -o $boss($1) $char(%current.monster.to.spawn.name)  }
   if ($isfile($mon($1)) = $true) {  .copy -o $mon($1) $char(%current.monster.to.spawn.name)  }
+
+  writeini $char(%current.monster.to.spawn.name) info originalfilename $1
 
   if (%multiple.monster.found = true) {  
     var %real.name.spawn $get_chr_name($1) $calc(%multiple.monster.counter - 1)
@@ -382,6 +384,7 @@ alias battle.clear {
 ; ==========================
 alias next {
   unset %skip.ai | unset %file.to.read.lines | unset %user.gets.second.turn
+  unset %attack.target
 
   ; Reset the Next timer.
   var %nextTimer $readini(system.dat, system, BattleIdleTime)

@@ -312,11 +312,11 @@ Level=1
 Type=Attack
 AOE=true
 Info=Consumes 700 TP to send out a shockwave of energy upon all targets. This ability can only be used once in 100 turns.
-Description=unleashes the full power of $gender($1) weapon and performs a powerful mighty strike that delivers a devastating blow upon $get_chr_name($3) $+ !
+Description=draws aether from the air around $gender2($1) before unleashing a powerful blast of energy upon $get_chr_name($3) $+ !
 Cooldown=100
 Cost=700
 Stat=int
-Potency=250
+Potency=300
 EnmityMultiplier=2
 Job=BLM
 

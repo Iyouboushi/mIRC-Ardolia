@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battleformulas.als
-;;;; Last updated: 08/08/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -335,6 +335,8 @@ formula.melee.player {
 
   $damage.color.check
   ; to be added
+
+  unset %starting.damage
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -361,6 +363,8 @@ formula.melee.monster {
   $damage.color.check
   ; to be added
 
+  unset %starting.damage
+
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -382,5 +386,9 @@ formula.ability {
   dec %attack.damage $round($buff.check($3, reduceDmg, %attack.damage),0)
 
   if (%attack.damage <= 0) { set %attack.damage 1 }
+
+  $damage.color.check
+
+  unset %starting.damage
 
 }

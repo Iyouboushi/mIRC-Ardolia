@@ -13,7 +13,7 @@ ClearReward.List=reward_fate-rabbit.lst
 ClearReward.XP=10
 FameRewarded=1
 AdventureClearMessage=The party has saved the carrot farm of Ardolia from being overrun! The farmers thank the party for a job well done.
-Day=Fri
+Day=Mon.Tues.Wed.Thrs.Fri
 
 [0]
 Name=The Ardolian Carrot Farm (Gate)
@@ -27,6 +27,12 @@ Combat=false
 ; Exits
 ExitList=Gate
 Gate=1
+
+NPCObjects=WorriedFarmer
+WorriedFarmer.Talk=$display.message(The farmer says 2"Them darn wasky wabbits! They're eating all our carrots! We'll be ruined!", global)
+WorriedFarmer.Look=$display.message(2The farmer is a short human male wearing a straw hat. He has a worried look on his face., global)
+WorriedFarmer.Push=$display.message(4The farmer says 2"Ow!", global)
+WorriedFarmer.Pull=$display.message(4The farmer says 2"Ow!", global)
 
 
 [1]

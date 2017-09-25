@@ -1,26 +1,44 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 08/08/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Ability Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-ON 2:ACTION:uses * * on *:#:{ 
+ON 2:ACTION:uses * *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
-  $partial.name.match($nick, $5)
+
+  if ($4 != on) { 
+    if ($readini($dbfile(abilities.db), $3, type) = buff) { $partial.name.match($nick, $nick) }
+    else { halt }
+  }
+
+  if (%attack.target = $null) { $partial.name.match($nick, $5) }
   $ability_cmd($nick , $3 , %attack.target, $7) | halt 
 } 
 
-ON 2:TEXT:!ability * on *:#:{ 
+ON 2:TEXT:!ability *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
-  $partial.name.match($nick, $4)
+
+  if ($3 != on) { 
+    if ($readini($dbfile(abilities.db), $2, type) = buff) { $partial.name.match($nick, $nick) }
+    else { halt }
+  }
+
+  if (%attack.target = $null) { $partial.name.match($nick, $4) }
   $ability_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
 
-ON 2:TEXT:!tech * on *:#:{ 
+ON 2:TEXT:!tech *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
-  $partial.name.match($nick, $4)
+
+  if ($3 != on) { 
+    if ($readini($dbfile(abilities.db), $2, type) = buff) { $partial.name.match($nick, $nick) }
+    else { halt }
+  }
+
+  if (%attack.target = $null) { $partial.name.match($nick, $4) }
   $ability_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
 
@@ -31,7 +49,8 @@ ON 50:TEXT:*uses * * on *:*:{
 
   $no.turn.check($1,admin)
 
-  $partial.name.match($1, $6)
+  if ($6 = $null) { $partial.name.match($1, $1) }
+  else { $partial.name.match($1, $6) } 
 
   $ability_cmd($1 , $4,  %attack.target) 
   halt 
@@ -164,6 +183,9 @@ alias ability_cmd {
 
   ; Increase the total number of times this player has used an ability
   $miscstats($1, add, AbilitiesUsed, 1)
+
+  ; Unset the attack target
+  unset %attack.target
 
   ; Time to go to the next turn
   if ($readini($dbfile(abilities.db), $2, Instant) != true) {   

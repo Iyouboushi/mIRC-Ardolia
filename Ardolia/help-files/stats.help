@@ -1,0 +1,10 @@
+12::[Stats]::
+2This game uses seven stats to determine how your character is made up.
+4Strength (STR)2: How strong you are.  It's used for most melee weapons, though there are exceptions (bows use Dex, for example, and wands/staves use int/mnd)
+4Dexterity (DEX)2: Mostly used for ranged attacks.
+4Vitality (VIT)2: Used to calculate your maximum HP.  Basically your max HP is vit * a value based on your current job.
+4Intelligence (INT)2: Used for non-white mage spells
+4Mind (MND)2: Used for healing spells and other white mage spells.
+4Piety (PIE)2: Used to calculate your maximum MP.  Basically your max MP is pie * a value based on your current job. Note that jobs that can't cast spells will always have 0 MP even if your PIE is high.
+4Determination (DET)2: Used to increase the overall effectiveness of the other stats by a small amount.
+

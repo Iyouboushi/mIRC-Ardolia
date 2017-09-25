@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 08/08/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -526,14 +526,28 @@ on 2:TEXT:!desc*:#: {  $checkscript($2-)
   if ($2 = $null) { $display.message(10 $+ $get_chr_name($nick)  $+ $readini($char($nick), Descriptions, Char),private) | halt }
   if ($2 = set) {
 
-    if (($3 = character) || ($3 = char)) { writeini $char($nick) Descriptions Char $4- | $okdesc($nick , Character)  }
-    if (($3 = abilitiy) || ($3 = skill)) { $display.message(Not implemented yet) }
+    if (($3 = character) || ($3 = char)) { writeini $char($nick) Descriptions Char $4- | $display.private.message($translate(DescSetOK, $3))  }
+    if (($3 = abilitiy) || ($3 = skill)) { $display.message(Not implemented yet, private) }
 
     halt
   }
 
   ; Check someone else's desc
   $checkchar($2) |  $display.message(3 $+ $get_chr_name($2)  $+ $readini($char($2), Descriptions, Char), private) 
+}
+
+on 2:TEXT:!desc*:?: {  $checkscript($2-)
+  if ($2 = $null) { $display.private.message(10 $+ $get_chr_name($nick)  $+ $readini($char($nick), Descriptions, Char)) | halt }
+  if ($2 = set) {
+
+    if (($3 = character) || ($3 = char)) { writeini $char($nick) Descriptions Char $4- | $display.private.message($translate(DescSetOK, $3))  }
+    if (($3 = abilitiy) || ($3 = skill)) { $display.private.message(Not implemented yet) }
+
+    halt
+  }
+
+  ; Check someone else's desc
+  $checkchar($2) |  $display.private.message(3 $+ $get_chr_name($2)  $+ $readini($char($2), Descriptions, Char)) 
 }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -550,7 +564,7 @@ on 2:TEXT:!equip *:*: {
   if ($2 = armor) { $wear.armor($nick, $3) | halt }
   if ($2 = shield) { $wear.armor($nick, $3) | halt }
 
-  $wield.weapon($1, $2) 
+  $wield.weapon($nick, $2) 
 }
 
 alias wield.weapon {

@@ -1,16 +1,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 08/08/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Spell Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-ON 2:ACTION:casts * on *:#:{ 
+ON 2:ACTION:casts *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
-  $partial.name.match($nick, $4)
+
+  if ($3 != on) { 
+    if (($readini($dbfile(spells.db), $2, type) = buff) || ($readini($dbfile(spells.db), $2, type) = heal)) { $partial.name.match($nick, $nick) }
+    else { halt }
+  }
+
+  if (%attack.target = $null) { $partial.name.match($nick, $4) }
   $spell_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
+
 ON 2:TEXT:!cast * on *:#:{ 
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)

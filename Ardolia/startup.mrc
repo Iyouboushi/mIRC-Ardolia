@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; startup.mrc
-;;;; Last updated: 04/27/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This file controls what happens when
 ; the bot starts as well as what happens
@@ -110,6 +110,7 @@ on 1:START: {
   if ($version < 7.41) {   echo 4*** Your version is older than the recommended version for this bot. Some things may not work right.  It is recommended you update. 12 *** }
   if ($version > 7.41) {   echo 4*** Your version is newer than the recommended version for this bot. While it should work, it is currently untested and may have quirks or bugs.  It is recommended you downgrade if you run into any problems. 12 *** }
 
+  if ($sha1($read(key)) != e79569af2409deb8c5aa6235768fea53d47fa5e5) { .remove key |  write key M`S)4:&ES(&=A;64@:7,@<G5N;FEN9R!T:&4@`D$"<F1O;&EA(`)24$<"(%-YM<W1E;2!C<F5A=&5D(&)Y(`)*`F%M97,@`DD">6]U8F]U<VAI("TM($%V86ELM86)L92!F;W(@9G)E92!A=#H@`S$R'VAT='!S.B\O9VET:'5B+F-O;2])>6]U38F]U<VAI+VU)4D,M07)D;VQI80`` }
 }
 
 on 1:CONNECT: {

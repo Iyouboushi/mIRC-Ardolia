@@ -1,5 +1,5 @@
 [BaseStats]
-Hp=10
+Hp=15
 Mp=0
 Tp=1000
 Str=20
@@ -44,7 +44,7 @@ Version=1.0
 Flag=monster
 
 [Drops]
-xp=5
+xp=10
 money=1
 ItemDropChance=45
 Items=ArdolianCarrot

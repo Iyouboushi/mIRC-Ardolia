@@ -73,7 +73,7 @@ CRYSTALS
 =========================
 [EarthCrystal]
 Type=crystal
-ItemDesc=A small crystal with the color of earth inside
+ItemDesc=A small crystal with the color of earth inside. This item is used as a catalyst in crafting.
 Cost=0
 SellPrice=1
 Exclusive=no
@@ -81,7 +81,7 @@ Level=1
 
 [FireCrystal]
 Type=crystal
-ItemDesc=A small crystal with the color of fire inside
+ItemDesc=A small crystal with the color of fire inside. This item is used as a catalyst in crafting.
 Cost=0
 SellPrice=1
 Exclusive=no
@@ -89,7 +89,7 @@ Level=1
 
 [WindCrystal]
 Type=crystal
-ItemDesc=A small crystal with the color of wind inside
+ItemDesc=A small crystal with the color of wind inside. This item is used as a catalyst in crafting.
 Cost=0
 SellPrice=1
 Exclusive=no
@@ -97,7 +97,7 @@ Level=1
 
 [WaterCrystal]
 Type=crystal
-ItemDesc=A small crystal with the color of water inside
+ItemDesc=A small crystal with the color of water inside. This item is used as a catalyst in crafting.
 Cost=0
 SellPrice=1
 Exclusive=no

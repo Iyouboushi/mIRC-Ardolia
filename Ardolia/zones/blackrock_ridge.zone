@@ -10,7 +10,7 @@ iLevel=4
 AdventureActions=120
 ClearRoom=49
 ClearReward.List=reward_blackrockridge.lst
-ClearReward.XP=$return_percentofvalue($xp.to.level(%party.member.name), 8))
+ClearReward.XP=$iif($get.level(%party.member.name) <= 8, $return_percentofvalue($xp.to.level(%party.member.name), 20), $return_percentofvalue($xp.to.level(%party.member.name), 10))
 FameRewarded=3
 AdventureClearMessage=The party returns home to Ardolia knowing that they have saved a group of lives today.
 

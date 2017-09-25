@@ -27,6 +27,12 @@ Combat=false
 ExitList=North
 North=1
 
+NPCObjects=Guard
+Guard.Talk=$display.message(The guard says 2"The sheep must not be allowed to reach these gates. Go forward and take care of them.", global)
+Guard.Look=$display.message(2The guard is a human standing at average height. He is wearing scale mail and is carrying a pike., global)
+Guard.Push=$display.message(4The guard looks at you rather annoyed., global)
+Guard.Pull=$display.message(4The guard looks at you rather annoyed., global)
+
 
 [1]
 Name=The Fields of Ardolia

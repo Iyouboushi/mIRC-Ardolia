@@ -13,7 +13,7 @@ ClearReward.List=reward_fate-goo.lst
 ClearReward.XP=25
 FameRewarded=1
 AdventureClearMessage=The party returns to Ardolia covered in blue goo and ready for a bath but victorious.
-Day=Sat
+Day=Fri.Sat.Sun
 
 [0]
 Name=The Ardolian Gates

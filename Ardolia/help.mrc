@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; HELP and VIEW-INFO
-;;;; Last updated: 05/04/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 1:TEXT:!help*:*: { $gamehelp($2, $nick) }
 alias gamehelp { 
@@ -74,9 +74,71 @@ alias view-info {
   }
 
 
-  if ($2 = ability) { $display.private.message(To Be Added) } 
+  if ($2 = ability) { 
+    var %info.type $readini($dbfile(abilities.db), $3, type)
 
-  if ($2 = item) { $display.private.message(To Be Added) } 
+    if (%info.type = $null) { $display.private.message(4Invalid ability) | halt }
+
+    var %info.level $readini($dbfile(abilities.db), $3, level)
+    var %info.aoe $readini($dbfile(abilities.db), $3, aoe)
+    var %info.info $readini($dbfile(abilities.db), $3, info)
+    var %info.cooldown $readini($dbfile(abilities.db), $3, cooldown)
+    var %info.cost $readini($dbfile(abilities.db), $3, cost)
+    var %info.stat $readini($dbfile(abilities.db), $3, stat)
+    var %info.potency $readini($dbfile(abilities.db), $3, potency)
+    var %info.enmity $readini($dbfile(abilities.db), $3, enmityMultiplier)
+    var %info.jobs $readini($dbfile(abilities.db), $3, job)
+    var %info.statuseffect $readini($dbfile(abilities.db), $3, statuseffect)
+
+    var %info.instant $readini($dbfile(abilities.db), $3, instant)
+    if (%info.instant = $null) { var %info.instant false }
+
+    if (%info.jobs != $null) { var %info.jobs $clean.list(%info.jobs) } 
+    if (%info.jobs = $null) { var %info.jobs any }
+
+    var %non.buff.line [4Ability Stat12 %info.stat $+ ] [4Ability Potency12 %info.potency $+ ] [4Ability Enmity Multiplier12 %info.enmity $+ ]
+
+
+    $display.private.message([4Ability Name12 $3 $+ ] [4Ability Type12 %info.type $+ ] [4Target12 $iif(%info.aoe = true, AOE, Single) $+ ] [4Jobs that can use this ability12 %info.jobs $+ ] [4Ability Level12 %info.level $+ ] [4Instant Use12 %info.instant $+ ] ) 
+    $display.private.message([4Ability TP Cost12 %info.cost $+ ] [4Ability Cooldown12 %info.cooldown battle turns] $iif(%info.type != buff, %non.buff.line) $iif(%info.statuseffect != $null, [4Status Effect12 %info.statuseffect $+ ]))
+    $display.private.message([4Ability Info12 %info.info $+ ])
+
+    if ($readini($dbfile(abilities.db), $3, CanUseOutsideBattle) = true) { $display.private.message(7*2 This ability can be used outside of battle while inside of an adventure) } 
+  } 
+
+  if ($2 = Spell) { 
+    var %info.type $readini($dbfile(spells.db), $3, type)
+    if (%info.type = $null) { $display.private.message(4Invalid Spell) | halt }
+
+    var %info.level $readini($dbfile(spells.db), $3, level)
+    var %info.aoe $readini($dbfile(spells.db), $3, aoe)
+    var %info.info $readini($dbfile(spells.db), $3, info)
+    var %info.cooldown $readini($dbfile(spells.db), $3, cooldown)
+    var %info.cost $readini($dbfile(spells.db), $3, cost)
+    var %info.stat $readini($dbfile(spells.db), $3, stat)
+    var %info.potency $readini($dbfile(spells.db), $3, potency)
+    var %info.enmity $readini($dbfile(spells.db), $3, enmityMultiplier)
+    var %info.jobs $readini($dbfile(spells.db), $3, jobs)
+    var %info.statuseffect $readini($dbfile(spells.db), $3, statuseffect)
+
+    var %info.element $readini($dbfile(spells.db), $3, element)
+    if (%info.element = $null) { var %info.element none }
+
+    var %info.instant $readini($dbfile(spells.db), $3, instant)
+    if (%info.instant = $null) { var %info.instant false }
+
+    if (%info.jobs != $null) { var %info.jobs $clean.list(%info.jobs) } 
+    if (%info.jobs = $null) { var %info.jobs any }
+
+    var %non.buff.line [4Spell Stat12 %info.stat $+ ] [4Spell Potency12 %info.potency $+ ] [4Spell Enmity Multiplier12 %info.enmity $+ ]
+
+
+    $display.private.message([4Spell Name12 $3 $+ ] [4Spell Type12 %info.type $+ ] [4Target12 $iif(%info.aoe = true, AOE, Single) $+ ] [4Jobs that can use this Spell12 %info.jobs $+ ] [4Spell Level12 %info.level $+ ] [4Instant Use12 %info.instant $+ ] ) 
+    $display.private.message([4Spell MP Cost12 %info.cost $+ ] [4Spell Cooldown12 %info.cooldown battle turns] $iif(%info.type != buff, %non.buff.line) $iif(%info.statuseffect != $null, [4Status Effect12 %info.statuseffect $+ ]) [4Element12 %info.element $+ ])
+    $display.private.message([4Spell Info12 %info.info $+ ])
+
+    if ($readini($dbfile(spells.db), $3, CanUseOutsideBattle) = true) { $display.private.message(7*2 This Spell can be used outside of battle while inside of an adventure) } 
+  }  
 
   if (($2 = armor) || ($2 = shield)) {
 
@@ -85,6 +147,7 @@ alias view-info {
     var %info.type $readini($dbfile(equipment.db), $3, EquipLocation) 
 
     var %info.jobs $readini($dbfile(equipment.db), $3, jobs) 
+
     if (%info.jobs != $null) { var %info.jobs $clean.list(%info.jobs) } 
     if (%info.jobs = $null) { var %info.jobs any }
 
@@ -102,7 +165,6 @@ alias view-info {
     $display.private.message([4Stat Bonuses] [4STR12 $chr(43) $+ $readini($dbfile(equipment.db), $3, str) $+ ] [4DEX12 $chr(043) $+ $readini($dbfile(equipment.db), $3, dex) $+ ] [4VIT12 $chr(043) $+ $readini($dbfile(equipment.db), $3, vit) $+ ] [4INT12 $chr(043) $+ $readini($dbfile(equipment.db), $3, int) $+ ] [4MND12 $chr(043) $+ $readini($dbfile(equipment.db), $3, mnd) $+ ] [4PIE12 $chr(043) $+ $readini($dbfile(equipment.db), $3, pie) $+ ] [4Physical Defense12 $chr(043) $+ $readini($dbfile(equipment.db), $3, pDefense) $+ ] [4Magical Defense12 $chr(043) $+ $readini($dbfile(equipment.db), $3, mDefense) $+ ]) 
   }
 
-
   if ($2 = adventure) { 
     if (($isfile($zonefile($3)) = $false) || ($3 = template)) { $display.private.message(4No such adventure exists) | halt }
 
@@ -117,6 +179,65 @@ alias view-info {
 
     $display.private.message([4Adventure Name12 %info.name $+ ] [4Level Range12 %info.levelrange $+ ] [4Minimium iLevel to Enter12 %info.ilevel $+ ] %info.prereq)
     $display.private.message([4Number of Rooms12 %info.roomcount  $+ ]  [4Starting Party Stamina12 %info.partyactions $+ ])
+
+    if ($readini($zonefile($3), info, desc) != $null) { $display.private.message([4Desc]12 $readini($zonefile($3), info, desc)) }
   }
+
+
+  if ($2 = item) {
+    var %info.type $readini($dbfile(items.db), $3, type)
+    if (%info.type = $null) { $display.private.message(4Invalid Item) | halt }
+
+    var %info.cost $readini($dbfile(items.db), $3, Cost)
+    var %info.sellprice $readini($dbfile(items.db), $3, SellPrice)
+    var %info.cooldown $readini($dbfile(items.db), $3, CoolDown)
+    var %info.itemdesc $readini($dbfile(items.db), $3, ItemDesc)
+
+    if ((%info.type = heal) || (%info.type = restoreMP)) { 
+
+      var %info.healamount $readini($dbfile(items.db), $3, HealAmount)
+      if (%info.type = Heal) { var %info.healtype HP }
+      if (%info.type = RestoreMP) { var %info.healtype MP }
+
+      $display.private.message([4Item Name12 $3 $+ ] [4Type12 %info.type $+ ] [4Restore Type12 %info.healtype $+ ] [4Restore Amount12 %info.healamount $+ ] [4Cooldown12 %info.cooldown battle turns])
+      $display.private.message([4Cost12 $iif(%info.cost > 0, %info.cost $currency, cannot be purchased in a shop) $+ ] [4Sell Price12 $iif(%info.sellprice > 0, %info.sellprice $currency, cannot be sold to a shop) $+ ])
+      $display.private.message([4Item Desc12 %info.itemdesc $+ ])
+    }
+
+    if (%info.type = revive) { 
+      var %info.reviveamount $calc(100 * $readini($dbfile(items.db), $3, ReviveAmount))
+      $display.private.message([4Item Name12 $3 $+ ] [4Type12 %info.type $+ ] [4HP Restored Upon Revival12 %info.reviveamount $+ $chr(37) $+ ] [4Cooldown12 %info.cooldown battle turns])
+      $display.private.message([4Cost12 $iif(%info.cost > 0, %info.cost $currency, cannot be purchased in a shop) $+ ] [4Sell Price12 $iif(%info.sellprice > 0, %info.sellprice $currency, cannot be sold to a shop) $+ ])
+      $display.private.message([4Item Desc12 %info.itemdesc $+ ])
+    }
+
+    if (%info.type = crystal) { 
+      $display.private.message([4Item Name12 $3 $+ ] [4Type12 %info.type $+ ])
+      $display.private.message([4Cost12 $iif(%info.cost > 0, %info.cost $currency, cannot be purchased in a shop) $+ ] [4Sell Price12 $iif(%info.sellprice > 0, %info.sellprice $currency, cannot be sold to a shop) $+ ])
+      $display.private.message([4Item Desc12 %info.itemdesc $+ ])
+    }
+
+    if (%info.type = adventure) { 
+      $display.private.message([4Item Name12 $3 $+ ] [4Type12 %info.type $+ ])
+      $display.private.message([4Cost12 $iif(%info.cost > 0, %info.cost $currency, cannot be purchased in a shop) $+ ] [4Sell Price12 $iif(%info.sellprice > 0, %info.sellprice $currency, cannot be sold to a shop) $+ ])
+      $display.private.message([4Item Desc12 %info.itemdesc $+ ])
+      $display.private.message(7*2 This item can only be used at certain points inside of adventures)
+    }
+
+    if (%info.type = crafting) { 
+      $display.private.message([4Item Name12 $3 $+ ] [4Type12 %info.type $+ ])
+      $display.private.message([4Cost12 $iif(%info.cost > 0, %info.cost $currency, cannot be purchased in a shop) $+ ] [4Sell Price12 $iif(%info.sellprice > 0, %info.sellprice $currency, cannot be sold to a shop) $+ ])
+      $display.private.message([4Item Desc12 %info.itemdesc $+ ])
+    }
+
+    if (%info.type = food) { 
+      $display.private.message([4Item Name12 $3 $+ ] [4Type12 %info.type $+ ])
+      $display.private.message([4Cost12 $iif(%info.cost > 0, %info.cost $currency, cannot be purchased in a shop) $+ ] [4Sell Price12 $iif(%info.sellprice > 0, %info.sellprice $currency, cannot be sold to a shop) $+ ])
+      $display.private.message([4Item Desc12 %info.itemdesc $+ ])
+      $display.private.message([4Stat Bonuses] [4STR12 $chr(43) $+ $readini($dbfile(items.db), $3, str) $+ ] [4DEX12 $chr(043) $+ $readini($dbfile(items.db), $3, dex) $+ ] [4VIT12 $chr(043) $+ $readini($dbfile(items.db), $3, vit) $+ ] [4INT12 $chr(043) $+ $readini($dbfile(items.db), $3, int) $+ ] [4MND12 $chr(043) $+ $readini($dbfile(items.db), $3, mnd) $+ ] [4PIE12 $chr(043) $+ $readini($dbfile(items.db), $3, pie) $+ ] [4DET12 $chr(043) $+ $readini($dbfile(items.db), $3, det) $+ ]) 
+      $display.private.message(7*2 This item can be used outside of battle while inside of adventures. Note that you can only use 1 food item per adventure.)
+    }
+
+  } 
 
 }

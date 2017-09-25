@@ -1,6 +1,20 @@
 Ardolia Bot Changelog
 =========================
 
+09-25-2017
+- Added a key file.  Do not remove this file.
+- Added stats to the help command. Use !help stats to see information on what the stats do
+- Added !view-info ability
+- Added !view-info spell
+- Added !view-info item
+- Changed the code so that adventures can be open for multiple days and months.
+- Changed the code for /me casts spellname and /me uses his/her abilityname so that the target can be left blank if the 
+  ability or spell is a personal buff (such as foresight)
+- Changed fate-goo to be open on Fri, Sat and Sun
+- Changed fate-rabbit to be open Mon through Fri
+- Fixed a bug where !desc set was not showing a message saying the description had been set correctly
+- Fixed a bug where monster deaths were not being counted correctly
+
 09-11-2017
 - Added a message to show when someone is receiving a first-time clear xp bonus
 - Added a !take adventure action command

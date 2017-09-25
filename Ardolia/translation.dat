@@ -31,6 +31,7 @@ NameReserved=$chr(3) $+ 4 $+ A character with the name $nick is reserved and c
 
 SomeBonusXP=$chr(3) $+ 5 $+ * Some players are receiving a first-time clear xp bonus
 
+DescSetOK=$chr(3) $+ 3 $+ Your  $+ $2 description has been set.
 
 ; Character Creation Stuff
 CharacterCreated=$chr(3) $+ 7*2 $nick the $race($nick) has joined the Ardolian Adventurer's Guild.

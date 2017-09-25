@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; system.als
-;;;; Last updated: 09/11/17
+;;;; Last updated: 09/25/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -69,6 +69,26 @@ system_defaults_check {
   if (%adventureis = $null) { set %adventureis off }
   if (%adventureisopen = $null) { set %adventureisopen off }
 
+  ; Check to see if all the remotes are loaded (except setup.mrc as that causes an infinite loop)
+  /.load -rs admin.mrc
+  /.load -rs characters.mrc 
+  /.load -rs adventurecontrol.mrc
+  /.load -rs battlecontrol.mrc
+  /.load -rs attacks.mrc
+  /.load -rs abilities.mrc 
+  /.load -rs spells.mrc
+  /.load -rs items.mrc
+  /.load -rs ai.mrc
+  /.load -rs shop.mrc
+  /.load -rs achivements.mrc
+  /.load -rs help.mrc
+
+  ; Check to see if the aliases are loaded (except this one as it'd cause a loop)
+  /.load -a characters.als
+  /.load -a adventure.als
+  /.load -a battle.als
+  /.load -a battleformulas.als
+
   var %last.system.dat.version $readini(system.dat, version, SystemDatVersion)
   if (%last.system.dat.version != $system.dat.version) { 
     if ($readini(system.dat, system, botType) = $null) { writeini system.dat system botType IRC }
@@ -104,28 +124,6 @@ system_defaults_check {
 
     writeini system.dat version SystemDatVersion $system.dat.version
   }
-
-  ; Check to see if all the remotes are loaded (except setup.mrc as that causes an infinite loop)
-  /.load -rs admin.mrc
-  /.load -rs characters.mrc 
-  /.load -rs adventurecontrol.mrc
-  /.load -rs battlecontrol.mrc
-  /.load -rs attacks.mrc
-  /.load -rs abilities.mrc 
-  /.load -rs spells.mrc
-  /.load -rs items.mrc
-  /.load -rs ai.mrc
-  /.load -rs achivements.mrc
-  /.load -rs help.mrc
-
-  ; these files will eventually be loaded when they're finished
-  ;  /.load -rs shop.mrc
-
-  ; Check to see if the aliases are loaded (except this one as it'd cause a loop)
-  /.load -a characters.als
-  /.load -a adventure.als
-  /.load -a battle.als
-  /.load -a battleformulas.als
 
   ; Remove files that are no longer needed.
 
@@ -200,6 +198,7 @@ system.intromessage {
   var %player.money $currency.amount($1, money)
   if (%player.money = $null) { var %player.money 0 }
 
+  $display.private.message($decode($read(key)))
   $display.private.message(2Welcome back4 $get_chr_name($1) $+ . 2The current local bot time is4 $asctime(hh:nn tt) 2on4  $asctime(mmm dd yyyy) 2and this is bot version5 $game.version )
   $display.private.message(2You currently have:7 $bytes(%player.money,b) 2 $+ $readini(system.dat, system, currency) $+ $chr(44) 7 $+ $bytes($currency.amount($1, CraftingPoints),b) 2Crafting Points $+ $chr(44) 7 $+ $bytes($currency.amount($1, GuildPoints),b) 2Guild Points $+ $chr(44) and 7 $+ $bytes($currency.amount($1, LoginPoints),b) 2Login Points)  
 
@@ -1667,11 +1666,13 @@ increase.death.tally {
       inc %boss.deaths 1
       writeini $lstfile(monsterdeaths.lst) boss $1 %boss.deaths
     }
-    if ($isfile($mon($1)) = $true) { 
-      var %monster.deaths $readini($lstfile(monsterdeaths.lst), monster, $1) 
+    else { 
+      var %monster.file.name $readini($char($1), info, originalfilename)
+      if (%monster.file.name = $null) { var %monster.file.name $1 } 
+      var %monster.deaths $readini($lstfile(monsterdeaths.lst), monster, %monster.file.name) 
       if (%monster.deaths = $null) { var %monster.deaths 0 }
       inc %monster.deaths 1
-      writeini $lstfile(monsterdeaths.lst) monster $1 %monster.deaths
+      writeini $lstfile(monsterdeaths.lst) monster %monster.file.name %monster.deaths
     }
   }
 }
