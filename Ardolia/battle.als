@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; battle.als
-;;;; Last updated: 08/03/17
+;;;; Last updated: 10/04/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -166,7 +166,7 @@ person_in_battle {
   set %temp.battle.list $readini($txtfile(battle2.txt), Battle, List)
   if ($istok(%temp.battle.list,$1,46) = $false) {  unset %temp.battle.list | $set_chr_name($1) 
     $display.message($translate(NotInbattle, $1),private) 
-    unset %real.name | halt 
+    unset %real.name | unset %attack.target | halt 
   }
   else { return }
 }

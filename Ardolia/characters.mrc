@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; characters.mrc
-;;;; Last updated: 09/25/17
+;;;; Last updated: 10/01/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,7 +53,7 @@ on 1:TEXT:!new char*:*: {  $checkscript($2-)
   ; Give the starting money
   var %starting.money $readini(system.dat, system, StartingMoney)
   if (%starting.money = $null) { var %starting.money 20 }
-  writeini $char($nick) Currency Money %starting.money
+  writeini $char($nick) Currencies Money %starting.money
 
   ; Generate a password
   set %password ardolia $+ $rand(1,100) $+ $rand(a,z) $+ $rand(1,1000)

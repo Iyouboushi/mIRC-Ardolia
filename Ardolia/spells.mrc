@@ -1,13 +1,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; spells.mrc
-;;;; Last updated: 09/25/17
+;;;; Last updated: 10/04/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Spell Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 2:ACTION:casts *:#:{ 
-  $no.turn.check($nick) |  $set_chr_name($nick)
+  $no.turn.check($nick) 
+
+  ; Are we in battle?
+  $check_for_battle($nick) 
+
+  $set_chr_name($nick)
 
   if ($3 != on) { 
     if (($readini($dbfile(spells.db), $2, type) = buff) || ($readini($dbfile(spells.db), $2, type) = heal)) { $partial.name.match($nick, $nick) }
@@ -19,11 +24,19 @@ ON 2:ACTION:casts *:#:{
 } 
 
 ON 2:TEXT:!cast * on *:#:{ 
+
+  ; Are we in battle?
+  $check_for_battle($nick) 
+
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $spell_cmd($nick , $2 , %attack.target, $5) | halt 
 } 
 ON 2:TEXT:!magic * on *:#:{ 
+
+  ; Are we in battle?
+  $check_for_battle($nick) 
+
   $no.turn.check($nick) |  $set_chr_name($nick)
   $partial.name.match($nick, $4)
   $spell_cmd($nick , $2 , %attack.target, $5) | halt 
@@ -32,6 +45,9 @@ ON 50:TEXT:*casts * on *:*:{
   if ($1 = uses) { halt }
   if ($3 = item) { halt }
   if ($5 != on) { halt }
+
+  ; Are we in battle?
+  $check_for_battle($1) 
 
   $partial.name.match($1, $5)
   $spell_cmd($1 , $3,  %attack.target) 

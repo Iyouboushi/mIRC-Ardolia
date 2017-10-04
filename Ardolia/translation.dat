@@ -371,6 +371,7 @@ NotEnoughMPforSpell=$chr(3) $+ 4 $+ $get_chr_name($2) does not have enough MP 
 WaitYourTurn=$chr(3) $+ 4 $+ Error: $get_chr_name($2) wait for your turn!
 Can'tDoThisInBattle=$chr(3) $+ 4 $+ Error: This command only works outside of battle.
 NotInBattle=$chr(3) $+ 4 $+ Error: $2 is not currently in this battle!
+UseBuffOnYourself=$chr(3) $+ 4 $+ Error: $2 is a buff type and needs to be used on yourself!
 
 ; Item Errors
 DoNotHaveThisItem=$chr(3) $+ 4 $+ Error: $get_chr_name($2) does not have this item!

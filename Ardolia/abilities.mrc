@@ -1,14 +1,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; abilities.mrc
-;;;; Last updated: 09/25/17
+;;;; Last updated: 10/04/17
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Ability Commands and code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ON 2:ACTION:uses * *:#:{ 
-  $no.turn.check($nick) |  $set_chr_name($nick)
+  $no.turn.check($nick)
 
+  ; Are we in battle?
+  $check_for_battle($nick) 
+
+  $set_chr_name($nick)
   if ($4 != on) { 
     if ($readini($dbfile(abilities.db), $3, type) = buff) { $partial.name.match($nick, $nick) }
     else { halt }
@@ -19,7 +23,12 @@ ON 2:ACTION:uses * *:#:{
 } 
 
 ON 2:TEXT:!ability *:#:{ 
-  $no.turn.check($nick) |  $set_chr_name($nick)
+  $no.turn.check($nick) 
+
+  ; Are we in battle?
+  $check_for_battle($nick) 
+
+  $set_chr_name($nick)
 
   if ($3 != on) { 
     if ($readini($dbfile(abilities.db), $2, type) = buff) { $partial.name.match($nick, $nick) }
@@ -31,7 +40,12 @@ ON 2:TEXT:!ability *:#:{
 } 
 
 ON 2:TEXT:!tech *:#:{ 
-  $no.turn.check($nick) |  $set_chr_name($nick)
+  $no.turn.check($nick) 
+
+  ; Are we in battle?
+  $check_for_battle($nick) 
+
+  $set_chr_name($nick)
 
   if ($3 != on) { 
     if ($readini($dbfile(abilities.db), $2, type) = buff) { $partial.name.match($nick, $nick) }
@@ -48,6 +62,9 @@ ON 50:TEXT:*uses * * on *:*:{
   if ($5 != on) { halt }
 
   $no.turn.check($1,admin)
+
+  ; Are we in battle?
+  $check_for_battle($1) 
 
   if ($6 = $null) { $partial.name.match($1, $1) }
   else { $partial.name.match($1, $6) } 
@@ -87,20 +104,22 @@ alias ability_cmd {
 
     if ((no-ability isin %battleconditions) || (no-abilities isin %battleconditions)) { 
       if (($readini($char($1), info, ai_type) != healer) && ($readini($char($1), info, ai_type) != abilityonly)) { 
-        $set_chr_name($1) | $display.message($translate(NotAllowedBattleCondition),private) | halt 
+        $set_chr_name($1) | $display.message($translate(NotAllowedBattleCondition),private) | unset %attack.target | halt 
       }
     }
 
-    if ($readini($char($1), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackWhileUnconcious, $1),private)  | unset %real.name | halt }
-    if ($readini($char($3), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoIsDead, $1, $3),private) | unset %real.name | halt }
-    if ($readini($char($3), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $3),private) | unset %real.name | halt } 
+    if ($readini($char($1), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackWhileUnconcious, $1),private)  | unset %attack.target | unset %real.name | halt }
+    if ($readini($char($3), Battle, Status) = dead) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoIsDead, $1, $3),private) | unset %attack.target | unset %real.name | halt }
+    if ($readini($char($3), Battle, Status) = RunAway) { $set_chr_name($1) | $display.message($translate(CanNotAttackSomeoneWhoFled, $1, $3),private) | unset %attack.target | unset %real.name | halt } 
 
-    ; Can this spell be cast outside of battle?
+    ; Can this ability be used outside of battle?
     if ($readini($dbfile(abilities.db), $2, CanUseOutsideBattle) != true) {  
       if (%battleis != on) { $display.message($translate(NoBattleCurrently), private) | halt }
 
-      ; Are we in battle?
-      $check_for_battle($1) 
+      echo -a here :: %ability.type
+
+      ; Check for a specific buff message
+      if (($istok($readini($txtfile(battle2.txt), Battle, List),$1,46) = $false) && (%ability.type = buff)) { echo -a false | $display.message($translate(UseBuffOnYourself, $1, $2),private) | unset %real.name | unset %attack.target | halt }
 
       $person_in_battle($3)
       $no.turn.check($1,admin)
@@ -147,7 +166,7 @@ alias ability_cmd {
   if (%covering.someone = on) { var %user.flag monster }
 
   if ((%ability.type != buff) && (%ability.type != heal))  {
-    if ((%user.flag != monster) && (%target.flag != monster)) { $set_chr_name($1) | $display.message($translate(CanOnlyAttackMonsters, $1),private)  | halt }
+    if ((%user.flag != monster) && (%target.flag != monster)) { $set_chr_name($1) | $display.message($translate(CanOnlyAttackMonsters, $1),private)  | unset %attack.target | halt }
   }
 
   ; Decrease the TP used
