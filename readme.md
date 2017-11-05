@@ -9,7 +9,7 @@ Once set up the game is entirely automatic and does not need anyone to run it.
 
 A full in-depth guide with commands and more in-depth information will eventually be listed on this game's wiki.
 
-Note: As of August 7, 2017 the game is still in heavy development and is not fully playable.
+Note: As of November 2017 the game is playable but still in need of more content.
 
 
 ## SETUP
@@ -31,26 +31,32 @@ Note, you do NOT have to install it to C:\Ardolia\ However, it's recommended to 
 
 For older updates please read the versions.txt: https://github.com/Iyouboushi/mIRC-Ardolia/blob/master/Ardolia/documentation/versions.txt
 
-* AUG 07, 2017
+* SEPTEMBER 25, 2017
 
-The game is getting closer to a real beta testing state.  With the last two updates I've introduced the ability to have NPCs appear in adventures as 'objects' that can be interacted with (such as talking to), changed adventures so that it's possible to end even without needing a final boss battle in the last room, and adjusted the shop to require !shop list to need a type for weapons and armor (such as !shop list armor body) to try and prevent the lists from getting too crazy. 
+The game, at this point, is fully playable although there is still a lot of content left to be made and several descriptions of spells and abilities that need to be added.  
 
-Right now the main focus is to get a full dungeon in the game for level 5's and to get more equipment in.  Once those two things are done I would say that the game can begin a true beta test to see how well it fares when live.  If all goes well then after that will just be adding new classes and more adventures/regular updates. 
+Specifically, this update adds the ability for adventures to be open for multiple days/months, spells and abilities that are buffs can be used without needing to specify a target, a few bugs were fixed, and !help stats added to help explain the various stats in the game.
+
 
 ## TO-DO
 
-In order to make this game fully playable there are still a huge amount of things to be done.  Here's basically the list of things left that I want to have done before I would consider the game "playable"
+In order to consider the game "finished" or at least version 1.0 I would say that there are still a few things left to do.  In general:
 
 
-* Adding more armor and weapons for both WAR and WHM
+* Adding more armor and weapons for the various jobs that are in the game 
 
-* Creating several adventures for people to play up to level 10 (to start)
+* Creating more adventures for people to play
 
-* A crafting system (though this isn't necessary for the game to be considered playable and can come later)
+* A crafting system 
+
 
 ## THANKS
 
 These are people who have helped me by helping me test, making monsters/weapons/etc, finding bugs, or just by giving me some ideas.  This bot would not as good/far along as it is without these fine folks.
 
 * Scott "Smz" of Esper.net
+
+* Pentium320 of Esper.net
+
+* baracouda of Esper.net
 
