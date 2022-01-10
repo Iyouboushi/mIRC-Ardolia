@@ -114,13 +114,13 @@ system_defaults_check {
     writeini system.dat system JobsTanks WAR.PLD
 
     ; Certain battle/adventure settings
-    if ($readini(adventure.dat, AdventureStats, TotalAdventures) = $null) { writeini adventure.dat TotalAdventures 0 }
-    if ($readini(adventure.dat, AdventureStats, TotalAdventuresCleared) = $null) { writeini adventure.dat TotalAdventuresCleared 0 }
-    if ($readini(adventure.dat, AdventureStats, TotalAdventuresFailed) = $null) { writeini adventure.dat TotalAdventuresFailed 0 }
+    if ($readini(adventure.dat, AdventureStats, TotalAdventures) = $null) { writeini adventure.dat AdventureStats TotalAdventures 0 }
+    if ($readini(adventure.dat, AdventureStats, TotalAdventuresCleared) = $null) { writeini adventure.dat AdventureStats TotalAdventuresCleared 0 }
+    if ($readini(adventure.dat, AdventureStats, TotalAdventuresFailed) = $null) { writeini adventure.dat AdventureStats TotalAdventuresFailed 0 }
 
-    if ($readini(adventure.dat, BattleStats, TotalBattles) = $null) { writeini adventure.dat TotalBattles 0 }
-    if ($readini(adventure.dat, BattleStats, BattlesWon) = $null) { writeini adventure.dat BattlesWon 0 }
-    if ($readini(adventure.dat, BattleStats, BattlesLost) = $null) { writeini adventure.dat BattlesLost 0 }
+    if ($readini(adventure.dat, BattleStats, TotalBattles) = $null) { writeini adventure.dat BattleStats TotalBattles 0 }
+    if ($readini(adventure.dat, BattleStats, BattlesWon) = $null) { writeini adventure.dat BattleStats BattlesWon 0 }
+    if ($readini(adventure.dat, BattleStats, BattlesLost) = $null) { writeini adventure.dat BattleStats BattlesLost 0 }
 
     writeini system.dat version SystemDatVersion $system.dat.version
   }
